@@ -18,7 +18,7 @@ build_rules=$(addprefix $(build_prefix)_, $(bins))
 debug_rules=$(addprefix $(debug_prefix)_, $(bins))
 run_rules=$(addprefix $(run_prefix)_, $(bins))
 
-.PHONY: help all build debug $(build_rules) $(debug_rules) $(run_rules)
+.PHONY: help clean all build debug $(build_rules) $(debug_rules) $(run_rules)
 
 all: build
 
@@ -31,11 +31,18 @@ help:
 	@echo "if no {Target} is specify apply {Action} to all {Target}"
 	@echo ""
 	@echo "Action: "
+	@echo "- help:  show this help"
+	@echo "- clean: remove all the bin and object files"
 	@echo "- $(build_prefix): build the target"
 	@echo "- $(debug_prefix): build in debug mode the target"
 	@echo "- $(run_prefix):   run the target"
 	@echo ""
 	@echo "Target: $(bins)"
+
+
+clean:
+	$(RM) -r obj
+	$(RM) -r build
 
 #################################################
 ##                                             ##
@@ -64,4 +71,3 @@ endef
 
 # create the targets
 $(foreach bin,$(bins),$(eval $(call bins_targets,$(bin))))
-
