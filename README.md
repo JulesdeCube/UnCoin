@@ -17,27 +17,27 @@ TODO
 ### Install
 
 ```bash
-make install # install all dependencies
-make build # build UnCoin
+make build # build UnCoin client and server
+# or
+make build_client # build client
+make build_server # build server
 ```
 
 ### Run
 
+#### client
 ```bash
-make run
+make run_client
 # or
-./build/UnCoin-[version]
+./build/client
+```
+#### server
+```
+make run_server
+# or
+./build/server
 ```
 
-where `[version]` is the **UnCoin** current version
-
-### Clean
-
-```bash
-make clean
-```
-
-this will remove all the compilation files
 
 ## 📃 License
 Licensed under the [GNU general public license V3](./LICENSE.md).
