@@ -6,11 +6,12 @@ import re
 
 if not 2 <= len(sys.argv) <= 3:
     print('Usage: build.py [[-d] target]')
-    exit(1) 
+    exit(1)
+
 
 def apply(func, *iterables):
-  for args in zip(*iterables):
-    func(*args)
+    for args in zip(*iterables):
+        func(*args)
 
 
 def debug(variable):
@@ -28,6 +29,7 @@ def debug(variable):
     else:
         s = str(value)
     print(variable, '=', s)
+
 
 src_dir = Path('src').resolve()
 obj_dir = Path('obj').resolve()
@@ -47,6 +49,7 @@ if '-d' in sys.argv:
 
 regex = re.compile('^#include "([^"]*)"$')
 
+
 class info:
     def __init__(self, path):
         self.of = set()
@@ -62,7 +65,8 @@ class info:
         return deps[path].deps_date
 
     def calculate(self):
-        self.deps_date = max([self.date] + list(map(self.get_deps_date, self.of)))
+        self.deps_date = max(
+            [self.date] + list(map(self.get_deps_date, self.of)))
 
     @property
     def need_build(self):
@@ -81,9 +85,8 @@ class info:
             '{\n' + \
             f'  date: {self.__date(self.date)};\n' + \
             f'  deps_date: {self.__date(self.deps_date)};\n' + \
-            '  of: ' + ' '.join(map(str,self.of)) + '\n' + \
+            '  of: ' + ' '.join(map(str, self.of)) + '\n' + \
             '}'
-            
 
 
 def add(path):
@@ -92,7 +95,7 @@ def add(path):
     else:
         deps[path] = info(path)
         return True
-    
+
 
 def link(src, dep):
     add(src)
@@ -122,7 +125,7 @@ def expend(src, dst):
         path = src.parent / dst
         if not path.exists():
             path = src_dir / dst
-          
+
     if not path.exists():
         exit(f'ERROR: can\'t find "{dst}" from "{path}"')
 
@@ -156,15 +159,14 @@ def proccess(path):
 
     if path.suffix == '.h':
         proccess(path.with_suffix('.c'))
-    
-    
+
     if path.suffix == '.c':
         obj = get_obj(path)
         link(obj, path)
         link(bin, obj)
         deps[obj].calculate()
 
-    
+
 def run_command(command):
     print(' '.join(command))
     result = os.system(' '.join(command))
@@ -172,9 +174,10 @@ def run_command(command):
         exit(result)
 
 
-def gcc(path, option = '-c'):
+def gcc(path, option='-c'):
     path.parent.mkdir(parents=True, exist_ok=True)
-    run_command([cc, option, ' '.join(map(str, deps[path].of)), '-o', str(path) , cflag])
+    run_command([cc, option, ' '.join(
+        map(str, deps[path].of)), '-o', str(path), cflag])
 
 
 def need_build(path):

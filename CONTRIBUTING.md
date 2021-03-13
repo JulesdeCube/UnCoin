@@ -89,7 +89,7 @@ and other thing
 - `/src/libs/<module_name>/tests/`: test for this modules
 - `/src/libs/<module_name>/private/`: private methodes
 - `/src/libs/<module_name>/public/`: public methodes
-- `/src/libs/<module_name>/<module_name>.h`: file to import 
+- `/src/libs/<module_name>/<module_name>.h`: file to import
 
 
 
