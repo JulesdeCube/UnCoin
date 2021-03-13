@@ -1,0 +1,37 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "build server",
+            "command": "/usr/bin/env",
+            "args": [
+                "make",
+                "debug_server"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "shell",
+            "label": "build client",
+            "command": "/usr/bin/env",
+            "args": [
+                "make",
+                "debug_client"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        }
+    ],
+    "version": "2.0.0"
+}
