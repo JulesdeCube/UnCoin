@@ -177,8 +177,9 @@ def proccess(path):
     Get reclusively all the dependency of the path and compute it's dependency
     date.
     """
-    # limite to 1 proccess of each path
-    if add(path):
+    # proccess one time each path
+    # don't proccess not existing path
+    if add(path) and path.exists():
         # get and proccess each depedency of the file
         parse_source(path)
         # update the dependency dates
