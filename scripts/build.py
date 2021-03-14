@@ -150,6 +150,11 @@ def expend(src, dst):
     return path
 
 
+def is_source_file(path):
+    """ return if the file is a source files """
+    return path.suffix in ['.c', '.h']
+
+
 def get_obj(path):
     """ Get the object file path base on the source file. """
     # get the path relative to the src path
@@ -172,6 +177,26 @@ def parse_source(path):
             link(path, dep)
 
 
+def proccess_module(path):
+    """ Get the dependcy of the given modules """
+    module = path.parent
+    # if it's not a module do nothing
+    if not module.exists():
+        return
+    # include all the public and private source
+    for access in ['public', 'private']:
+        # get the folter
+        folder = module / access
+        # if the folder exist
+        if folder.exists():
+            # procces each source files
+            for dep in filter(is_source_file, folder.iterdir()):
+                proccess(dep)
+                link(path, dep)
+
+    infos[path].update()
+
+
 def proccess(path):
     """
     Get reclusively all the dependency of the path and compute it's dependency
@@ -189,7 +214,10 @@ def proccess(path):
 
         # if it is a header get the corresponding source file
         if path.suffix == '.h':
+            # proccess basics include
             proccess(path.with_suffix('.c'))
+            # proccess module
+            proccess_module(path)
 
         # if it is a source file add the object and linked it to the binnary
         if path.suffix == '.c':
@@ -218,11 +246,19 @@ def gcc(path, option='-c'):
     """ Compile the source file base on the option. """
     # create output dirrectory if not exist
     path.parent.mkdir(parents=True, exist_ok=True)
+
+    # the current dir
+    cwd = os.getcwd()
+
+    def get_path(path):
+        """ Shotten the path and covert it to string. """
+        return str(path.relative_to(cwd))
+
     # the the gcc command with the corresponding option
     run_command([
         cc,
-        option, ' '.join(map(str, infos[path].deps)),
-        '-o', str(path),
+        option, ' '.join(map(get_path, infos[path].deps)),
+        '-o', get_path(path),
         cflag
     ])
 
