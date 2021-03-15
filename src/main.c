@@ -2,183 +2,253 @@
 #include <stdlib.h>
 #include <err.h>
 
-struct queue
+typedef int bool;
+typedef void (*Callback)(void *);
+typedef Callback Destructor;
+
+/**
+** \private
+**
+** repesent 
+*/
+struct _s_queue_block
+{
+    void *element;
+    struct _s_queue_block *next;
+    struct _s_queue_block *previous;
+};
+
+struct s_queue
 {
     size_t size;
-    struct elm *first;
-    struct elm *last;
+    struct _s_queue_block *first;
+    struct _s_queue_block *last;
 };
 
-struct elm
-{
-    void *data;
-    struct elm *next;
-    struct elm *previous;
-};
+typedef struct s_queue *Queue;
 
-struct queue* queue_init()
+Queue queue_init()
 {
     // Allocate for a new queue
-    struct queue *q = malloc(sizeof(struct queue));
+    Queue queue = malloc(sizeof(struct s_queue));
 
-    if (q == NULL)
+    if (queue == NULL)
         errx(EXIT_FAILURE, "Error: malloc in queue_init()");
 
-    // Initialize first and last elm of q
-    q->first = NULL;
-    q->last = NULL;
+    // Initialize first and last element of queue
+    queue->first = NULL;
+    queue->last = NULL;
+    queue->size = 0;
 
-    return q;
+    return queue;
 }
 
-void queue_enqueue(struct queue *q, void *data)
+bool queue_is_empty(Queue queue)
 {
-    // Allocate for a new element
-    struct elm *element = malloc(sizeof(struct elm));
+    return queue == NULL || queue->size <= 0;
+}
 
-    if (element == NULL)
+void queue_enqueue(Queue queue, void *data)
+{
+    // Allocate for a new block
+    struct _s_queue_block *block = malloc(sizeof(struct _s_queue_block));
+
+    if (block == NULL)
         errx(EXIT_FAILURE, "Error: malloc in queue_enqueue()");
 
-    // Initialize data and next of the new elm
-    element->data = data;
-    element->next = NULL;
+    // Initialize data and next of the new element
+    block->element = data;
+    block->next = NULL;
 
-    // Initialize the first elm of q if it is empty
-    // Initialize previous of elm to NULL (no elm before the new elm)
-    if (q->first == NULL)
-    {
-        element->previous = NULL;
-        q->first = element;
-    }
-
-    // Initialize previous of elm to the last elm in q
-    // (have elm before the new elm)
-    // Reinitialize next of the last elm to the new elm
+    if (queue_is_empty(queue))
+        // Initialize the first elm of q if it is empty
+        queue->first = block;
     else
-    {
-        element->previous = q->last;
-        q->last->next = element;
-    }
+        // Initialize previous of elm to the last elm in q
+        queue->last->next = block;
 
+    // Set the previous to be the last (NULL if queue is empty)
+    block->previous = queue->last;
     // Reinitialize the last elm of q
-    q->last = element;
+    queue->last = block;
 
     // Incremente the size for the new elm
-    q->size += 1;
+    queue->size++;
 }
 
-struct elm* queue_dequeue(struct queue *q)
+void *queue_dequeue(Queue queue)
 {
-    // q is empty
+    // queue is empty
     // Do nothing, return NULL
-    if (q->size == 0)
+    if (queue_is_empty(queue))
         return NULL;
 
-    // Pop the first elm of q
-    struct elm *first_elm = q->first;
+    // Pop the first block of the queue
+    struct _s_queue_block *head = queue->first;
 
-    // Reinitialize the first elm of q to the next
-    q->first = q->first->next;
+    // Relink the fist element of the queue
+    queue->first = queue->first->next;
 
-    // q is empty after pop/dequeue
-    if (q->first == NULL)
-        q->last = NULL;
+    // if queue is empty after pop/dequeue
+    if (queue->first == NULL)
+        // reinit the queue
+        queue->last = NULL;
 
-    // q is not empty after pop/dequeue
-    // Reinitialize the previous of the new first elm
+    // if queue is not empty after pop/dequeue
     else
-        q->first->previous = NULL;
+        // Reinitialize the previous of the new first elm
+        queue->first->previous = NULL;
 
-    // Decremente the size of q
-    q->size--;
+    // Decremente the size
+    queue->size--;
 
-    // Reinitialize the elm
-    first_elm->next = NULL;
+    // Get the element
+    void *element = head->element;
 
-    return first_elm;
+    // free the poped block
+    free(head);
+
+    return element;
 }
 
-void queue_free(struct queue *q)
+void queue_proccess(Queue queue, Callback callback)
 {
-    // Free all elm of q (while q is not empty)
-    while (q->size > 0)
-        free(queue_dequeue(q));
-
-    // Free the queue
-    free(q);
+    // While the queue is not emtpy proccess
+    while (!queue_is_empty(queue))
+    {
+        // Get an element
+        void *element = queue_dequeue(queue);
+        // If there is a callback function call it
+        if (callback != NULL)
+            callback(element);
+    }
 }
 
-void queue_print_str(struct queue *q)
+void queue_foreach(Queue queue, Callback callback)
 {
-    // Print queue all data (char *)
-    for (struct elm *tmp = q->first; tmp != NULL; tmp = tmp->next)
-        printf("%p : \"%s\"\n", tmp->data, (char*)tmp->data);
-
-    printf("\n");
+    // get the head
+    struct _s_queue_block *block = queue->first;
+    // while there is bock to proccess
+    while (block != NULL)
+    {
+        // Proccess each element
+        callback(block->element);
+        // go to the next bock
+        block = block->next;
+    }
 }
 
-void queue_print_int(struct queue *q)
+void queue_debug(Queue queue)
 {
-    // Print queue all data (size_t)
-    for (struct elm *tmp = q->first; tmp != NULL; tmp = tmp->next)
-        printf("%p : %ld\n", tmp->data, (size_t)tmp->data);
-    
-    printf("\n");
+    // Print queue info
+    printf("===========================================\n");
+    printf("Queue: %lu (%p <> %p)\n", queue->size, queue->first, queue->last);
+    printf("-------------------------------------------\n");
+
+    // get the head
+    struct _s_queue_block *block = queue->first;
+    // while there is bock to proccess
+    while (block != NULL)
+        // Print block infos
+        printf(
+            "%p:%p (%p <> %p)\n",
+            block,
+            block->element,
+            block->previous,
+            block->next);
+        block = block->next;
+
+    // End of the queue
+    printf("===========================================\n\n");
+}
+
+void queue_free(Queue queue, Destructor destructor)
+{
+    // Destroy all blocks of queue
+    queue_proccess(queue, destructor);
+    // Free the queue struct
+    free(queue);
 }
 
 int main()
 {
     // Test init
-    struct queue *q = queue_init();
-    struct queue *q1 = queue_init();
-    struct queue *q2 = queue_init();
+    printf("==================================================\n");
+    printf("||                                              ||\n");
+    printf("||                     INIT                     ||\n");
+    printf("||                                              ||\n");
+    printf("==================================================\n");
 
+    printf("[init q]\n");
+    Queue q = queue_init();
+    queue_debug(q);
 
+    printf("[init q1]\n");
+    Queue q1 = queue_init();
+    queue_debug(q1);
+
+    printf("[init q2]\n");
+    Queue q2 = queue_init();
+    queue_debug(q2);
+
+    printf("==================================================\n");
+    printf("||                                              ||\n");
+    printf("||                   ENQUEUE                    ||\n");
+    printf("||                                              ||\n");
+    printf("==================================================\n");
     // Test enqueue of q
     printf("[Enqueue q \"Hello\"]\n");
     queue_enqueue(q, "Hello");
-    queue_print_str(q);
+    queue_debug(q);
 
     printf("[Enqueue q \"1\"]\n");
     queue_enqueue(q, "1");
-    queue_print_str(q);
+    queue_debug(q);
 
     printf("[Enqueue q \"400000\"]\n");
     queue_enqueue(q, "400000");
-    queue_print_str(q);
+    queue_debug(q);
 
     // Test enqueue of q1
     printf("[Enqueue q1 \"Helloooooooo\"]\n");
     queue_enqueue(q1, "Helloooooooo");
-    queue_print_str(q1);
+    queue_debug(q);
 
     // Test enqueue of q2
     printf("[Enqueue q2 400000]\n");
     queue_enqueue(q2, (void *)400000);
-    queue_print_int(q2);
+    queue_debug(q);
 
+    printf("==================================================\n");
+    printf("||                                              ||\n");
+    printf("||                   DEQUEUE                    ||\n");
+    printf("||                                              ||\n");
+    printf("==================================================\n");
 
-    // Test dequeue
+    printf("[Dequeue q \"hello\"]\n");
+    printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q));
+    queue_debug(q);
+
+    printf("[Dequeue q \"1\"]\n");
+    printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q));
+    queue_debug(q);
+
     printf("[Dequeue q1 \"Helloooooooo\"]\n");
-    struct elm *elm = queue_dequeue(q1);
-    printf("Elm dequeue : \"%s\"\n", (char*)elm->data);
-    queue_print_str(q1);
+    printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q1));
+    queue_debug(q1);
 
-    // Print all queue
-    printf("[Print queue q char* no empty]\n");
-    queue_print_str(q);
-
-    printf("[Print queue q1 char* empty]\n");
-    queue_print_str(q1);
-
-    printf("[Print queue q2 size_t no empty]\n");
-    queue_print_int(q2);
-
+    printf("==================================================\n");
+    printf("||                                              ||\n");
+    printf("||                     FREE                     ||\n");
+    printf("||                                              ||\n");
+    printf("==================================================\n");
     // Free
-    free(elm);
-    queue_free(q);
-    queue_free(q1);
-    queue_free(q2);
+    printf("[free q]\n");
+    queue_free(q, NULL);
+    printf("[free q1]\n");
+    queue_free(q1, NULL);
+    printf("[free q2]\n");
+    queue_free(q2, NULL);
 
     return 0;
 }
