@@ -8,11 +8,17 @@ int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer)
         *new_buffer = NULL;
         return NO_SELF;
     }
+    char *data = buffer_get_data(buffer);
+    if (data == NULL)
+    {
+        *new_buffer = NULL;
+        return INTERNAL_ERROR;
+    }
 
     // contruct the buffer with the array constructor
     return buffer_constructor_array(new_buffer,
                                     buffer_get_size(buffer),
-                                    buffer_get_data(buffer));
+                                    data);
 }
 
 int buffer_constructor_size(Buffer *new_buffer, size_t size)
@@ -33,6 +39,7 @@ int buffer_constructor_size(Buffer *new_buffer, size_t size)
     {
         // destoy all and return error
         buffer_destructor(&buffer);
+        *new_buffer = NULL;
         return NO_SPACE;
     }
 
