@@ -1,7 +1,6 @@
-#include "test.h"
-
-void test_constructor();
-void test_destructor();
+#include "test/test.h"
+#include "test_constructor.h"
+#include "test_destructor.h"
 
 Test tests[] = {
     {"CONSTRUCTOR", test_constructor},
@@ -9,5 +8,5 @@ Test tests[] = {
 
 int main(void)
 {
-    run_tests(tests, sizeof(tests) / sizeof(Test), 0);
+    run_tests(tests, sizeof(tests) / sizeof(Test), 1);
 }

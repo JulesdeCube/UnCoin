@@ -1,5 +1,4 @@
-#include "test.h"
-#include "../buffer.h"
+#include "test_destructor.h"
 
 void test_destructor()
 {

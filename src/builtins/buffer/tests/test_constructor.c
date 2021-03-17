@@ -1,6 +1,4 @@
-#include <stdint.h>
-#include "../buffer.h"
-#include "test.h"
+#include "test_constructor.h"
 
 #define size_1 10
 #define size_2 0
@@ -152,5 +150,5 @@ Test constructor_tests[] = {
 
 void test_constructor()
 {
-    run_tests(constructor_tests, sizeof(constructor_tests) / sizeof(Test), 1);
+    run_tests(constructor_tests, sizeof(constructor_tests) / sizeof(Test), 2);
 }

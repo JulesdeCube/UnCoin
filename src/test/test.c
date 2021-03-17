@@ -43,9 +43,10 @@ void run_test(Test test, unsigned char level)
     // add return line
     putchar('\n');
     // last separator
-    print_sep(sep, size);
+    if (level < 2)
+        print_sep(sep, size);
     // add line end base on the level
-    print_sep('\n', 3 - level);
+    print_sep('\n', 2 - level);
 }
 
 void run_tests(Test *tests, size_t size, unsigned char level)

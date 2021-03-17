@@ -1,10 +1,10 @@
-#ifndef UNCOIN__TEST_H_
-#define UNCOIN__TEST_H_
+#ifndef UNCOIN__TEST__TEST_H_
+#define UNCOIN__TEST__TEST_H_
 
 #include <stdio.h>
 #include <string.h>
 #include <err.h>
-#include "../../../utils/bool.h"
+#include "utils/bool.h"
 
 /**
 ** a test
@@ -35,4 +35,4 @@ void assert_not_equal_p(char *name, void *exepted, void *got);
 
 void assert_equal_arr(char *name, char *exepted_arr, char *got_arr, size_t size);
 
-#endif // UNCOIN__TEST_H_
+#endif // UNCOIN__TEST__TEST_H_
