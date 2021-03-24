@@ -1,5 +1,5 @@
-#ifndef UNCOIN__LIBS_BUILTINS_BUFFER__BUFFER_H_
-#define UNCOIN__LIBS_BUILTINS_BUFFER__BUFFER_H_
+#ifndef UNCOIN__UILTINS_BIGINT__BIGINT_H_
+#define UNCOIN__UILTINS_BIGINT__BIGINT_H_
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -7,12 +7,10 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-#include <string.h>
+#include "builtins/buffer/buffer.h"
 
 #include "utils/error.h"
 #include "utils/bool.h"
-//#include ""
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -20,15 +18,15 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-struct s_BigInt
+struct s_bigint
 {
     size_t exhibitor;
+    bool sign;
     Buffer buffer;
-    Sign is_positive;
-}
-typedef struct s_BigInt *BigInt;
-typedef int Buffer;
-typedef bool Sign;
+}; 
+
+typedef struct s_bigint *BigInt;
+
 #define POSITIVE true
 #define NEGATIVE false
 
@@ -38,7 +36,7 @@ typedef bool Sign;
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer);
+int bigint_constructor(BigInt *new_bigint);
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +45,7 @@ int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-void buffer_destructor(Buffer *buffer);
+void bigint_destructor(Buffer *buffer);
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,14 +54,10 @@ void buffer_destructor(Buffer *buffer);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-size_t buffer_get_size(Buffer buffer);
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                 OPERATION                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int buffer_get_index(Buffer buffer, size_t index, char *byte);
-
-#endif // UNCOIN__LIBS_BUILTINS_BUFFER__BUFFER_H_
+#endif // UNCOIN__UILTINS_BIGINT__BIGINT_H_
