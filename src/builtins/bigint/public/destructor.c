@@ -1,8 +1,6 @@
-#include "utils/bool.h"
-#include "utils/error.h"
-#include "destructor.h"
+#include "../bigint.h"
 
-void BigInt_destructor(BigInt *bigInt)
+void bigint_destructor(BigInt *bigint)
 {
-    free(bigInt);
+    free(bigint);
 }

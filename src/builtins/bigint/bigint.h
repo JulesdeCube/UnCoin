@@ -23,7 +23,7 @@ struct s_bigint
     size_t exhibitor;
     bool sign;
     Buffer buffer;
-}; 
+};
 
 typedef struct s_bigint *BigInt;
 
@@ -36,8 +36,10 @@ typedef struct s_bigint *BigInt;
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int bigint_constructor(BigInt *new_bigint);
-
+int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size, unsigned char *array);
+int bigint_constructor_null(BigInt *new_bigint);
+int bigint_constructor_buffer(BigInt *new_bigint, bool sign, Buffer buffer);
+int bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -45,8 +47,7 @@ int bigint_constructor(BigInt *new_bigint);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-void bigint_destructor(Buffer *buffer);
-
+void bigint_destructor(BigInt *bigint);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
