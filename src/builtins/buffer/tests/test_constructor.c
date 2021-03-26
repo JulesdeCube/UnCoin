@@ -12,7 +12,7 @@ void buff_des(Buffer buffer)
     free(buffer);
 }
 
-void buffer_test(Buffer new_buffer, int new_code, int error, size_t size, char *data)
+void buffer_test(Buffer new_buffer, int new_code, int error, size_t size, u_char *data)
 {
     // check the error code
     assert_equal_ul("Error code", error, new_code);
@@ -52,12 +52,12 @@ void constructor_size_test()
 void constructor_const_test()
 {
     // normal use
-    char data_1[size_1] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    u_char data_1[size_1] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     error = buffer_constructor_const(&buffer, size_1, 1);
     buffer_test(buffer, error, SUCCESS, size_1, data_1);
 
     // void buffer
-    char data_2[size_2] = {};
+    u_char data_2[size_2] = {};
     error = buffer_constructor_const(&buffer, size_2, 1);
     buffer_test(buffer, error, SUCCESS, size_2, data_2);
 
@@ -69,17 +69,17 @@ void constructor_const_test()
 void constructor_array_test()
 {
     // normal use
-    char data_1[size_1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    u_char data_1[size_1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     error = buffer_constructor_array(&buffer, size_1, data_1);
     buffer_test(buffer, error, SUCCESS, size_1, data_1);
 
     // void buffer
-    char data_2[size_2] = {};
+    u_char data_2[size_2] = {};
     error = buffer_constructor_array(&buffer, size_2, data_2);
     buffer_test(buffer, error, SUCCESS, size_2, data_2);
 
     // to big buffer
-    char data_3[1];
+    u_char data_3[1];
     error = buffer_constructor_array(&buffer, SIZE_MAX, data_3);
     buffer_test(buffer, error, NO_SPACE, SIZE_MAX, NULL);
 
@@ -91,19 +91,19 @@ void constructor_array_test()
 void constructor_buffer_test()
 {
     // normal use
-    char data_1[] = {1, 2, 3};
+    u_char data_1[] = {1, 2, 3};
     struct s_buffer buffer_1 = {3, data_1};
     error = buffer_constructor_buffer(&buffer, &buffer_1);
     buffer_test(buffer, error, SUCCESS, 3, data_1);
 
     // empty buffer
-    char data_2[] = {};
+    u_char data_2[] = {};
     struct s_buffer buffer_2 = {0, data_2};
     error = buffer_constructor_buffer(&buffer, &buffer_2);
     buffer_test(buffer, error, SUCCESS, 0, data_2);
 
     // to big
-    char data_3[] = {};
+    u_char data_3[] = {};
     struct s_buffer buffer_3 = {SIZE_MAX, data_3};
     error = buffer_constructor_buffer(&buffer, &buffer_3);
     buffer_test(buffer, error, NO_SPACE, SIZE_MAX, data_3);
@@ -123,20 +123,20 @@ void constructor_str_test()
     // normal use
     char *str1 = "hello";
     error = buffer_constructor_str(&buffer, str1, false);
-    buffer_test(buffer, error, SUCCESS, 5, str1);
+    buffer_test(buffer, error, SUCCESS, 5, (u_char *)str1);
     error = buffer_constructor_str(&buffer, str1, true);
-    buffer_test(buffer, error, SUCCESS, 6, str1);
+    buffer_test(buffer, error, SUCCESS, 6, (u_char *)str1);
 
     // empty string
     char *str2 = "";
     error = buffer_constructor_str(&buffer, str2, false);
-    buffer_test(buffer, error, SUCCESS, 0, str2);
+    buffer_test(buffer, error, SUCCESS, 0, (u_char *)str2);
     error = buffer_constructor_str(&buffer, str2, true);
-    buffer_test(buffer, error, SUCCESS, 1, str2);
+    buffer_test(buffer, error, SUCCESS, 1, (u_char *)str2);
 
     // null string
     error = buffer_constructor_str(&buffer, NULL, false);
-    buffer_test(buffer, error, NO_SELF, 1, str2);
+    buffer_test(buffer, error, NO_SELF, 1, (u_char *)str2);
 
     // !TODO - add to big buffer
 }
