@@ -34,9 +34,19 @@ size_t _bigint_get_array_exhibitor(size_t size, unsigned char *array)
     return exhibitor;
 }
 
+/**
+* @private
+*
+* find the exhibtor of a not normalize buffer
+*/
 size_t _bigint_get_buffer_exhibitor(Buffer buffer)
 {
     return _bigint_get_array_exhibitor(buffer->size, buffer->data);
+}
+
+bool _bigint_is_valid_sign(bool sign)
+{
+    return sign == NEGATIVE || sign == POSITIVE;
 }
 
 int bigint_constructor_null(BigInt *new_bigint)
@@ -62,31 +72,35 @@ int bigint_constructor_null(BigInt *new_bigint)
 
 int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size, unsigned char *array)
 {
+    // if there is 
+    if (new_bigint == NULL)
+        return NO_SELF;
+
     *new_bigint = NULL;
 
-    // !TODO - create a sub function to check if is a valid sign
-    if (sign != NEGATIVE && sign != POSITIVE)
+    if (!_bigint_is_valid_sign(sign))
         return ERROR_VALUE;
 
     if (array == NULL)
-        return NO_SELF;
+        return ERROR_VALUE;
 
     BigInt bigint = malloc(sizeof(struct s_bigint));
 
     if (bigint == NULL)
         return NO_SPACE;
 
-    Buffer buffer;
-    int error = buffer_constructor_array(&buffer, size, array);
+    bigint->sign = sign;
+    bigint->exhibitor = _bigint_get_array_exhibitor(size, array);
+    size_t normalize_size = bigint->exhibitor >> 3;
+
+    int error = buffer_constructor_array(&bigint->buffer,
+                                         normalize_size,
+                                         array + size - normalize_size);
     if (error != SUCCESS)
     {
         bigint_destructor(&bigint);
         return error;
     }
-
-    bigint->buffer = buffer;
-    bigint->exhibitor = _bigint_get_buffer_exhibitor(buffer);
-    bigint->sign = sign;
 
     *new_bigint = bigint;
 
