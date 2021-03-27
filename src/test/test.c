@@ -120,7 +120,7 @@ void assert_not_equal_p(char *name, void *exepted, void *got)
         putchar('.');
 }
 
-void assert_equal_arr(char *name, char *exepted_arr, char *got_arr, size_t size)
+void assert_equal_arr(char *name, unsigned char *exepted_arr, unsigned char *got_arr, size_t size)
 {
 
     for (size_t i = 0; i < size; i++)
@@ -137,6 +137,20 @@ void assert_equal_arr(char *name, char *exepted_arr, char *got_arr, size_t size)
                  got,
                  i);
         }
+    }
+
+    putchar('.');
+}
+
+void assert_equal_s(char *name, char *exepted, char *got)
+{
+    if (got != NULL && strcmp(exepted, got))
+    {
+        putchar('X');
+        putchar('\n');
+        errx(1,
+             "ASSERT ERROR: %s. exepted: %s, got: %s.\n",
+             name, exepted, got);
     }
 
     putchar('.');

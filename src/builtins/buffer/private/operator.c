@@ -1,6 +1,6 @@
 #include "../buffer.h"
 
-int buffer_get_index(Buffer buffer, size_t index, char *byte)
+int _buffer_get_index_pointer(Buffer buffer, size_t index, u_char **byte)
 {
     // if no buffer return an error
     if (buffer == NULL)
@@ -11,13 +11,13 @@ int buffer_get_index(Buffer buffer, size_t index, char *byte)
         return OUT_OF_RANGE;
 
     // get data
-    char *data = buffer_get_data(buffer);
+    u_char *data = buffer_get_data(buffer);
     // wong modifications
     if (data == NULL)
         return INTERNAL_ERROR;
 
     // update the output
-    *byte = data[index];
+    *byte = data + index;
     // return success code
     return SUCCESS;
 }

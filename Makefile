@@ -20,6 +20,7 @@ debug_rules=$(addprefix $(debug_prefix)_, $(bins))
 run_rules=$(addprefix $(run_prefix)_, $(bins))
 
 cflag= -Wall -Wextra -Werror -std=c99 -pedantic -export-dynamic -lm
+test_cflag= -Wall -Wextra -Werror -std=c99 -g
 
 .PHONY: help clean all build debug tests tests_build tests_run $(build_rules) $(debug_rules) $(run_rules)
 
@@ -91,7 +92,7 @@ tests_build:
 	@echo "======================="
 	@echo "   BUILD TESTS"
 	@echo "======================="
-	$(tests_command) -out build/tests
+	@$(tests_command) -out build/tests -cflag="$(test_cflag)"
 
 tests_run:
 	@echo "======================="
