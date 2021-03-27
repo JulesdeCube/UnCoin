@@ -3,6 +3,7 @@
 
 #include "../bigint.h"
 #include "test/test.h"
+#include "builtins/buffer/tests/test.h"
 
 void test_constructor();
 

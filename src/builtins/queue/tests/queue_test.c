@@ -46,7 +46,6 @@ int main()
     Queue q2 = queue_init();
     queue_debug(q2);
 
-
     // Test enqueue
     printf("==================================================\n");
     printf("||                                              ||\n");
@@ -77,7 +76,6 @@ int main()
     queue_enqueue(q2, (void *)400000);
     queue_debug(q);
 
-
     // Test dequeue
     printf("==================================================\n");
     printf("||                                              ||\n");
@@ -96,7 +94,6 @@ int main()
     printf("[Dequeue q1 \"Helloooooooo\"]\n");
     printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q1));
     queue_debug(q1);
-
 
     // Test free
     printf("==================================================\n");

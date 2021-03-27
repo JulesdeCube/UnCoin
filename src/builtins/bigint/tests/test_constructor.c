@@ -28,11 +28,10 @@ void constructor_bigint_test(BigInt new_bigint, int new_error, int error, size_t
         // test the exhibitor and the sign
         assert_equal_ul("Exhibitor", exhibitor, new_bigint->exhibitor);
         assert_equal_b("Sign", sign, new_bigint->sign);
-        assert_not_equal_p("Buffer", NULL, new_bigint->buffer);
 
         // if a buffer is provided test it
-        // if (buffer != NULL)
-        //    assert_equal_ul("Sign", sign, new_bigint->buffer);
+        if (buffer != NULL)
+            assert_equal_buffer("Buffer", buffer, new_bigint->buffer);
     }
 
     // destroy the bigint and the buffer
@@ -73,14 +72,14 @@ void get_array_exhibitor_test()
 
     unsigned char arr2[] = {0x01};
     assert_equal_ul("0x01 size 0", 0, _bigint_get_array_exhibitor(0, arr2));
-    assert_equal_ul("0x01  size 1", 1, _bigint_get_array_exhibitor(1, arr2));
+    assert_equal_ul("0x01 size 1", 1, _bigint_get_array_exhibitor(1, arr2));
 
     unsigned char arr3[] = {0xf1};
-    assert_equal_ul("0xf1", 8, _bigint_get_array_exhibitor(1, arr3));
+    assert_equal_ul("0xf1 size 1", 8, _bigint_get_array_exhibitor(1, arr3));
 
-    unsigned char arr4[] = {0x00, 0xf1};
-    assert_equal_ul("0xf100", -1, _bigint_get_array_exhibitor(1, arr4));
-    assert_equal_ul("0xf100", 16, _bigint_get_array_exhibitor(2, arr4));
+    unsigned char arr4[] = {0x07, 0x00};
+    assert_equal_ul("0xf100 size 1", 3, _bigint_get_array_exhibitor(1, arr4));
+    assert_equal_ul("0xf100 size 2", 11, _bigint_get_array_exhibitor(2, arr4));
 }
 
 Test constructor_tests[] = {

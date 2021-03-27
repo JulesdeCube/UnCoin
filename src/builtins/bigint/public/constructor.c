@@ -1,20 +1,36 @@
 #include "../bigint.h"
 
+/**
+* @private
+*
+* find the exhibtor of a not normalize array
+*/
 size_t _bigint_get_array_exhibitor(size_t size, unsigned char *array)
 {
-    while (size && !array[size - 1])
-        size--;
-
+    // get max exhibitor
     size_t exhibitor = size << 3;
-    unsigned char value = array[size - 1];
 
-    unsigned char mask = 1 << 7;
-    while (mask && !(value & mask))
-    {
-        mask >>= 1;
-        --exhibitor;
-    }
+    // find the first byte that is not null
+    // and decrement the exhibitor each null byte
+    size_t i = 0;
+    for (; i < size; i++, exhibitor -= 8)
+        // if the byte is not null break
+        if (array[i])
+            break;
 
+    // if we check every byte the array is null
+    if (i >= size)
+        // the exhibitor is equal to 0
+        return 0;
+
+    // find the fist bit that is not null
+    // and decremented the exhibtor each time
+    for (unsigned char mask = 1 << 7; mask; mask >>= 1, --exhibitor)
+        // if we find that the bit is positive break
+        if (array[i] & mask)
+            break;
+
+    // return the exhibitor
     return exhibitor;
 }
 

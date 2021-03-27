@@ -18,6 +18,13 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+* \struct s_bigint
+* \brief a inter with variable size
+*
+* compose of an exhibitor the sign of the number and a buffer that repesent the
+* number with the less signifcative bit on the right (end of the buffer).
+*/
 struct s_bigint
 {
     size_t exhibitor;
@@ -25,9 +32,15 @@ struct s_bigint
     Buffer buffer;
 };
 
+/**
+** \typedef BigInt
+** \brief a big int
+*/
 typedef struct s_bigint *BigInt;
 
+// Positive sign flag
 #define POSITIVE true
+// Negative sign flag
 #define NEGATIVE false
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +48,8 @@ typedef struct s_bigint *BigInt;
 //                                CONSTRUCTOR                                 //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+
+// !TODO - need comment
 
 int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size, unsigned char *array);
 int bigint_constructor_null(BigInt *new_bigint);
@@ -46,6 +61,8 @@ int bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer);
 //                                 DESTRUCTOR                                 //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+
+// !TODO - need comment
 
 void bigint_destructor(BigInt *bigint);
 

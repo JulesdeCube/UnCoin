@@ -1,5 +1,4 @@
 #include "../buffer.h"
-#include "utils/hex.h"
 
 int buffer_get_index(Buffer buffer, size_t index, char *byte)
 {
