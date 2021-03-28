@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <err.h>
 
-typedef int bool;
+#include "utils/bool.h"
+
 typedef void (*Callback)(void *);
 typedef Callback Destructor;
 
