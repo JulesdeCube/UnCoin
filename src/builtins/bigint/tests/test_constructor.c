@@ -2,7 +2,14 @@
 
 Buffer buffer;
 BigInt bigint;
+Buffer buffer_res;
 int error;
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                   UTILS                                    //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 void bigi_dest(BigInt bigint)
 {
@@ -14,7 +21,8 @@ void bigi_dest(BigInt bigint)
     free(bigint);
 }
 
-void constructor_bigint_test(BigInt new_bigint, int new_error, int error, size_t exhibitor, bool sign, Buffer buffer)
+void bigint_constructor_test(BigInt new_bigint, int new_error, int error,
+                             size_t exhibitor, bool sign, Buffer buffer)
 {
     // check return error code
     assert_equal_ul("Error code", error, new_error);
@@ -44,49 +52,20 @@ void constructor_bigint_test(BigInt new_bigint, int new_error, int error, size_t
     putchar('|');
 }
 
-void constructor_null_test()
+Buffer create_safe_buffer(size_t size, u_char *array)
 {
-    // normal used
-    if (buffer_constructor_const(&buffer, 0, 0) != SUCCESS)
-        errx(2, "Error durring buffer creation");
-
-    error = bigint_constructor_null(&bigint);
-    constructor_bigint_test(bigint, error, SUCCESS, 0, POSITIVE, buffer);
-    // !TODO - not enought memory error
-}
-
-void create_safe_buffer(size_t size, u_char *array)
-{
-    int error = buffer_constructor_array(&buffer, size, array);
+    Buffer new_buffer;
+    int error = buffer_constructor_array(&new_buffer, size, array);
     if (error != SUCCESS)
         errx(2, "Error durring buffer creation : %i", error);
+    return new_buffer;
 }
 
-void constructor_array_test()
-{
-    u_char array[] = {0x00, 0xf1, 0xff};
-    // normal used positive
-    create_safe_buffer(2, array + 1);
-    error = bigint_constructor_array(&bigint, POSITIVE, 3, array);
-    constructor_bigint_test(bigint, error, SUCCESS, 16, POSITIVE, buffer);
-
-    // normal used negative
-    create_safe_buffer(2, array + 1);
-    error = bigint_constructor_array(&bigint, NEGATIVE, 3, array);
-    constructor_bigint_test(bigint, error, SUCCESS, 16, NEGATIVE, buffer);
-
-    // no buffer return
-    error = bigint_constructor_array(NULL, POSITIVE, 0, NULL);
-    constructor_bigint_test(bigint, error, NO_SELF, 0, POSITIVE, NULL);
-    // wong sign
-    error = bigint_constructor_array(&bigint, 2, 0, NULL);
-    constructor_bigint_test(bigint, error, ERROR_VALUE, 0, POSITIVE, NULL);
-    // no array
-    error = bigint_constructor_array(&bigint, POSITIVE, 0, NULL);
-    constructor_bigint_test(bigint, error, ERROR_VALUE, 0, POSITIVE, NULL);
-
-    // !TODO - check for no space error
-}
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                  PRIVATE                                   //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 // private part of the tests
 size_t _bigint_get_array_exhibitor(size_t size, unsigned char *array);
@@ -94,9 +73,9 @@ size_t _bigint_get_array_exhibitor(size_t size, unsigned char *array);
 void get_array_exhibitor_test()
 {
     unsigned char arr1[] = {0x00, 0x00};
-    assert_equal_ul("empty array null size", 0, _bigint_get_array_exhibitor(0, arr1));
-    assert_equal_ul("emty array size 1", 0, _bigint_get_array_exhibitor(1, arr1));
-    assert_equal_ul("emty array size 2", 0, _bigint_get_array_exhibitor(2, arr1));
+    assert_equal_ul("empty size 0", 0, _bigint_get_array_exhibitor(0, arr1));
+    assert_equal_ul("emtpy size 1", 0, _bigint_get_array_exhibitor(1, arr1));
+    assert_equal_ul("emtpy size 2", 0, _bigint_get_array_exhibitor(2, arr1));
 
     unsigned char arr2[] = {0x01};
     assert_equal_ul("0x01 size 0", 0, _bigint_get_array_exhibitor(0, arr2));
@@ -108,12 +87,136 @@ void get_array_exhibitor_test()
     unsigned char arr4[] = {0x07, 0x00};
     assert_equal_ul("0xf100 size 1", 3, _bigint_get_array_exhibitor(1, arr4));
     assert_equal_ul("0xf100 size 2", 11, _bigint_get_array_exhibitor(2, arr4));
+
+    u_char arr5[] = {0x01, 0xff};
+    assert_equal_ul("0x01ff size 1", 1, _bigint_get_array_exhibitor(1, arr5));
+    assert_equal_ul("0x01ff size 2", 9, _bigint_get_array_exhibitor(2, arr5));
+
+    u_char arr6[] = {0x00, 0xf1, 0xff};
+    assert_equal_ul("0x0001ff size 1", 0, _bigint_get_array_exhibitor(1, arr6));
+    assert_equal_ul("0x0001ff size 2", 8, _bigint_get_array_exhibitor(2, arr6));
+    assert_equal_ul("0x0001ff size 3", 16, _bigint_get_array_exhibitor(3, arr6));
 }
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                   PUBLIC                                   //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+void constructor_null_test()
+{
+    // normal used
+    if (buffer_constructor_const(&buffer, 0, 0) != SUCCESS)
+        errx(2, "Error durring buffer creation");
+
+    error = bigint_constructor_null(&bigint);
+    bigint_constructor_test(bigint, error, SUCCESS, 0, POSITIVE, buffer);
+
+    // error no return buffer
+    error = bigint_constructor_null(NULL);
+    bigint_constructor_test(bigint, error, NO_SELF, 0, POSITIVE, NULL);
+    // !TODO - not enought memory error
+}
+
+void constructor_array_test()
+{
+    u_char array[] = {0x00, 0xf1, 0xff};
+    // normal used positive with even exhibitor
+    buffer = create_safe_buffer(2, array + 1);
+    error = bigint_constructor_array(&bigint, POSITIVE, 3, array);
+    bigint_constructor_test(bigint, error, SUCCESS, 16, POSITIVE, buffer);
+
+    // normal used negative
+    buffer = create_safe_buffer(2, array + 1);
+    error = bigint_constructor_array(&bigint, NEGATIVE, 3, array);
+    bigint_constructor_test(bigint, error, SUCCESS, 16, NEGATIVE, buffer);
+
+    u_char array2[] = {0x01, 0xff};
+    // normal used positive not even exhibitor
+    buffer = create_safe_buffer(2, array2);
+    error = bigint_constructor_array(&bigint, POSITIVE, 2, array2);
+    bigint_constructor_test(bigint, error, SUCCESS, 9, POSITIVE, buffer);
+
+    // no buffer return
+    error = bigint_constructor_array(NULL, POSITIVE, 0, NULL);
+    bigint_constructor_test(bigint, error, NO_SELF, 0, POSITIVE, NULL);
+    // wong sign
+    error = bigint_constructor_array(&bigint, 2, 0, NULL);
+    bigint_constructor_test(bigint, error, ERROR_VALUE, 0, POSITIVE, NULL);
+    // no array
+    error = bigint_constructor_array(&bigint, POSITIVE, 0, NULL);
+    bigint_constructor_test(bigint, error, ERROR_VALUE, 0, POSITIVE, NULL);
+
+    // !TODO - check for no space error
+}
+
+void constructor_buffer_test()
+{
+    u_char arr1[] = {0x00, 0x10, 0x11};
+    // normalize size
+    buffer = create_safe_buffer(2, arr1 + 1);
+    error = bigint_constructor_buffer(&bigint, POSITIVE, buffer);
+    bigint_constructor_test(bigint, error, SUCCESS, 13, POSITIVE, buffer);
+
+    // not normaize size
+    buffer = create_safe_buffer(3, arr1);
+    buffer_res = create_safe_buffer(2, arr1 + 1);
+    error = bigint_constructor_buffer(&bigint, POSITIVE, buffer);
+    bigint_constructor_test(bigint, error, SUCCESS, 13, POSITIVE, buffer_res);
+    buffer_destructor(&buffer);
+
+    // null buffer size
+    u_char arr2[] = {0x00, 0x00, 0x00};
+    buffer = create_safe_buffer(3, arr2);
+    buffer_res = create_safe_buffer(0, arr2);
+    error = bigint_constructor_buffer(&bigint, POSITIVE, buffer);
+    bigint_constructor_test(bigint, error, SUCCESS, 0, POSITIVE, buffer_res);
+    buffer_destructor(&buffer);
+
+    // null buffer size
+    buffer = create_safe_buffer(3, arr2);
+    buffer_res = create_safe_buffer(0, arr2);
+    error = bigint_constructor_buffer(&bigint, POSITIVE, buffer);
+    bigint_constructor_test(bigint, error, SUCCESS, 0, POSITIVE, buffer_res);
+    buffer_destructor(&buffer);
+
+    // no return pointer
+    error = bigint_constructor_buffer(NULL, POSITIVE, buffer);
+    bigint_constructor_test(bigint, error, NO_SELF, 0, POSITIVE, NULL);
+
+    // wong sign
+    error = bigint_constructor_buffer(&bigint, 2, buffer);
+    bigint_constructor_test(bigint, error, ERROR_VALUE, 0, POSITIVE, NULL);
+
+    // no buffer
+    error = bigint_constructor_buffer(&bigint, POSITIVE, NULL);
+    bigint_constructor_test(bigint, error, ERROR_VALUE, 0, POSITIVE, NULL);
+}
+
+void constructor_buffer_signed_test()
+{
+    printf("TODO\n");
+}
+
+void constructor_bigint_test()
+{
+    printf("TODO\n");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                   TESTS                                    //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 Test constructor_tests[] = {
     {"_bigint_get_array_exhibitor", get_array_exhibitor_test},
     {"bigint_constructor_array", constructor_array_test},
-    {"bigint_constructor_null", constructor_null_test}};
+    {"bigint_constructor_null", constructor_null_test},
+    {"bigint_constructor_buffer", constructor_buffer_test},
+    {"bigint_constructor_buffer_signed", constructor_buffer_signed_test},
+    {"bigint_constructor_bigint", constructor_bigint_test}};
 
 void test_constructor()
 {

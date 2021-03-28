@@ -39,9 +39,9 @@ struct s_bigint
 typedef struct s_bigint *BigInt;
 
 // Positive sign flag
-#define POSITIVE true
+#define POSITIVE false
 // Negative sign flag
-#define NEGATIVE false
+#define NEGATIVE true
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -51,10 +51,12 @@ typedef struct s_bigint *BigInt;
 
 // !TODO - need comment
 
-int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size, unsigned char *array);
+int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
+                             u_char *array);
 int bigint_constructor_null(BigInt *new_bigint);
 int bigint_constructor_buffer(BigInt *new_bigint, bool sign, Buffer buffer);
 int bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer);
+int bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
