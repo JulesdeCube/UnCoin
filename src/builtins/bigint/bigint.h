@@ -1,5 +1,5 @@
-#ifndef UNCOIN__LIBS_BUILTINS_BUFFER__BUFFER_H_
-#define UNCOIN__LIBS_BUILTINS_BUFFER__BUFFER_H_
+#ifndef UNCOIN__UILTINS_BIGINT__BIGINT_H_
+#define UNCOIN__UILTINS_BIGINT__BIGINT_H_
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -7,12 +7,10 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-#include <string.h>
+#include "builtins/buffer/buffer.h"
 
 #include "utils/error.h"
 #include "utils/bool.h"
-//#include ""
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -20,17 +18,30 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-struct s_BigInt
+/**
+* \struct s_bigint
+* \brief a inter with variable size
+*
+* compose of an exhibitor the sign of the number and a buffer that repesent the
+* number with the less signifcative bit on the right (end of the buffer).
+*/
+struct s_bigint
 {
     size_t exhibitor;
+    bool sign;
     Buffer buffer;
-    Sign is_positive;
-}
-typedef struct s_BigInt *BigInt;
-typedef int Buffer;
-typedef bool Sign;
-#define POSITIVE true
-#define NEGATIVE false
+};
+
+/**
+** \typedef BigInt
+** \brief a big int
+*/
+typedef struct s_bigint *BigInt;
+
+// Positive sign flag
+#define POSITIVE false
+// Negative sign flag
+#define NEGATIVE true
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -38,8 +49,14 @@ typedef bool Sign;
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer);
+// !TODO - need comment
 
+int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
+                             u_char *array);
+int bigint_constructor_null(BigInt *new_bigint);
+int bigint_constructor_buffer(BigInt *new_bigint, bool sign, Buffer buffer);
+int bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer);
+int bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -47,8 +64,9 @@ int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-void buffer_destructor(Buffer *buffer);
+// !TODO - need comment
 
+void bigint_destructor(BigInt *bigint);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -56,14 +74,10 @@ void buffer_destructor(Buffer *buffer);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-size_t buffer_get_size(Buffer buffer);
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                 OPERATION                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int buffer_get_index(Buffer buffer, size_t index, char *byte);
-
-#endif // UNCOIN__LIBS_BUILTINS_BUFFER__BUFFER_H_
+#endif // UNCOIN__UILTINS_BIGINT__BIGINT_H_

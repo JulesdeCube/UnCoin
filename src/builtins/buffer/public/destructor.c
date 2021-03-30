@@ -1,5 +1,11 @@
 #include "../buffer.h"
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                             PRIVATE DEFINTIONS                             //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
 /**
 ** \private
 **
@@ -23,6 +29,12 @@ void _buffer_destructor_buffer(Buffer buffer, bool safe);
 ** if safe is true all the data will be errase
 */
 void _buffer_destructor(Buffer *buffer, bool safe);
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                            PUBLIC IMPLEMENTATION                           //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 void buffer_destructor(Buffer *buffer)
 {
