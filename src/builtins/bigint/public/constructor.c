@@ -157,3 +157,14 @@ int bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint)
                                      bigint->sign,
                                      bigint->buffer);
 }
+
+int bigint_constructor_from_int(BigInt *new_bigint,int i)
+{
+    bool sign;
+    if(i < 0)
+        sign = NEGATIVE;
+    else
+        sign = POSITIVE;
+    i = (unsigned int)i;
+    return bigint_constructor_array(new_bigint, sign, sizeof(i), &i);
+}
