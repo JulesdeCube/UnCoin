@@ -3,7 +3,7 @@
 void _buffer_destructor_data(Buffer buffer, bool safe)
 {
     // get the data
-    char *data = buffer_get_data(buffer);
+    u_char *data = buffer_get_data(buffer);
 
     // if no data do nothing
     if (data == NULL)
@@ -37,7 +37,7 @@ void _buffer_destructor_buffer(Buffer buffer, bool safe)
 void _buffer_destructor(Buffer *buffer, bool safe)
 {
     // if no buffer given do noting
-    if (buffer != NULL)
+    if (buffer == NULL)
         return;
 
     // destroy the buffer
