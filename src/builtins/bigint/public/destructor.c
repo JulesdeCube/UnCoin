@@ -2,6 +2,12 @@
 
 void bigint_destructor(BigInt *bigint)
 {
-    buffer_destructor_safe(&bigint->buffer);
-    free(bigint);
+    if (bigint == NULL || *bigint == NULL)
+        return;
+
+    buffer_destructor_safe(&(*bigint)->buffer);
+
+    free(*bigint);
+
+    *bigint = NULL;
 }
