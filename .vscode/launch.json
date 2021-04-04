@@ -23,7 +23,7 @@
                 }
             ],
             "preLaunchTask": "build server",
-            "miDebuggerPath": "/run/current-system/sw/bin/gdb"
+            "miDebuggerPath": "/usr/bin/gdb"
         },
         {
             "name": "debug client",
@@ -44,7 +44,7 @@
                 }
             ],
             "preLaunchTask": "build client",
-            "miDebuggerPath": "/run/current-system/sw/bin/gdb"
+            "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
 }
