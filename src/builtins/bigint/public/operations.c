@@ -1,86 +1,118 @@
 #include "../bigint.h"
 
+#define BIGINT_TO(type)                                          \
+    {                                                            \
+        if (bigint == NULL)                                      \
+            return NO_SELF;                                      \
+                                                                 \
+        if (bigint->buffer == NULL)                              \
+            return INTERNAL_ERROR;                               \
+                                                                 \
+        if (result == NULL)                                      \
+            return ERROR_VALUE;                                  \
+                                                                 \
+        size_t size = buffer_get_size(bigint->buffer);           \
+        u_char *data = buffer_get_data(bigint->buffer);          \
+        u_char *pointer = (u_char *)result;                      \
+                                                                 \
+        if (!size)                                               \
+            return 0;                                            \
+        else if (size > sizeof(type))                            \
+            *result = *(type *)data;                             \
+        else                                                     \
+            memcpy(pointer - (sizeof(type) - size), data, size); \
+                                                                 \
+        if (bigint->sign == NEGATIVE)                            \
+            *result = -*result;                                  \
+                                                                 \
+        return SUCCESS;                                          \
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//                             Arithmetique                                   //
+//                                ARITHMETIQUE                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//                             Bitwise                                        //
+//                                   BITWISE                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//                             CONVERSION                                     //
+//                                 CONVERSION                                 //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int bigint_operations_to_int(BigInt *bigint)
+int bigint_to_bool(BigInt bigint, bool *result)
 {
-    Buffer int_buffer = bigint->bufeer;
-    size_t size = buffer_get_size(int_buffer);
-    u_char *data = buffer_get_data(int_buffer) + size - 1;
-    int res = 0;
+    if (bigint == NULL)
+        return NO_SELF;
 
-    if(size == 0)
-        return res;
-    else if (size > sizeof(int))
-        res = *(d-sizeof(int));
-    else
-        for (size_t i = 0; size > 0 && i < sizeof(int); size--, data--)
-            res |= *d << (i << 3);
+    if (result == NULL)
+        return ERROR_VALUE;
 
-    if(bigint->sign == NEGATIVE)
-        res = -res;
+    *result = bigint->exhibitor != 0;
 
-    return res;
+    return SUCCESS;
 }
 
-bool bigint_operations_to_bool(BigInt *bigint)
+int bigint_to_int(BigInt bigint, int *result)
+    BIGINT_TO(int);
+
+long long int bigint_to_long_long_int(BigInt bigint, long long int *result)
+    BIGINT_TO(long long int);
+
+int bigint_to_buffer(BigInt bigint, Buffer *buffer)
 {
-    if(bigint->exhibitor == NEGATIVE)
-        return false;
-    return true;
+
+    if (buffer == NULL)
+        return ERROR_VALUE;
+
+    *buffer = NULL;
+
+    if (bigint == NULL)
+        return NO_SELF;
+
+    if (bigint->buffer == NULL)
+        return INTERNAL_ERROR;
+
+    return buffer_constructor_buffer(buffer, bigint->buffer);
 }
 
-long long int bigint_operations_to_long_long_int(BigInt *bigint)
+int bigint_to_string(BigInt bigint, char **str, size_t *len)
 {
-    Buffer int_buffer = bigint->bufeer;
-    size_t size = buffer_get_size(int_buffer);
-    u_char *data = buffer_get_data(int_buffer) + size - 1;
-    int res = 0;
+    if (bigint == NULL)
+        return NO_SELF;
 
-    if(size == 0)
-        return res;
-    else if (size > sizeof(long long int))
-        res = *(d-sizeof(long long int));
-    else
-        for (size_t i = 0; size > 0 && i < sizeof(long long int); size--, data--)
-            res |= *d << (i << 3);
+    if (bigint->buffer == NULL)
+        return INTERNAL_ERROR;
 
-    if(bigint->sign == NEGATIVE)
-        res = -res;
+    int error = buffer_to_hex(bigint->buffer, str, len);
 
-    return res;
-}
+    if (error == SUCCESS)
+        return error;
 
-Buffer bigint_operations_to_buffer(BigInt *bigint)
-{
-    Buffer new_buffer;
-    buffer_constructor_buffer(&new_buffer, bigint->buffer);
-    return new_buffer;
-}
+    if (len)
+        *len += 2 + (bigint->sign == NEGATIVE);
 
-char *bigint_operations_to_string(BigInt *bigint)
-{
+    if (str == NULL)
+        return SUCCESS;
 
+    char *buffer_str = *str;
+    int print_error = asprintf(str,
+                               "%s0x%s",
+                               bigint->sign == NEGATIVE ? "-" : "",
+                               buffer_str);
+    free(buffer_str);
+
+    return print_error == -1 ? NO_SPACE : SUCCESS;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//                             Comparaison                                    //
+//                                 COMPARAISON                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
