@@ -185,7 +185,7 @@ void constructor_buffer_test()
     error = bigint_constructor_buffer(NULL, POSITIVE, buffer);
     bigint_constructor_test(bigint, error, NO_SELF, 0, POSITIVE, NULL);
 
-    // wong sign
+    // wrong sign
     error = bigint_constructor_buffer(&bigint, 2, buffer);
     bigint_constructor_test(bigint, error, ERROR_VALUE, 0, POSITIVE, NULL);
 
@@ -204,6 +204,32 @@ void constructor_bigint_test()
     printf("TODO\n");
 }
 
+void constructor_bigint_from_int()
+{
+    //positive sign
+    error = bigint_constructor_from_int(&bigint,0);
+    bigint_constructor_test(bigint,error,SUCCESS,0,POSITIVE,NULL);
+
+    error = bigint_constructor_from_int(&bigint,1);
+    bigint_constructor_test(bigint,error,SUCCESS,1,POSITIVE,NULL);
+
+    error = bigint_constructor_from_int(&bigint,10);
+    bigint_constructor_test(bigint,error,SUCCESS,4,POSITIVE,NULL);
+
+    error = bigint_constructor_from_int(&bigint,1000);
+    bigint_constructor_test(bigint,error,SUCCESS,10,POSITIVE,NULL);
+
+    //negative sign
+    error = bigint_constructor_from_int(&bigint,-1);
+    bigint_constructor_test(bigint,error,SUCCESS,1,NEGATIVE,NULL);
+
+    error = bigint_constructor_from_int(&bigint,-10);
+    bigint_constructor_test(bigint,error,SUCCESS,4,NEGATIVE,NULL);
+
+    error = bigint_constructor_from_int(&bigint,-1000);
+    bigint_constructor_test(bigint,error,SUCCESS,10,NEGATIVE,NULL);
+
+}
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   TESTS                                    //
@@ -216,7 +242,9 @@ Test constructor_tests[] = {
     {"bigint_constructor_null", constructor_null_test},
     {"bigint_constructor_buffer", constructor_buffer_test},
     {"bigint_constructor_buffer_signed", constructor_buffer_signed_test},
-    {"bigint_constructor_bigint", constructor_bigint_test}};
+    {"bigint_constructor_bigint", constructor_bigint_test},
+    {"constructor_bigint_from_int", constructor_bigint_from_int}
+    };
 
 void test_constructor()
 {

@@ -34,11 +34,13 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   BITWISE                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -110,9 +112,71 @@ int bigint_to_string(BigInt bigint, char **str, size_t *len)
 
     return print_error == -1 ? NO_SPACE : SUCCESS;
 }
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                 COMPARAISON                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+//return  1 if BG1 > BG2, 0 if BG1 == BG2, -1 if BG1 < BG2
+int _bigint_comparison(BigInt bigint1,BigInt bigint2)
+{
+    BigInt x = bigint1;
+    BigInt y = bigint2;
+    if (x->sign != y->sign)
+        return x->sign == POSITIVE ? 1 : -1;
+
+    if (x->exhibitor != y->exhibitor)
+        return (x->sign == POSITIVE) ^ (x->exhibitor > y->exhibitor) ? 1 : -1;
+
+    u_char *key1 = buffer_get_data(x->buffer);
+    u_char *key2 = buffer_get_data(y->buffer);
+    size_t size = buffer_get_size(x->buffer);
+
+    for (; size; --size, key1++, key2++)
+        if (*key1 != *key2)
+            return *key1 > *key2 ? 1 : -1;
+
+    return 0;
+}
+
+bool bigint_greater_than(BigInt bigint1,BigInt bigint2)
+{
+    if(_bigint_comparison(bigint1,bigint2) == 1)
+        return true;
+    return false;
+}
+
+bool bigint_less_than(BigInt bigint1,BigInt bigint2)
+{
+   if(_bigint_comparison(bigint1,bigint2) == -1)
+        return true;
+    return false;
+}
+
+bool bigint_equal_than(BigInt bigint1,BigInt bigint2)
+{
+    if(_bigint_comparison(bigint1,bigint2) == 0)
+        return true;
+    return false;
+}
+
+bool bigint_not_equal(BigInt bigint1,BigInt bigint2)
+{
+    if(_bigint_comparison(bigint1,bigint2) != 0)
+        return true;
+    return false;
+}
+
+bool bigint_less_or_equal(BigInt bigint1,BigInt bigint2)
+{
+   if(_bigint_comparison(bigint1,bigint2) != 1)
+        return true;
+    return false;
+}
+
+bool bigint_greater_or_equal(BigInt bigint1,BigInt bigint2)
+{
+    if(_bigint_comparison(bigint1,bigint2) != -1)
+        return true;
+    return false;
+}

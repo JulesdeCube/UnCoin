@@ -155,3 +155,15 @@ void assert_equal_s(char *name, char *exepted, char *got)
 
     putchar('.');
 }
+
+void assert_equal_i(char *name, int exepted, int got)
+{
+    if (exepted != got)
+    {
+        putchar('X');
+        putchar('\n');
+        errx(1, "ASSERT ERROR: %s. exepted: %i, got: %i\n", name, exepted, got);
+    }
+    else
+        putchar('.');
+}
