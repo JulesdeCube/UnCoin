@@ -48,7 +48,7 @@ void same_black_test()
     create_buff_hashed(&buffer_result2, "BlackHyptonique", 16);
 
     // test
-    hash_same_test(buffer_result1, buffer_result2, SUCCESS, TRUE);
+    hash_same_test(buffer_result1, buffer_result2, SUCCESS, true);
 }
 
 void diff_black_test()
@@ -62,7 +62,7 @@ void diff_black_test()
     create_buff_hashed(&buffer_result2, "BlackHyptontque", 16);
 
     // test
-    hash_same_test(buffer_result1, buffer_result2, SUCCESS, FALSE);
+    hash_same_test(buffer_result1, buffer_result2, SUCCESS, false);
 }
 
 void same_point_test()
@@ -76,7 +76,7 @@ void same_point_test()
     create_buff_hashed(&buffer_result2, ".", 2);
 
     // test
-    hash_same_test(buffer_result1, buffer_result2, SUCCESS, TRUE);
+    hash_same_test(buffer_result1, buffer_result2, SUCCESS, true);
 }
 
 void diff_point_test()
@@ -90,7 +90,7 @@ void diff_point_test()
     create_buff_hashed(&buffer_result2, ". ", 3);
 
     // test
-    hash_same_test(buffer_result1, buffer_result2, SUCCESS, FALSE);
+    hash_same_test(buffer_result1, buffer_result2, SUCCESS, false);
 }
 
 void diff_zero_test()
@@ -101,7 +101,7 @@ void diff_zero_test()
     Buffer buffer_result2;
     create_buff_hashed(&buffer_result2, "test\0\0", 7);
     // test
-    hash_same_test(buffer_result1, buffer_result2, SUCCESS, FALSE);
+    hash_same_test(buffer_result1, buffer_result2, SUCCESS, false);
 
     // create two buffers
     Buffer buffer_result11;
@@ -109,7 +109,7 @@ void diff_zero_test()
     Buffer buffer_result21;
     create_buff_hashed(&buffer_result21, "tes\0t", 6);
     // test
-    hash_same_test(buffer_result11, buffer_result21, SUCCESS, FALSE);
+    hash_same_test(buffer_result11, buffer_result21, SUCCESS, false);
 
 }
 
