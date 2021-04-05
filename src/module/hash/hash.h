@@ -1,5 +1,5 @@
-#ifndef UNCOIN__MODULE_HASH_HASH_H_
-#define UNCOIN__MODULE_HASH_HASH_H_
+#ifndef UNCOIN__MODULE__HASH__HASH_H_
+#define UNCOIN__MODULE__HASH__HASH_H_
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -32,4 +32,4 @@
  */
 int hash(Buffer *buff_result, Buffer *buff_to_hash);
 
-#endif // UNCOIN__MODULE_HASH_HASH_H_
+#endif // UNCOIN__MODULE__HASH__HASH_H_

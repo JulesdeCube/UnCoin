@@ -1,6 +1,5 @@
-#ifndef UNCOIN__BUILTINS_MODULE_HASH_TESTS__HASH_TOOLS_H_
-#define UNCOIN__BUILTINS_MODULE_HASH_TESTS__HASH_TOOLS_H_
-
+#ifndef UNCOIN__BUILTINS__MODULE__HASH_TESTS__HASH_TOOLS_H_
+#define UNCOIN__BUILTINS__MODULE__HASH_TESTS__HASH_TOOLS_H_
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                  LIBRARY                                   //
@@ -39,4 +38,4 @@ size_t max_size_t(size_t first, size_t second);
  */
 Buffer *create_buff_hashed(Buffer *buff_result, char *str, size_t size);
 
-#endif // UNCOIN__BUILTINS_MODULE_HASH_TESTS__HASH_TOOLS_H_
+#endif // UNCOIN__BUILTINS__MODULE__HASH_TESTS__HASH_TOOLS_H_
