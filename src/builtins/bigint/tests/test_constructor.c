@@ -25,7 +25,7 @@ void bigint_constructor_test(BigInt new_bigint, int new_error, int error,
                              size_t exhibitor, bool sign, Buffer buffer)
 {
     // check return error code
-    assert_equal_ul("Error code", error, new_error);
+    assert_equal_i("Error code", error, new_error);
 
     // if there normaly there is an error check if the pointer is null
     if (error != SUCCESS)
@@ -76,26 +76,35 @@ void get_array_exhibitor_test()
     assert_equal_ul("empty size 0", 0, _bigint_get_array_exhibitor(0, arr1));
     assert_equal_ul("emtpy size 1", 0, _bigint_get_array_exhibitor(1, arr1));
     assert_equal_ul("emtpy size 2", 0, _bigint_get_array_exhibitor(2, arr1));
+    putchar('|');
 
     unsigned char arr2[] = {0x01};
     assert_equal_ul("0x01 size 0", 0, _bigint_get_array_exhibitor(0, arr2));
     assert_equal_ul("0x01 size 1", 1, _bigint_get_array_exhibitor(1, arr2));
+    putchar('|');
 
     unsigned char arr3[] = {0xf1};
     assert_equal_ul("0xf1 size 1", 8, _bigint_get_array_exhibitor(1, arr3));
+    putchar('|');
 
-    unsigned char arr4[] = {0x07, 0x00};
-    assert_equal_ul("0xf100 size 1", 3, _bigint_get_array_exhibitor(1, arr4));
-    assert_equal_ul("0xf100 size 2", 11, _bigint_get_array_exhibitor(2, arr4));
+    unsigned char arr4[] = {0x00, 0x07};
+    assert_equal_ul("0x0700 size 1", 0, _bigint_get_array_exhibitor(1, arr4));
+    assert_equal_ul("0x0700 size 2", 11, _bigint_get_array_exhibitor(2, arr4));
+    putchar('|');
 
-    u_char arr5[] = {0x01, 0xff};
-    assert_equal_ul("0x01ff size 1", 1, _bigint_get_array_exhibitor(1, arr5));
+    u_char arr5[] = {0xff, 0x01};
+    assert_equal_ul("0x01ff size 1", 8, _bigint_get_array_exhibitor(1, arr5));
     assert_equal_ul("0x01ff size 2", 9, _bigint_get_array_exhibitor(2, arr5));
+    putchar('|');
 
-    u_char arr6[] = {0x00, 0xf1, 0xff};
-    assert_equal_ul("0x0001ff size 1", 0, _bigint_get_array_exhibitor(1, arr6));
-    assert_equal_ul("0x0001ff size 2", 8, _bigint_get_array_exhibitor(2, arr6));
-    assert_equal_ul("0x0001ff size 3", 16, _bigint_get_array_exhibitor(3, arr6));
+    u_char arr6[] = {0xfa, 0x1f, 0x00};
+    assert_equal_ul("0x001f|fa size 1", 8, _bigint_get_array_exhibitor(1, arr6));
+    assert_equal_ul("0x00|1ffa size 2", 13, _bigint_get_array_exhibitor(2, arr6));
+    assert_equal_ul("0x|001ffa size 3", 13, _bigint_get_array_exhibitor(3, arr6));
+    putchar('|');
+
+    u_char arr7[] = {0xfa, 0x12};
+    assert_equal_ul("0x12fa", 13, _bigint_get_array_exhibitor(2, arr7));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,22 +130,28 @@ void constructor_null_test()
 
 void constructor_array_test()
 {
-    u_char array[] = {0x00, 0xf1, 0xff};
+    u_char array[] = {0xff, 0xf1, 0x00};
     // normal used positive with even exhibitor
-    buffer = create_safe_buffer(2, array + 1);
+    buffer = create_safe_buffer(2, array);
     error = bigint_constructor_array(&bigint, POSITIVE, 3, array);
     bigint_constructor_test(bigint, error, SUCCESS, 16, POSITIVE, buffer);
 
     // normal used negative
-    buffer = create_safe_buffer(2, array + 1);
+    buffer = create_safe_buffer(2, array);
     error = bigint_constructor_array(&bigint, NEGATIVE, 3, array);
     bigint_constructor_test(bigint, error, SUCCESS, 16, NEGATIVE, buffer);
 
-    u_char array2[] = {0x01, 0xff};
+    u_char array2[] = {0xff, 0x01};
     // normal used positive not even exhibitor
     buffer = create_safe_buffer(2, array2);
     error = bigint_constructor_array(&bigint, POSITIVE, 2, array2);
     bigint_constructor_test(bigint, error, SUCCESS, 9, POSITIVE, buffer);
+
+    // normale use 2
+    u_char array3[] = {0xfa, 0x12};
+    buffer = create_safe_buffer(2, array3);
+    error = bigint_constructor_array(&bigint, POSITIVE, 2, array3);
+    bigint_constructor_test(bigint, error, SUCCESS, 13, POSITIVE, buffer);
 
     // no buffer return
     error = bigint_constructor_array(NULL, POSITIVE, 0, NULL);
@@ -153,16 +168,20 @@ void constructor_array_test()
 
 void constructor_buffer_test()
 {
-    u_char arr1[] = {0x00, 0x10, 0x11};
+    u_char arr1[] = {0x11, 0x10, 0x00};
     // normalize size
-    buffer = create_safe_buffer(2, arr1 + 1);
+    buffer = create_safe_buffer(2, arr1);
     error = bigint_constructor_buffer(&bigint, POSITIVE, buffer);
     bigint_constructor_test(bigint, error, SUCCESS, 13, POSITIVE, buffer);
 
     // not normaize size
     buffer = create_safe_buffer(3, arr1);
-    buffer_res = create_safe_buffer(2, arr1 + 1);
+    buffer_res = create_safe_buffer(2, arr1);
     error = bigint_constructor_buffer(&bigint, POSITIVE, buffer);
+    char *str1, *str2;
+    buffer_to_hex(buffer, &str1, NULL);
+    buffer_to_hex(buffer_res, &str2, NULL);
+    printf("%s, %s", str1, str2);
     bigint_constructor_test(bigint, error, SUCCESS, 13, POSITIVE, buffer_res);
     buffer_destructor(&buffer);
 
@@ -207,29 +226,29 @@ void constructor_bigint_test()
 void constructor_bigint_from_int()
 {
     //positive sign
-    error = bigint_constructor_from_int(&bigint,0);
-    bigint_constructor_test(bigint,error,SUCCESS,0,POSITIVE,NULL);
+    error = bigint_constructor_from_int(&bigint, 0);
+    bigint_constructor_test(bigint, error, SUCCESS, 0, POSITIVE, NULL);
 
-    error = bigint_constructor_from_int(&bigint,1);
-    bigint_constructor_test(bigint,error,SUCCESS,1,POSITIVE,NULL);
+    error = bigint_constructor_from_int(&bigint, 1);
+    bigint_constructor_test(bigint, error, SUCCESS, 1, POSITIVE, NULL);
 
-    error = bigint_constructor_from_int(&bigint,10);
-    bigint_constructor_test(bigint,error,SUCCESS,4,POSITIVE,NULL);
+    error = bigint_constructor_from_int(&bigint, 10);
+    bigint_constructor_test(bigint, error, SUCCESS, 4, POSITIVE, NULL);
 
-    error = bigint_constructor_from_int(&bigint,1000);
-    bigint_constructor_test(bigint,error,SUCCESS,10,POSITIVE,NULL);
+    error = bigint_constructor_from_int(&bigint, 1000);
+    bigint_constructor_test(bigint, error, SUCCESS, 10, POSITIVE, NULL);
 
     //negative sign
-    error = bigint_constructor_from_int(&bigint,-1);
-    bigint_constructor_test(bigint,error,SUCCESS,1,NEGATIVE,NULL);
+    error = bigint_constructor_from_int(&bigint, -1);
+    bigint_constructor_test(bigint, error, SUCCESS, 1, NEGATIVE, NULL);
 
-    error = bigint_constructor_from_int(&bigint,-10);
-    bigint_constructor_test(bigint,error,SUCCESS,4,NEGATIVE,NULL);
+    error = bigint_constructor_from_int(&bigint, -10);
+    bigint_constructor_test(bigint, error, SUCCESS, 4, NEGATIVE, NULL);
 
-    error = bigint_constructor_from_int(&bigint,-1000);
-    bigint_constructor_test(bigint,error,SUCCESS,10,NEGATIVE,NULL);
-
+    error = bigint_constructor_from_int(&bigint, -1000);
+    bigint_constructor_test(bigint, error, SUCCESS, 10, NEGATIVE, NULL);
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   TESTS                                    //
@@ -243,8 +262,7 @@ Test constructor_tests[] = {
     {"bigint_constructor_buffer", constructor_buffer_test},
     {"bigint_constructor_buffer_signed", constructor_buffer_signed_test},
     {"bigint_constructor_bigint", constructor_bigint_test},
-    {"constructor_bigint_from_int", constructor_bigint_from_int}
-    };
+    {"constructor_bigint_from_int", constructor_bigint_from_int}};
 
 void test_constructor()
 {

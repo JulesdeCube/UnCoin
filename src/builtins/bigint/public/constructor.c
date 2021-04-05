@@ -13,14 +13,13 @@ size_t _bigint_get_array_exhibitor(size_t size, unsigned char *array)
 
     // find the first byte that is not null
     // and decrement the exhibitor each null byte
-    size_t i = 0;
-    for (; i < size; i++, exhibitor -= 8)
+    for (; size; size--, exhibitor -= 8)
         // if the byte is not null break
-        if (array[i])
+        if (array[size - 1])
             break;
 
     // if we check every byte the array is null
-    if (i >= size)
+    if (!size)
         // the exhibitor is equal to 0
         return 0;
 
@@ -28,7 +27,7 @@ size_t _bigint_get_array_exhibitor(size_t size, unsigned char *array)
     // and decremented the exhibtor each time
     for (unsigned char mask = 1 << 7; mask; mask >>= 1, --exhibitor)
         // if we find that the bit is positive break
-        if (array[i] & mask)
+        if (array[size - 1] & mask)
             break;
 
     // return the exhibitor
@@ -84,7 +83,7 @@ int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
 
     int error = buffer_constructor_array(&bigint->buffer,
                                          normalize_size,
-                                         array + size - normalize_size);
+                                         array);
     if (error != SUCCESS)
     {
         bigint_destructor(&bigint);
@@ -161,6 +160,7 @@ int bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint)
 int bigint_constructor_from_int(BigInt *new_bigint, int value)
 {
     bool sign = value < 0 ? NEGATIVE : POSITIVE;
+    value = abs(value);
     u_char *array = (u_char *)&value;
     return bigint_constructor_array(new_bigint, sign, sizeof(int), array);
 }
