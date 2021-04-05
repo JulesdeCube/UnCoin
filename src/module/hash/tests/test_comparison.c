@@ -41,11 +41,11 @@ void same_black_test()
 {
     // create one
     Buffer buffer_result1;
-    create_buff_hashed(&buffer_result1, "BlackHyptonique");
+    create_buff_hashed(&buffer_result1, "BlackHyptonique", 16);
 
     // create a second one
     Buffer buffer_result2;
-    create_buff_hashed(&buffer_result2, "BlackHyptonique");
+    create_buff_hashed(&buffer_result2, "BlackHyptonique", 16);
 
     // test
     hash_same_test(buffer_result1, buffer_result2, SUCCESS, TRUE);
@@ -55,11 +55,11 @@ void diff_black_test()
 {
     // create one
     Buffer buffer_result1;
-    create_buff_hashed(&buffer_result1, "BlackHyptonique");
+    create_buff_hashed(&buffer_result1, "BlackHyptonique", 16);
 
     // create a second one
     Buffer buffer_result2;
-    create_buff_hashed(&buffer_result2, "BlackHyptontque");
+    create_buff_hashed(&buffer_result2, "BlackHyptontque", 16);
 
     // test
     hash_same_test(buffer_result1, buffer_result2, SUCCESS, FALSE);
@@ -69,11 +69,11 @@ void same_point_test()
 {
     // create one
     Buffer buffer_result1;
-    create_buff_hashed(&buffer_result1, ".");
+    create_buff_hashed(&buffer_result1, ".", 2);
 
     // create a second one
     Buffer buffer_result2;
-    create_buff_hashed(&buffer_result2, ".");
+    create_buff_hashed(&buffer_result2, ".", 2);
 
     // test
     hash_same_test(buffer_result1, buffer_result2, SUCCESS, TRUE);
@@ -83,21 +83,43 @@ void diff_point_test()
 {
     // create one
     Buffer buffer_result1;
-    create_buff_hashed(&buffer_result1, ".");
+    create_buff_hashed(&buffer_result1, ".", 2);
 
     // create a second one
     Buffer buffer_result2;
-    create_buff_hashed(&buffer_result2, ". ");
+    create_buff_hashed(&buffer_result2, ". ", 3);
 
     // test
     hash_same_test(buffer_result1, buffer_result2, SUCCESS, FALSE);
+}
+
+void diff_zero_test()
+{
+    // create two buffers
+    Buffer buffer_result1;
+    create_buff_hashed(&buffer_result1, "test\0", 6);
+    Buffer buffer_result2;
+    create_buff_hashed(&buffer_result2, "test\0\0", 7);
+    // test
+    hash_same_test(buffer_result1, buffer_result2, SUCCESS, FALSE);
+
+    // create two buffers
+    Buffer buffer_result11;
+    create_buff_hashed(&buffer_result11, "te\0st", 6);
+    Buffer buffer_result21;
+    create_buff_hashed(&buffer_result21, "tes\0t", 6);
+    // test
+    hash_same_test(buffer_result11, buffer_result21, SUCCESS, FALSE);
+
 }
 
 Test hash_same_tests[] = {
     {"Same black", same_black_test},
     {"Different black", diff_black_test},
     {"Same point", same_point_test},
-    {"Different point", diff_point_test}};
+    {"Different point", diff_point_test},
+    {"Different zero", diff_zero_test}
+    };
 
 void test_comparison()
 {
