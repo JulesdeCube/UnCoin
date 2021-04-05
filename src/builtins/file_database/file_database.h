@@ -1,0 +1,17 @@
+#ifndef UNCOIN__BUILTINS_FILE_DATABASE__FILE_DATABASE_H_
+#define UNCOIN__BUILTINS_FILE_DATABASE__FILE_DATABASE_H_
+
+// TODO
+// lib
+#include <stdio.h>
+
+
+// TODO
+// struct?
+
+// TODO
+// function
+
+#endif // UNCOIN__BUILTINS_FILE_DATABASE__FILE_DATABASE_H_
+
+
