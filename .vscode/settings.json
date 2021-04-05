@@ -4,7 +4,8 @@
     "editor.wordWrapColumn": 80,
     "files.exclude": {
         "**/build": true,
-        "**/obj": true
+        "**/obj": true,
+        "**/__pycache__": true
     },
     "editor.rulers": [
         80
@@ -13,4 +14,9 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "C_Cpp.default.configurationProvider": "WSL",
+    "files.associations": {
+        "hash.h": "c",
+        "test.h": "c",
+        "test_1.h": "c"
+    },
 }
