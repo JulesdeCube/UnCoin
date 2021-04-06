@@ -23,7 +23,7 @@ size_t _bigint_get_array_exhibitor(size_t size, unsigned char *array)
         // the exhibitor is equal to 0
         return 0;
 
-    // find the fist bit that is not null
+    // find the first bit that is not null
     // and decremented the exhibtor each time
     for (unsigned char mask = 1 << 7; mask; mask >>= 1, --exhibitor)
         // if we find that the bit is positive break
