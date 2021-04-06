@@ -69,12 +69,12 @@ int main()
     // Test enqueue of q1
     printf("[Enqueue q1 \"Helloooooooo\"]\n");
     queue_enqueue(q1, "Helloooooooo");
-    queue_debug(q);
+    queue_debug(q1);
 
     // Test enqueue of q2
     printf("[Enqueue q2 400000]\n");
     queue_enqueue(q2, (void *)400000);
-    queue_debug(q);
+    queue_debug(q2);
 
     // Test dequeue
     printf("==================================================\n");
