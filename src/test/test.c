@@ -142,6 +142,27 @@ void assert_equal_arr(char *name, unsigned char *exepted_arr, unsigned char *got
     putchar('.');
 }
 
+void assert_not_equal_arr(char *name, unsigned char *exepted_arr, unsigned char *got_arr, size_t size)
+{
+
+    for (size_t i = 0; i < size; i++)
+    {
+        char exepted = exepted_arr[i];
+        char got = got_arr[i];
+        if (exepted != got)
+        {
+            putchar('.');
+            return;
+        }
+    }
+    putchar('X');
+    putchar('\n');
+    errx(1, "ASSERT ERROR: %s. they are the same, got first: %s, got second: %s\n",
+        name,
+        exepted_arr,
+        got_arr);
+}
+
 void assert_equal_s(char *name, char *exepted, char *got)
 {
     if (got != NULL && strcmp(exepted, got))
