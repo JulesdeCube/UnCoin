@@ -9,9 +9,9 @@
 #define NO_SPACE 2
 // The main object is null
 #define NO_SELF 3
-// The provided index is gretter than the size
+// The provided index is greater than the size
 #define OUT_OF_RANGE 4
-// The balue is not valid
+// The value is not valid
 #define ERROR_VALUE 5
 
 #endif // UNCOIN__UTILS__ERROR_H_

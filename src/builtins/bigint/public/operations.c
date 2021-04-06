@@ -135,7 +135,6 @@ int _bigint_comparison(BigInt bigint1, BigInt bigint2)
     for (; size; --size, key1++, key2++)
         if (*key1 != *key2)
             return *key1 > *key2 ? 1 : -1;
-
     return 0;
 }
 
