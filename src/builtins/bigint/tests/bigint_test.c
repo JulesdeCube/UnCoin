@@ -1,8 +1,10 @@
 #include "test/test.h"
 #include "test_constructor.h"
+#include "test_conversion.h"
 
 Test tests[] = {
-    {"CONSTRUCTOR", test_constructor}};
+    {"CONSTRUCTOR", test_constructor},
+    {"CONVERSION", test_conversion}};
 
 int main(void)
 {

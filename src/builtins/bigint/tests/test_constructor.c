@@ -105,6 +105,7 @@ void get_array_exhibitor_test()
 
     u_char arr7[] = {0xfa, 0x12};
     assert_equal_ul("0x12fa", 13, _bigint_get_array_exhibitor(2, arr7));
+    putchar('|');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -178,10 +179,6 @@ void constructor_buffer_test()
     buffer = create_safe_buffer(3, arr1);
     buffer_res = create_safe_buffer(2, arr1);
     error = bigint_constructor_buffer(&bigint, POSITIVE, buffer);
-    char *str1, *str2;
-    buffer_to_hex(buffer, &str1, NULL);
-    buffer_to_hex(buffer_res, &str2, NULL);
-    printf("%s, %s", str1, str2);
     bigint_constructor_test(bigint, error, SUCCESS, 13, POSITIVE, buffer_res);
     buffer_destructor(&buffer);
 
