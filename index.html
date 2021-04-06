@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Back To Basics</title>
+
+  <link
+    href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <link rel="stylesheet" href="/css/menu.css">
+  <link rel="stylesheet" href="/css/menu/title.css">
+  <link rel="stylesheet" href="/css/menu/summary.css">
+  <link rel="stylesheet" href="/css/menu/nav.css">
+  <link rel="stylesheet" href="/css/menu/advence.css">
+
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/app/header.css">
+  <link rel="stylesheet" href="/css/app/main.css">
+  <!--   <script src="/node_modules/vue/dist/vue.js"></script>
+  <script type="module" src="/js/app.js"></script> -->
+</head>
+
+<body>
+  <div class="background"></div>
+
+
+
+
+  <div class="root">
+
+    <header class="root-element menu">
+      <div class="menu-element menu-title">
+        <img src="/images/logo.png" alt="" class="menu-title-logo">
+      </div>
+      <nav class="menu-element menu-summary">
+        <div class="menu-summary-title">Total balance:</div>
+        <div class="menu-summary-balance">
+          $<span class="menu-summary-balance-value">25,653</span>
+        </div>
+        <div class="menu-summary-delta">
+          + $<span class="menu-summary-delta-value">637.21</span> today
+        </div>
+      </nav>
+
+      <hr class="menu-separator">
+
+      <nav class="menu-element menu-nav list">
+        <a href="#" class="list-element list-element:active">Dashboard</a>
+        <a href="#" class="list-element">BlockChain</a>
+        <a href="#" class="list-element">Transactions</a>
+        <a href="#" class="list-element">Exchange</a>
+      </nav>
+
+      <hr class="menu-separator">
+
+      <div class="menu-element menu-advence list">
+        <a href="#" class="list-element">
+          <span class="list-element-icon material-icons">settings</span>
+          <span class="list-element-text">Settings</span>
+        </a>
+        <a href="#" class="list-element">
+          <span class="list-element-icon material-icons">logout</span>
+          <span class="list-element-text">Log out</span>
+        </a>
+      </div>
+    </header>
+
+
+
+    <main class="root-element app">
+      <header class="app-header">
+        <div class="app-header-user">
+          <img src="/images/user/jules.lefebvre.png" alt="" class="app-header-user-image">
+          <div class="app-header-user-info">
+            <div class="app-header-user-name">Jules Lefebvre</div>
+            <div class="app-header-user-status">Last connection 5 febury, 2021</div>
+          </div>
+        </div>
+        <div class="app-header-wallet">
+          <div class="app-header-wallet-icon material-icons-two-tone">account_balance_wallet</div>
+          <div class="app-header-wallet-address">
+            <div class="app-header-wallet-address-label">Your wallet address</div>
+            <div class="app-header-wallet-address-value">d0f0e74c682bee8ea9adjhrt3</div>
+          </div>
+          <button class="button app-header-wallet-copy">Copy</button>
+        </div>
+      </header>
+
+
+      <main class="app-main">
+        <div class="grid-container">
+          <div class="grid-element box-2-1"></div>
+          <div class="grid-element box-1-2"></div>
+          <div class="grid-element"></div>
+          <div class="grid-element"></div>
+        </div>
+      </main>
+
+
+    </main>
+
+
+
+  </div>
+</body>
+
+</html>

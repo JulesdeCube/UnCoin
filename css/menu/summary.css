@@ -1,0 +1,18 @@
+.menu-summary > .menu-summary-title {
+  color: var(--text-color-secondary);
+  text-transform: uppercase;
+  font-size: 0.8em;
+  margin-bottom: 1.5em;
+  letter-spacing: 0.2em;
+}
+
+.menu-summary > .menu-summary-balance {
+  font-size: 2em;
+  font-weight: 700;
+  margin-bottom: 0.25em;
+}
+
+.menu-summary > .menu-summary-delta {
+  color: #69C382;
+  font-weight: 700;
+}

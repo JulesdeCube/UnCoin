@@ -1,0 +1,24 @@
+.menu {
+  background-color: var(--menu-background);
+  flex:none;
+}
+
+.menu > .menu-separator {
+  margin: 2em 0;
+}
+
+.menu > .menu-element {
+  display: flex;
+  flex-direction: column;
+  padding-right: 2em;
+}
+
+.menu > .menu-title {
+  display: block;
+  margin-bottom: 4em;
+  margin-top: 1.5em;
+}
+
+.menu > .menu-nav {
+  flex: 1;
+}

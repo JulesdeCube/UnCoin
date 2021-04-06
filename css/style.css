@@ -1,0 +1,103 @@
+:root {
+  --menu-background: #E9F2FF;
+  --app-background: #F3F9FE;
+
+  --text-color-primary: #1E2B4C;
+  --text-color-secondary: #5D677D;
+
+  --color-primary: #5E80FF;
+  --color-primary-dark: #445fc2;
+  --color-secondary: #3d4452;
+
+  --text-font: 'Spartan';
+  --text-weight: 500;
+  --text-size: 12px;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scrollbar-color: var(--color-primary-dark) transparent;
+  scrollbar-width: thin;
+}
+
+body {
+  overflow: hidden;
+  background-color: var(--app-background);
+}
+
+.material-icons {
+  margin-bottom: 0.1em; /* fix font aligment */
+  font-size: 1.5em;
+}
+
+hr {
+  border: none;
+  height: 0.1em;
+  background-color: #0002;
+}
+
+a {
+  text-decoration: none;
+}
+
+.button {
+  border: none;
+  border-radius: 10000em;
+  padding: 0.5em 1.75em;
+
+}
+
+.root {
+  display: flex;
+  height: 100vh;
+  font-family: var(--text-font);
+  font-weight: var(--text-weight);
+  color: var(--text-color-primary);
+  font-size: var(--text-size);
+}
+
+.root > .root-element {
+  display:flex;
+  flex-direction: column;
+  padding: 3em 2em;
+}
+
+
+.background {
+  z-index: -1;
+  position: absolute;
+  width: 50em;
+  height: 50em;
+  right: -25em;
+  top: -10em;
+  transform: rotate(35deg);
+  background-color: var(--color-primary);
+}
+
+
+
+
+.list {
+  display: flex;
+}
+
+.list > .list-element {
+  color: inherit;
+  margin: 0.75em 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+/* .list > .list-element > .list-element-text {
+} */
+
+.list > .list-element > .list-element-icon {
+  margin-right: 0.5em;
+}
+
+.list > .list-element\:active {
+  font-weight: 700;
+}

@@ -1,0 +1,60 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-header-user {
+  position: relative;
+}
+
+.app-header-user-image {
+  position: absolute;
+  left: -5.75em;
+
+  height: 7.5em;
+  width: 7.5em;
+  object-fit: cover;
+  border-radius: 100em;
+
+}
+
+.app-header-user-info {
+  margin-left: 3em;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 7.5em;
+}
+
+.app-header-user-name {
+  font-size: 2em;
+  font-weight: 600;
+  margin-bottom: 0.3em;
+}
+
+.app-header-wallet {
+  background-color: #FED425;
+  display:flex;
+  border-radius: 1000em;
+  padding: 2em;
+}
+.app-header-wallet-icon {
+  font-size: 3em;
+  filter: invert(63%) sepia(78%) saturate(5322%) hue-rotate(212deg) brightness(105%) contrast(103%);
+
+  margin-right: 0.5em;
+}
+.app-header-wallet-address-label {
+  margin-bottom: 0.5em;
+}
+.app-header-wallet-address-value {
+  font-weight:700;
+}
+
+.app-header-wallet-copy {
+  margin-left: 3em;
+  background-color: #000;
+  color: #fff;
+
+}
