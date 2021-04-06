@@ -19,13 +19,16 @@
   border-radius: 2em;
 /*   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); */
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  grid-auto-flow: row dense;
 }
 
 .box-2-1 {
   grid-column-end: span 2;
 }
 
-
+.box-3-1 {
+  grid-column-end: span 3;
+}
 .box-1-2 {
   grid-row-end: span 2;
 }
