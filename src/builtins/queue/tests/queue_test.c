@@ -27,89 +27,88 @@ void queue_debug(Queue queue)
 
 int main()
 {
-    // Test init
+    // Variable command
+    int cmd = -1;
+
+    // Queue
+    Queue q = NULL;
+
+    // Start or Quit
+    printf("Start (0) or Quit (4)? : ");
+    scanf("%d", &cmd);
+    printf("\n");
+
+    // QUIT
+    if (cmd == 4)
+        return 0;
+
+    // Init
     printf("==================================================\n");
     printf("||                                              ||\n");
-    printf("||                     INIT                     ||\n");
+    printf("||                    START                     ||\n");
     printf("||                                              ||\n");
     printf("==================================================\n");
+    q = queue_init();
 
-    printf("[Init q]\n");
-    Queue q = queue_init();
-    queue_debug(q);
+    // Command help
+    printf("--------------------------------------------------\n");
+    printf(">                    Command                     <\n");
+    printf(">                                                <\n");
+    printf(">    1 - Enqueue                                 <\n");
+    printf(">    2 - Dequeue                                 <\n");
+    printf(">    3 - Print queue                             <\n");
+    printf(">    4 - Quit                                    <\n");
+    printf(">                                                <\n");
+    printf("--------------------------------------------------\n");
 
-    printf("[Init q1]\n");
-    Queue q1 = queue_init();
-    queue_debug(q1);
+    // WHILE NOT QUIT
+    while (cmd != 4)
+    {
+        // COMMAND
+        printf("\n(cmd) : ");
+        while (1)
+        {
+            getchar();
+            if (scanf("%d", &cmd) != 1)
+                printf("Invalid input. Try again\n");
+            else if (cmd < 1 || cmd > 4)
+                printf("Invalid input. Try again\n");
+            else
+                break;
+        }
 
-    printf("[Init q2]\n");
-    Queue q2 = queue_init();
-    queue_debug(q2);
+        // ENQUEUE
+        if (cmd == 1)
+        {
+            printf("(Enqueue) Enter element : ");
+            char *element = NULL;
+            while(1)
+            {
+                getchar();
+                if (scanf("%m[a-zA-Z0-9]", &element) != 1)
+                    printf("Invalid input. Try again\n");
+                else
+                    break;
+            }
+            queue_enqueue(q, element);
+        }
 
-    // Test enqueue
+        // DEQUEUE
+        else if (cmd == 2)
+            printf("(Dequeue) %s\n", (char *)queue_dequeue(q));
+
+        // PRINT QUEUE
+        else if (cmd == 3)
+            queue_debug(q);
+    }
+
+    // Free
     printf("==================================================\n");
     printf("||                                              ||\n");
-    printf("||                   ENQUEUE                    ||\n");
+    printf("||                     END                      ||\n");
     printf("||                                              ||\n");
     printf("==================================================\n");
-
-    // Test enqueue of q
-    printf("[Enqueue q \"Hello\"]\n");
-    queue_enqueue(q, "Hello");
-    queue_debug(q);
-
-    printf("[Enqueue q \"1\"]\n");
-    queue_enqueue(q, "1");
-    queue_debug(q);
-
-    printf("[Enqueue q \"400000\"]\n");
-    queue_enqueue(q, "400000");
-    queue_debug(q);
-
-    // Test enqueue of q1
-    printf("[Enqueue q1 \"Helloooooooo\"]\n");
-    queue_enqueue(q1, "Helloooooooo");
-    queue_debug(q);
-
-    // Test enqueue of q2
-    printf("[Enqueue q2 400000]\n");
-    queue_enqueue(q2, (void *)400000);
-    queue_debug(q);
-
-    // Test dequeue
-    printf("==================================================\n");
-    printf("||                                              ||\n");
-    printf("||                   DEQUEUE                    ||\n");
-    printf("||                                              ||\n");
-    printf("==================================================\n");
-
-    printf("[Dequeue q \"hello\"]\n");
-    printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q));
-    queue_debug(q);
-
-    printf("[Dequeue q \"1\"]\n");
-    printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q));
-    queue_debug(q);
-
-    printf("[Dequeue q1 \"Helloooooooo\"]\n");
-    printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q1));
-    queue_debug(q1);
-
-    // Test free
-    printf("==================================================\n");
-    printf("||                                              ||\n");
-    printf("||                     FREE                     ||\n");
-    printf("||                                              ||\n");
-    printf("==================================================\n");
-
-    printf("[free q]\n");
     queue_free(q, NULL);
-
-    printf("[free q1]\n");
-    queue_free(q1, NULL);
-
-    printf("[free q2]\n");
-    queue_free(q2, NULL);
 
     return 0;
 }

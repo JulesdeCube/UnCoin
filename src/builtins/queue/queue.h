@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <err.h>
 
-#include "utils/bool.h"
+#include "../../utils/bool.h"
 
 typedef void (*Callback)(void *);
 typedef Callback Destructor;
@@ -37,6 +37,8 @@ void queue_enqueue(Queue queue, void *data);
 void *queue_dequeue(Queue queue);
 
 void queue_free(Queue queue, Destructor destructor);
+void _queue_process(Queue queue, Callback callback);
+void _queue_foreach(Queue queue, Callback callback);
 
 void queue_debug(Queue queue);
 
