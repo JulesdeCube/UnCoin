@@ -108,7 +108,7 @@ void bigint_comparison_tests()
     bigint_constructor_from_int(&bigint1,2);
     bigint_constructor_from_int(&bigint2,-2);
     result = _bigint_comparison(bigint1,bigint2);
-    bigint_comparison_test(-1,result,bigint1,bigint2);
+    bigint_comparison_test(1,result,bigint1,bigint2);
 
     //different size and exhib
     bigint_constructor_from_int(&bigint1,-2);
@@ -121,13 +121,8 @@ void bigint_comparison_tests()
     result = _bigint_comparison(bigint1,bigint2);
     bigint_comparison_test(1,result,bigint1,bigint2);
 
+    
 }
-
-void bigint_compare_tests()
-{
-
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
