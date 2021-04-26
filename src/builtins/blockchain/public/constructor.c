@@ -1,15 +1,19 @@
 #include "../blockchain.h"
 
-#define GENESIS_TIME "01/01/2021"
+#define PROOF 4 // 4 premier zero dans le hash
 #define GENESIS_DATA "Genesis block"
 
 struct block
 {
     size_t index;
-    size_t timestamp;
+    size_t nonce; // Random num by miners (proof)
+
+//    size_t timestamp;
     void *data;
-    size_t previousHash;
-    size_t hash;
+
+    char* previousHash;
+    char* hash;
+
     struct block *previousBlock;
 };
 
@@ -21,24 +25,41 @@ struct blockchain
 typedef struct blockchain *Blockchain;
 typedef struct block *Block;
 
+
+///////////////////////////////////////////
+//                                       //
+//         HASH                          //
+//                                       //
+///////////////////////////////////////////
+
 size_t blockchain_hash(Block block)
 {
-    // TODO
+    // TODO pour Vincent
 }
 
-Block blockchain_create_new_block(size_t index, char* time, void* data,
-                                  size_t previousHash, Block last_block)
+
+///////////////////////////////////////////
+//                                       //
+//         CREATE                        //
+//                                       //
+///////////////////////////////////////////
+
+Block blockchain_create_new_block(size_t nonce, void* data, Block last_block)
 {
     // Allocate for block
-    Block block = malloc(sizeof(Block));
+    Block block = calloc(6, sizeof(Block));
     if (block == NULL)
         errx(EXIT_FAILURE, "Error : malloc new block");
 
     // Init value of block
-    block->index = index;
-    block->timestamp = time;
+    if (last_block != NULL)
+    {
+        block->index = last_block->index + 1;
+        block->previousHash = last_block->hash;
+    }
+
+    block->nonce = nonce;
     block->data = data;
-    block->previousHash = previousHash;
 
     // Create hash for this new block
     block->hash = blockchain_hash(block);
@@ -52,11 +73,7 @@ Block blockchain_create_new_block(size_t index, char* time, void* data,
 Blockchain blockchain_create_blockchain()
 {
     // Create genesis block (first block)
-    Block genesis_block = blockchain_create_new_block(0,
-                                                      GENESIS_TIME,
-                                                      GENESIS_DATA,
-                                                      0,
-                                                      NULL);
+    Block genesis_block = blockchain_create_new_block(0, GENESIS_DATA, NULL);
 
     // Allocate for blockchain
     Blockchain blockchain = malloc(sizeof(Blockchain));
@@ -69,24 +86,45 @@ Blockchain blockchain_create_blockchain()
     return blockchain;
 }
 
-void blockchain_add_block(Blockchain blockchain, void *data)
+
+///////////////////////////////////////////
+//                                       //
+//         FREE / DESTROY                //
+//                                       //
+///////////////////////////////////////////
+
+void blockchain_free_block(Block block)
 {
-    // Blockchain doesn't exist
-    if (blockchain == NULL)
-        blockchain = blockchain_create_blockchain();
+    free(block);
+}
 
-    // Get last block in blockchain
-    Block last_block = blockchain->block;
+void blockchain_free(Blockchain blockchain)
+{
+    while (blockchain->block != NULL)
+    {
+        Block current_block = blockchain->block;
+        blockchain->block = current_block->previousBlock;
+        blockchain_free_block(current_block);
+    }
+    free(blockchain);
+}
 
-    // Create new block with data
-    Block new_block = blockchain_create_new_block(last_block->index + 1,
-                                                  "01/01/2021",
-                                                  data,
-                                                  last_block->hash,
-                                                  last_block);
 
-    // Add new block in blockchain
-    blockchain->block = new_block;
+///////////////////////////////////////////
+//                                       //
+//         CHECK / VERIFICATION          //
+//                                       //
+///////////////////////////////////////////
+
+int blockchain_proof_of_woork_block(Block block)
+{
+    char* hash = block->hash;
+    for (size_t i = 0; i < PROOF; i++)
+    {
+        if (hash[i] != 0)
+            return 0;
+    }
+    return 1;
 }
 
 int blockchain_check_block(Blockchain blockchain)
@@ -109,6 +147,9 @@ int blockchain_check_block(Blockchain blockchain)
         if (blockchain_hash(current) != current->hash)
             return 0;
 
+        if (blockchain_proof_of_woork_block(Block block) == 0)
+            return 0;
+
         current = previous;
         previous = current->previousBlock;
     }
@@ -116,3 +157,35 @@ int blockchain_check_block(Blockchain blockchain)
     return 1;
 }
 
+
+///////////////////////////////////////////
+//                                       //
+//         ADD                           //
+//                                       //
+///////////////////////////////////////////
+
+int blockchain_add_block(Blockchain blockchain, size_t nonce, void *data)
+{
+    // Blockchain doesn't exist
+    if (blockchain == NULL)
+        blockchain = blockchain_create_blockchain();
+
+    // Get last block in blockchain
+    Block last_block = blockchain->block;
+
+    // Create new block with data
+    Block new_block = blockchain_create_new_block(nonce, data, last_block->hash);
+
+    // Block can't be add because of proof of work
+    if (blockchain_proof_of_woork_block(Block block) == 0)
+    {
+        blockchain_free_block(Block);
+        return 0;
+    }
+
+    // Add new block in blockchain
+    blockchain->block = new_block;
+
+    // Block added
+    return 1;
+}
