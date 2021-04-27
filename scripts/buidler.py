@@ -231,7 +231,7 @@ class Builder:
         result = os.system(' '.join(command))
         # if there is an error return it
         if result != 0:
-            exit(result)
+            exit(1)
 
     def gcc(self, path, option='-c'):
         """ Compile the source file base on the option. """

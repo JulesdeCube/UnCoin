@@ -139,6 +139,60 @@ int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result)
     return error;
 }
 
+int _bigint_substract(BigInt bigint1, BigInt bigint2, BigInt *result)
+{
+    // check for pointer issus
+    BIGINT_OPERATION_GARD();
+    int error;
+
+    // get the new number buffer size
+    size_t size1 = buffer_get_size(bigint1->buffer);
+    size_t size2 = buffer_get_size(bigint2->buffer);
+    size_t size = MAX(size1, size2);
+
+    // create result buffer
+    Buffer buffer;
+    error = buffer_constructor_const(&buffer, size, 0);
+    if (error != SUCCESS)
+        return error;
+
+    u_char *p = buffer_get_data(buffer);
+
+    // make the calcule
+    bool carry = false;
+    u_char byte1;
+    u_char byte2;
+    for (size_t i = 0; i < size; i++, p++)
+    {
+        // get both byte
+        error = bigint_get_byte(bigint1, i, &byte1);
+        if (error != SUCCESS)
+        {
+            buffer_destructor(&buffer);
+            return error;
+        }
+
+        error = bigint_get_byte(bigint2, i, &byte2);
+        if (error != SUCCESS)
+        {
+            buffer_destructor(&buffer);
+            return error;
+        }
+
+        // substract the carry to the byte and check for carry
+        carry = __builtin_sub_overflow(byte1, carry, p);
+        // substract the byte
+        carry |= __builtin_sub_overflow(*p, byte2, p);
+    }
+
+    // create the bigint
+    error = bigint_constructor_buffer(result, POSITIVE, buffer);
+    // delete the temp buffer
+    buffer_destructor(&buffer);
+    // exit with success
+    return error;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   BITWISE                                  //

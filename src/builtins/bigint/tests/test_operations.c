@@ -13,6 +13,7 @@ int error;
 
 int _bigint_comparison(BigInt bigint1, BigInt bigint2);
 int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result);
+int _bigint_substract(BigInt bigint1, BigInt bigint2, BigInt *result);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -64,6 +65,59 @@ void bigint_add_private_test(int exprected_error, BigInt bigint1, BigInt bigint2
         errx(1, "cant create error title test");
 
     res = _bigint_add(bigint1, bigint2, &result);
+    assert_equal_i(error_title, exprected_error, res);
+
+    if (res == SUCCESS)
+        assert_equal_bigint(title, exprected_result, result);
+
+    if (bigint1 != NULL)
+        free(b1);
+    if (bigint2 != NULL)
+        free(b2);
+    free(title);
+    free(error_title);
+
+    bigint_destructor(&bigint1);
+    bigint_destructor(&bigint2);
+    bigint_destructor(&result);
+    bigint_destructor(&exprected_result);
+
+    putchar('|');
+}
+
+void bigint_substract_private_test(int exprected_error, BigInt bigint1, BigInt bigint2, BigInt exprected_result)
+{
+    BigInt result;
+    int error, res;
+
+    char *b1, *b2, *title, *error_title;
+
+    if (bigint1 != NULL)
+    {
+        error = bigint_to_string(bigint1, &b1, NULL);
+        if (error != SUCCESS)
+            errx(1, "can't create bigint1 : %i", error);
+    }
+    else
+        b1 = "NULL";
+
+    if (bigint2 != NULL)
+    {
+
+        error = bigint_to_string(bigint2, &b2, NULL);
+        if (error != SUCCESS)
+            errx(1, "can't create bigint2 : %i", error);
+    }
+    else
+        b2 = "NULL";
+
+    if (asprintf(&title, "%s - %s", b1, b2) == -1)
+        errx(1, "cant create title test");
+
+    if (asprintf(&error_title, "%s : wong error code", title) == -1)
+        errx(1, "cant create error title test");
+
+    res = _bigint_substract(bigint1, bigint2, &result);
     assert_equal_i(error_title, exprected_error, res);
 
     if (res == SUCCESS)
@@ -161,7 +215,6 @@ void bigint_comparison_tests()
 
 void bigint_add_private_tests()
 {
-
     BigInt result;
 
     bigint_constructor_from_int(&bigint1, 2);
@@ -204,6 +257,34 @@ void bigint_add_private_tests()
     assert_equal_i("no return pointer", ERROR_VALUE, error);
 }
 
+void bigint_substract_private_tests()
+{
+    BigInt result;
+    bigint_constructor_from_int(&bigint1, 0);
+    bigint_constructor_from_int(&bigint2, 0);
+    bigint_constructor_from_int(&result, 0);
+    bigint_substract_private_test(SUCCESS, bigint1, bigint2, result);
+
+    BigInt result;
+    bigint_constructor_from_int(&bigint1, 6);
+    bigint_constructor_from_int(&bigint2, 4);
+    bigint_constructor_from_int(&result, 2);
+    bigint_substract_private_test(SUCCESS, bigint1, bigint2, result);
+
+    BigInt result;
+    bigint_constructor_from_int(&bigint1, 6);
+    bigint_constructor_from_int(&bigint2, 4);
+    bigint_constructor_from_int(&result, 2);
+    bigint_substract_private_test(SUCCESS, bigint1, bigint2, result);
+
+    BigInt result;
+    bigint_constructor_from_int(&bigint1, 6);
+    bigint_constructor_from_int(&bigint2, 4);
+    bigint_constructor_from_int(&result, 2);
+    bigint_substract_private_test(SUCCESS, bigint1, bigint2, result);
+
+
+}
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   TESTS                                    //
@@ -212,6 +293,7 @@ void bigint_add_private_tests()
 
 Test operations_tests[] = {
     //{"_bigint_comparison", bigint_comparison_tests},
+    {"_bigint_subtract", bigint_substract_private_tests},
     {"_bigint_add", bigint_add_private_tests}};
 
 void test_operations()
