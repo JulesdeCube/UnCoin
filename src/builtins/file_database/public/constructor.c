@@ -28,6 +28,7 @@ Blockchain database_create_blockchain(char *path_file)
 
         char *data = malloc(sizeof(char) * (256 - i));
         strncpy(data, buff + i + 1, 256 - i);
+        data[strlen(data) - 1] = '\0';
 
         //printf("Nonce : %li\nData : %s\n", nonce, data);
         blockchain_add_block(blockchain, nonce, data);
