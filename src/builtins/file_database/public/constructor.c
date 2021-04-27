@@ -1,21 +1,38 @@
 #include "../file_database.h"
 
-//typedef struct file_database Database;
-
-/*Database file_database_init(char* path_file)
+Blockchain database_create_blockchain(char *path_file)
 {
     // Open file (reading)
-    FILE* file = fopen(path_file, "r");
+    FILE *file = fopen(path_file, "r");
     if (file == NULL)
         errx(EXIT_FAILURE, "Error file_database_init()");
 
-    Database db = NULL;
+    Blockchain blockchain = blockchain_create_blockchain();
 
-    return db;
-}*/
+    // Buffer
+    char buff[BUFFER_SIZE];
 
-int main()
-{
-    printf("Hello World!\n");
-    return 0;
+    while (fgets(buff, BUFFER_SIZE, file) != NULL)
+    {
+        //printf("%s", buff);
+        size_t i = 0;
+
+        while (buff[i] != ',' && buff[i] != '\n')
+            i++;
+
+        char *str_nonce = malloc(sizeof(char) * i);
+        strncpy(str_nonce, buff, i);
+
+        // Transforme str en int, size_t
+        size_t nonce = atoi(str_nonce);
+
+        char *data = malloc(sizeof(char) * (256 - i));
+        strncpy(data, buff + i + 1, 256 - i);
+
+        //printf("Nonce : %li\nData : %s\n", nonce, data);
+        blockchain_add_block(blockchain, nonce, data);
+        free(str_nonce);
+    }
+
+    return blockchain;
 }
