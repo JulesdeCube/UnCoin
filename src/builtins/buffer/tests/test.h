@@ -1,6 +1,8 @@
 #ifndef UNCOIN__BUILTINS_BUFFER_TESTS__TEST_H_
 #define UNCOIN__BUILTINS_BUFFER_TESTS__TEST_H_
 
+#define _GNU_SOURCE
+
 #include "test/test.h"
 #include "../buffer.h"
 

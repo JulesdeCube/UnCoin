@@ -1,5 +1,41 @@
 #include "../bigint.h"
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                ARITHMETIQUE                                //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////
+//              Private               //
+////////////////////////////////////////
+
+int _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow);
+
+int _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size);
+
+int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result);
+
+////////////////////////////////////////
+//               Public               //
+////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                   BITWISE                                  //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                 CONVERSION                                 //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////
+//              Private               //
+////////////////////////////////////////
+
 #define BIGINT_TO(type)                                   \
     {                                                     \
         if (result == NULL)                               \
@@ -29,24 +65,9 @@
                                                           \
         return size <= sizeof(type) ? SUCCESS : NO_SPACE; \
     }
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                ARITHMETIQUE                                //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                   BITWISE                                  //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                 CONVERSION                                 //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////
+//               Public               //
+////////////////////////////////////////
 
 int bigint_to_bool(BigInt bigint, bool *result)
 {
@@ -94,7 +115,7 @@ int bigint_to_string(BigInt bigint, char **str, size_t *len)
 
     int error = buffer_to_hex(bigint->buffer, str, len);
 
-    if (error == SUCCESS)
+    if (error != SUCCESS)
         return error;
 
     if (len)
@@ -112,31 +133,30 @@ int bigint_to_string(BigInt bigint, char **str, size_t *len)
 
     return print_error == -1 ? NO_SPACE : SUCCESS;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                 COMPARAISON                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
-//return  1 if BG1 > BG2, 0 if BG1 == BG2, -1 if BG1 < BG2
-int _bigint_comparison(BigInt bigint1, BigInt bigint2)
-{
-    BigInt x = bigint1;
-    BigInt y = bigint2;
-    if (x->sign != y->sign)
-        return x->sign == POSITIVE ? 1 : -1;
 
-    if (x->exhibitor != y->exhibitor)
-        return (x->sign == POSITIVE) ^ (x->exhibitor > y->exhibitor) ? 1 : -1;
+////////////////////////////////////////
+//              Private               //
+////////////////////////////////////////
 
-    u_char *key1 = buffer_get_data(x->buffer);
-    u_char *key2 = buffer_get_data(y->buffer);
-    size_t size = buffer_get_size(x->buffer);
+/**
+* @private
+*
+* get the sign of the substraction of bigint1 and bigint2
+* @return 1 => bigin1 > bigint2
+*         0 => bigin1 = bigint2
+*        -1 => bigin1 < bigint2
+*/
+int _bigint_comparison(BigInt bigint1, BigInt bigint2);
 
-    for (; size; --size, key1++, key2++)
-        if (*key1 != *key2)
-            return *key1 > *key2 ? 1 : -1;
-    return 0;
-}
+////////////////////////////////////////
+//               Public               //
+////////////////////////////////////////
 
 bool bigint_greater_than(BigInt bigint1, BigInt bigint2)
 {
@@ -166,4 +186,40 @@ bool bigint_less_or_equal(BigInt bigint1, BigInt bigint2)
 bool bigint_greater_or_equal(BigInt bigint1, BigInt bigint2)
 {
     return _bigint_comparison(bigint1, bigint2) != -1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                GETTER/SETTER                               //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////
+//               Private              //
+////////////////////////////////////////
+
+////////////////////////////////////////
+//               Public               //
+////////////////////////////////////////
+
+size_t bigint_get_exhibitor(BigInt bigint)
+{
+    return (bigint != NULL) * bigint->exhibitor;
+}
+
+int bigint_get_byte(BigInt bigint, size_t i, u_char *byte)
+{
+    if (bigint == NULL)
+        return NO_SELF;
+
+    Buffer buffer = bigint->buffer;
+    int error = buffer_get_index(buffer, i, byte);
+
+    if (error == OUT_OF_RANGE)
+    {
+        *byte = 0;
+        return SUCCESS;
+    }
+
+    return error;
 }

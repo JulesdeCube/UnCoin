@@ -10,11 +10,13 @@
 #define _GNU_SOURCE
 
 #include <stdio.h>
+#include <limits.h>
 
 #include "builtins/buffer/buffer.h"
 
 #include "utils/error.h"
 #include "utils/bool.h"
+#include "utils/math.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -78,6 +80,9 @@ void bigint_destructor(BigInt *bigint);
 //                               GETTER/SETTER                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+size_t bigint_get_exhibitor(BigInt bigint);
+
+int bigint_get_byte(BigInt bigint, size_t i, u_char *byte);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -99,12 +104,11 @@ int bigint_to_string(BigInt bigint, char **str, size_t *len);
 //                                 COMPARAISON                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
-int _bigint_comparison(BigInt bigint1,BigInt bigint2);
-bool bigint_greater_than(BigInt bigint1,BigInt bigint2);
-bool bigint_less_than(BigInt bigint1,BigInt bigint2);
-bool bigint_equal_than(BigInt bigint1,BigInt bigint2);
-bool bigint_not_equal(BigInt bigint1,BigInt bigint2);
-bool bigint_less_or_equal(BigInt bigint1,BigInt bigint2);
-bool bigint_greater_or_equal(BigInt bigint1,BigInt bigint2);
+bool bigint_greater_than(BigInt bigint1, BigInt bigint2);
+bool bigint_less_than(BigInt bigint1, BigInt bigint2);
+bool bigint_equal_than(BigInt bigint1, BigInt bigint2);
+bool bigint_not_equal(BigInt bigint1, BigInt bigint2);
+bool bigint_less_or_equal(BigInt bigint1, BigInt bigint2);
+bool bigint_greater_or_equal(BigInt bigint1, BigInt bigint2);
 
 #endif // UNCOIN__UILTINS_BIGINT__BIGINT_H_

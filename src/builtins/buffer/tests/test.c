@@ -1,4 +1,3 @@
-#define _GNU_SOURCE
 #include "test.h"
 
 void assert_equal_buffer(char *name, Buffer exepted, Buffer got)
