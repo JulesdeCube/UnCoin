@@ -14,7 +14,7 @@ void hex_test(Buffer buffer, int error, char *expected)
     size_t len;
     int r_error = buffer_to_hex(buffer, &str, &len);
 
-    assert_equal_ul("error code", error, r_error);
+    assert_equal_i("error code", error, r_error);
 
     if (error == SUCCESS)
     {

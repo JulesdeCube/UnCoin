@@ -57,7 +57,7 @@ typedef struct s_buffer *Buffer;
 **
 ** \return error code
 **
-** \throw NO_SELF: if buffer is null
+** \throw ERROR_VALUE: if buffer is null
 ** \see `buffer_constructor_array` for other error code
 */
 int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer);
@@ -76,6 +76,7 @@ int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer);
 ** \return error code
 **
 ** \throw NO_SPACE: not enough free space
+** \throw NO_SELF : return pointer (`new_buffer`) is null
 */
 int buffer_constructor_size(Buffer *new_buffer, size_t size);
 
@@ -111,7 +112,7 @@ int buffer_constructor_const(Buffer *new_buffer, size_t size, u_char constant);
 **
 ** \return error code
 **
-** \throw NO_SELF: if array is null
+** \throw ERROR_VALUE: if array is null
 ** \see `buffer_constructor_size` for other error code
 */
 int buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array);
@@ -130,7 +131,7 @@ int buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array);
 **
 ** \return error code
 **
-** \throw NO_SELF: if string is null
+** \throw ERROR_VALUE: if string is null
 ** \see `buffer_constructor_array` for other error code
 */
 int buffer_constructor_str(Buffer *new_buffer, char *str, bool strict);
