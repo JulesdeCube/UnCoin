@@ -89,7 +89,7 @@ int bigint_get_byte(BigInt bigint, size_t i, u_char *byte);
 //                                 OPERATION                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
-
+int bigint_addition(BigInt bigint1, BigInt bigint2, BigInt *result);
 ////////////////////////////////////////////////////////////
 //                       CONVERSION                       //
 ////////////////////////////////////////////////////////////

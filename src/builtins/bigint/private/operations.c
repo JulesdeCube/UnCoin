@@ -210,6 +210,23 @@ int _bigint_substract(BigInt bigint1, BigInt bigint2, BigInt *result)
 //                                 COMPARAISON                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+int _bigint_unsigned_comparison(BigInt bigint1, BigInt bigint2)
+{
+    u_char *key1 = buffer_get_data(bigint1->buffer);
+    u_char *key2 = buffer_get_data(bigint2->buffer);
+
+    size_t size;
+    if(buffer_get_size(bigint1->buffer) > buffer_get_size(bigint2->buffer))
+        size = buffer_get_size(bigint1->buffer);
+    else
+    {
+        size = buffer_get_size(bigint2->buffer);
+    }
+    for (; size; --size, key1++, key2++)
+        if (*key1 != *key2)
+            return (*key1 > *key2) ? 1 : -1;
+    return 0;
+}
 
 int _bigint_comparison(BigInt bigint1, BigInt bigint2)
 {
@@ -221,15 +238,10 @@ int _bigint_comparison(BigInt bigint1, BigInt bigint2)
     if (x->exhibitor != y->exhibitor)
         return (x->sign == POSITIVE) ^ (x->exhibitor > y->exhibitor) ? 1 : -1;
 
-    u_char *key1 = buffer_get_data(x->buffer);
-    u_char *key2 = buffer_get_data(y->buffer);
-    size_t size = buffer_get_size(x->buffer);
-
-    for (; size; --size, key1++, key2++)
-        if (*key1 != *key2)
-            return (*key1 > *key2) ^ (x->sign == NEGATIVE) ? 1 : -1;
-    return 0;
+    int unsigned_res = _bigint_unsigned_comparison(bigint1, bigint2);
+    return x->sign == POSITIVE ? unsigned_res : -unsigned_res;
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

@@ -2,6 +2,61 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
+//                                 COMPARAISON                                //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////
+//              Private               //
+////////////////////////////////////////
+
+/**
+* @private
+*
+* get the sign of the substraction of bigint1 and bigint2
+* @return 1 => bigin1 > bigint2
+*         0 => bigin1 = bigint2
+*        -1 => bigin1 < bigint2
+*/
+int _bigint_comparison(BigInt bigint1, BigInt bigint2);
+
+int _bigint_unsigned_comparison(BigInt bigint1, BigInt bigint2);
+////////////////////////////////////////
+//               Public               //
+////////////////////////////////////////
+
+bool bigint_greater_than(BigInt bigint1, BigInt bigint2)
+{
+    return _bigint_comparison(bigint1, bigint2) == 1;
+}
+
+bool bigint_less_than(BigInt bigint1, BigInt bigint2)
+{
+    return _bigint_comparison(bigint1, bigint2) == -1;
+}
+
+bool bigint_equal_than(BigInt bigint1, BigInt bigint2)
+{
+    return _bigint_comparison(bigint1, bigint2) == 0;
+}
+
+bool bigint_not_equal(BigInt bigint1, BigInt bigint2)
+{
+    return _bigint_comparison(bigint1, bigint2) != 0;
+}
+
+bool bigint_less_or_equal(BigInt bigint1, BigInt bigint2)
+{
+    return _bigint_comparison(bigint1, bigint2) != 1;
+}
+
+bool bigint_greater_or_equal(BigInt bigint1, BigInt bigint2)
+{
+    return _bigint_comparison(bigint1, bigint2) != -1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
 //                                ARITHMETIQUE                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,10 +71,87 @@ int _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size);
 
 int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result);
 
+int _bigint_substract(BigInt bigint1, BigInt bigint2, BigInt *result);
 ////////////////////////////////////////
 //               Public               //
 ////////////////////////////////////////
 
+int bigint_addition(BigInt bigint1, BigInt bigint2, BigInt *result)
+{
+    if(bigint1->exhibitor == 0)
+        return bigint2->exhibitor != 0 ?
+            bigint_constructor_bigint(result,bigint2) :
+            bigint_constructor_null(result);
+
+    if(bigint2->exhibitor == 0)
+        return bigint_constructor_bigint(result,bigint1);
+
+    int comparison = _bigint_unsigned_comparison(bigint1,bigint2);
+    if(comparison == 0)
+    {
+        if(bigint1->sign != bigint2->sign)
+            return bigint_constructor_null(result);
+        int error = _bigint_add(bigint1, bigint2, result);
+        //TODO : CHANGE WITH BITSHIFT
+        if(error == SUCCESS)
+            (*result)->sign = bigint1->sign;
+        return error;
+    }
+    if(comparison == -1)
+    {
+        BigInt temp = bigint1;
+        bigint1 = bigint2;
+        bigint2 = temp;
+    }
+
+    int error;
+    if((comparison ))
+    if((comparison == -1) ^ (bigint1->sign != bigint2->sign))
+    {
+        error = _bigint_add(bigint1,bigint2,result);
+    }
+    else
+    {
+        error = _bigint_substract(bigint1,bigint2,result);
+    }
+    if(error == SUCCESS)
+        (*result)->sign = bigint1->sign;
+    return error;
+}
+/*
+int bigint_substraction(BigInt bigint1, BigInt bigint2, BigInt *result)
+{
+    int comparison = _bigint_unsigned_comparison(bigint1,bigint2);
+    if(comparison == 0)
+        return bigint_constructor_null(result);
+
+    if(bigint2->sign == NEGATIVE)
+    {
+
+
+
+        BigInt *new_bigint2;
+        if(bigint_constructor_bigint(new_bigint2,bigint2) != SUCCESS)
+            return INTERNAL_ERROR;
+        (*new_bigint2)->sign = POSITIVE;
+
+        if(bigint_addition(bigint1,new_bigint2,result) != SUCCESS)
+            return INTERNAL_ERROR;
+        return SUCCESS;
+    }
+    // A and B NEGATIVE and B > A
+    if(bigint_less_than(bigint1,bigint2) == true)
+    {
+        if(_bigint_substract(bigint1,bigint2,result) != SUCCESS)
+            return INTERNAL_ERROR;
+        (*result)->sign = NEGATIVE;
+        return NEGATIVE;
+    }
+    //A and B POSITIVE and A > B
+    if(_bigint_substract(bigint1,bigint2,result) !=  SUCCESS)
+        return INTERNAL_ERROR;
+    return SUCCESS;
+}*/
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   BITWISE                                  //
@@ -132,60 +264,6 @@ int bigint_to_string(BigInt bigint, char **str, size_t *len)
     free(buffer_str);
 
     return print_error == -1 ? NO_SPACE : SUCCESS;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                 COMPARAISON                                //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////
-//              Private               //
-////////////////////////////////////////
-
-/**
-* @private
-*
-* get the sign of the substraction of bigint1 and bigint2
-* @return 1 => bigin1 > bigint2
-*         0 => bigin1 = bigint2
-*        -1 => bigin1 < bigint2
-*/
-int _bigint_comparison(BigInt bigint1, BigInt bigint2);
-
-////////////////////////////////////////
-//               Public               //
-////////////////////////////////////////
-
-bool bigint_greater_than(BigInt bigint1, BigInt bigint2)
-{
-    return _bigint_comparison(bigint1, bigint2) == 1;
-}
-
-bool bigint_less_than(BigInt bigint1, BigInt bigint2)
-{
-    return _bigint_comparison(bigint1, bigint2) == -1;
-}
-
-bool bigint_equal_than(BigInt bigint1, BigInt bigint2)
-{
-    return _bigint_comparison(bigint1, bigint2) == 0;
-}
-
-bool bigint_not_equal(BigInt bigint1, BigInt bigint2)
-{
-    return _bigint_comparison(bigint1, bigint2) != 0;
-}
-
-bool bigint_less_or_equal(BigInt bigint1, BigInt bigint2)
-{
-    return _bigint_comparison(bigint1, bigint2) != 1;
-}
-
-bool bigint_greater_or_equal(BigInt bigint1, BigInt bigint2)
-{
-    return _bigint_comparison(bigint1, bigint2) != -1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
