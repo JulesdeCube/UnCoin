@@ -77,7 +77,7 @@ int buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array)
     // get a new buffer
     int error = buffer_constructor_size(new_buffer, size);
 
-    // if there is an error stop and retur the error
+    // if there is an error stop and return the error
     if (error != SUCCESS)
         return error;
 

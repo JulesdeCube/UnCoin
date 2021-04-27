@@ -28,6 +28,7 @@ void run_tests(Test *tests, size_t size, unsigned char level);
 
 // assert
 void assert_equal_ul(char *name, size_t exepted, size_t got);
+void assert_equal_b(char *name, bool exepted, bool got);
 void assert_equal_p(char *name, void *exepted, void *got);
 void assert_equal_s(char *name, char *exepted, char *got);
 
