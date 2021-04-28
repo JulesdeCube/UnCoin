@@ -61,9 +61,11 @@ int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
 
     bigint->exhibitor = _bigint_get_array_exhibitor(size, array);
     size_t normalize_size = bigint->exhibitor >> 3;
-    normalize_size += !!(bigint->exhibitor & 0x07);
 
-    bigint->sign = bigint->exhibitor ? sign : 0;
+    if (bigint->exhibitor & 0x07)
+        ++normalize_size;
+
+    bigint->sign = bigint->exhibitor ? sign : POSITIVE;
 
     int error = buffer_constructor_array(&bigint->buffer,
                                          normalize_size,
