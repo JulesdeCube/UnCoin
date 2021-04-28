@@ -15,12 +15,17 @@
 #include "utils/error.h"
 #include "utils/bool.h"
 #include "builtins/buffer/buffer.h"
+#include "../hash/hash.h"
+#include "../hash/tests/hash_tools.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                              TYPE DEFINTIONS                               //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+
+typedef void (*Callback)(void *);
+typedef Callback Destructor;
 
 /**
 ** \struct s_pair
@@ -59,7 +64,7 @@ struct s_htab
 
 typedef struct s_htab *Htab;
 
-
+// Default capacity of a hash table
 #define DEFAULT_CAPACITY 4
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,6 +76,8 @@ typedef struct s_htab *Htab;
 // TODO COMMENTS
 int htab_constructor(Htab *new_htab);
 
+int construct_pair(Pair *pair, Buffer key, void *value, Buffer *hkey);
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                 DESTRUCTOR                                 //
@@ -78,7 +85,23 @@ int htab_constructor(Htab *new_htab);
 ////////////////////////////////////////////////////////////////////////////////
 
 // TODO comments
-int htab_destructor(Htab htab);
+int htab_destructor(Htab htab, Destructor destructor);
+
+void list_clean(Pair list, Destructor destructor);
+
+void htab_clear(Htab htab, Destructor destructor);
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                 OPERATOR                                   //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+int htab_get_corresponding_pair(Htab htab, Pair pair_to_test, Pair *pair_result);
+// TODO comments
+void print_htab(Htab htab);
+
+int htab_insert(Htab htab, Buffer key, void *value);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -114,6 +137,14 @@ void htab_set_size(Htab htab, size_t size);
 size_t htab_get_capacity(Htab htab);
 
 /**
+** \brief set the max capacity of elements can be in the data array
+**
+** \param htab the hash table
+** \param new_capacity the new capacity
+*/
+void htab_set_capacity(Htab htab, size_t new_capacity);
+
+/**
 ** \brief get pair
 **
 ** \param htab the hash table
@@ -121,6 +152,15 @@ size_t htab_get_capacity(Htab htab);
 ** \return the length of the data array or 0 if the htab is null
 */
 Pair htab_get_pair(Htab htab);
+
+/**
+** \brief get ratio
+**
+** \param htab the hash table
+**
+** \return the ratio in percentage equal to (capacity / size)
+*/
+size_t htab_get_ratio(Htab htab);
 
 // Comments TODO
 Buffer pair_get_hkey(Pair pair);

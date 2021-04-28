@@ -1,5 +1,25 @@
 #include "../hash_table.h"
 
+int construct_pair(Pair *pair, Buffer key, void *value, Buffer *hkey)
+{
+    int error = hash(hkey, &key);
+    if (error != SUCCESS)
+        return error;
+
+    Pair new_pair = malloc(sizeof(struct s_pair));
+    if (new_pair == NULL)
+        return NO_SPACE;
+
+    new_pair->key = key;
+    new_pair->hkey = *hkey;
+    new_pair->value = value;
+
+    // return with using the pointer
+    *pair = new_pair;
+
+    return SUCCESS;
+}
+
 int htab_constructor(Htab *new_htab)
 {
     // get the struct malloc
@@ -18,7 +38,7 @@ int htab_constructor(Htab *new_htab)
     if (htab->data == NULL)
     {
         // destroy all an return error
-        htab_destructor(htab);
+        htab_destructor(htab, NULL);
         *new_htab = NULL;
         return NO_SPACE;
     }

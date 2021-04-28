@@ -15,6 +15,11 @@ Pair htab_get_pair(Htab htab)
     return htab == NULL ? 0 : htab->data;
 }
 
+size_t htab_get_ratio(Htab htab)
+{
+    return 100ul * htab->size / htab->capacity;
+}
+
 Buffer pair_get_hkey(Pair pair)
 {
     return pair == NULL ? 0 : pair->hkey;
