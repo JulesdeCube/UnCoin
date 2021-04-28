@@ -13,7 +13,7 @@ int error;
 
 int _bigint_comparison(BigInt bigint1, BigInt bigint2);
 int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result);
-int _bigint_substract(BigInt bigint1, BigInt bigint2, BigInt *result);
+int _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -170,7 +170,7 @@ void bigint_substract_private_test(int exprected_error, BigInt bigint1, BigInt b
     if (asprintf(&error_title, "%s : wong error code", title) == -1)
         errx(1, "cant create error title test");
 
-    res = _bigint_substract(bigint1, bigint2, &result);
+    res = _bigint_sub(bigint1, bigint2, &result);
     assert_equal_i(error_title, exprected_error, res);
 
     if (res == SUCCESS)
@@ -300,14 +300,7 @@ void bigint_add_private_tests()
     bigint_constructor_from_int(&result, 0x4386788 + 0x6a011004);
     bigint_add_private_test(SUCCESS, bigint1, bigint2, result);
 
-    bigint_constructor_from_int(&bigint1, 0x4386788);
-    bigint_add_private_test(NO_SELF, bigint1, NULL, NULL);
 
-    bigint_constructor_from_int(&bigint2, 0x4386788);
-    bigint_add_private_test(NO_SELF, NULL, bigint2, NULL);
-
-    error = _bigint_add(NULL, NULL, NULL);
-    assert_equal_i("no return pointer", ERROR_VALUE, error);
 }
 
 void bigint_substract_private_tests()
@@ -327,7 +320,6 @@ void bigint_substract_private_tests()
     bigint_constructor_from_int(&bigint2, 4);
     bigint_constructor_from_int(&result, 2);
     bigint_substract_private_test(SUCCESS, bigint1, bigint2, result);
-
 }
 
 void bigint_addition_tests()
@@ -335,13 +327,13 @@ void bigint_addition_tests()
 
     BigInt result;
 
-    for(int i = -2;i <= 2;i++)
+    for (int i = -3; i <= 3; i++)
     {
-        for(int j = -2;j <= 2;j++)
+        for (int j = -3; j <= 3; j++)
         {
             bigint_constructor_from_int(&bigint1, i);
             bigint_constructor_from_int(&bigint2, j);
-            bigint_constructor_from_int(&result, i+j);
+            bigint_constructor_from_int(&result, i + j);
             bigint_addition_test(SUCCESS, bigint1, bigint2, result);
         }
     }
@@ -401,6 +393,14 @@ void bigint_addition_tests()
     bigint_constructor_from_int(&result, -11);
     bigint_addition_test(SUCCESS, bigint1, bigint2, result);
 
+    bigint_constructor_from_int(&bigint1, 0x4386788);
+    bigint_addition_test(NO_SELF, bigint1, NULL, NULL);
+
+    bigint_constructor_from_int(&bigint2, 0x4386788);
+    bigint_addition_test(NO_SELF, NULL, bigint2, NULL);
+
+    error = bigint_addition(NULL, NULL, NULL);
+    assert_equal_i("no return pointer", ERROR_VALUE, error);
 }
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

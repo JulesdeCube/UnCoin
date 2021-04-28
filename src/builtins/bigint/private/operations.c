@@ -2,19 +2,58 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//                                ARITHMETIQUE                                //
+//                                GETTER/SETTER                               //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define BIGINT_OPERATION_GARD()                      \
-    if (result == NULL)                              \
-        return ERROR_VALUE;                          \
-                                                     \
-    if (bigint1 == NULL || bigint2 == NULL)          \
-    {                                                \
-        int error = bigint_constructor_null(result); \
-        return error == SUCCESS ? NO_SELF : error;   \
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                 COMPARAISON                                //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+int _bigint_unsigned_comparison(BigInt bigint1, BigInt bigint2)
+{
+    u_char *key1 = buffer_get_data(bigint1->buffer);
+    u_char *key2 = buffer_get_data(bigint2->buffer);
+
+    size_t size;
+    if (buffer_get_size(bigint1->buffer) > buffer_get_size(bigint2->buffer))
+        size = buffer_get_size(bigint1->buffer);
+    else
+    {
+        size = buffer_get_size(bigint2->buffer);
     }
+    for (; size; --size, key1++, key2++)
+        if (*key1 != *key2)
+            return (*key1 > *key2) ? 1 : -1;
+    return 0;
+}
+
+int _bigint_comparison(BigInt bigint1, BigInt bigint2)
+{
+    BigInt x = bigint1;
+    BigInt y = bigint2;
+    if (x->sign != y->sign)
+        return x->sign == POSITIVE ? 1 : -1;
+
+    if (x->exhibitor != y->exhibitor)
+        return (x->sign == POSITIVE) ^ (x->exhibitor > y->exhibitor) ? 1 : -1;
+
+    int unsigned_res = _bigint_unsigned_comparison(bigint1, bigint2);
+    return x->sign == POSITIVE ? unsigned_res : -unsigned_res;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                   BITWISE                                  //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                ARITHMETIQUE                                //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 int _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow)
 {
@@ -86,13 +125,9 @@ int _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size)
 
 int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
-    // check for pointer issus
-    BIGINT_OPERATION_GARD();
-    int error;
-
     // get the new number buffer size
     size_t size;
-    error = _bigint_add_size(bigint1, bigint2, &size);
+    int error = _bigint_add_size(bigint1, bigint2, &size);
     if (error != SUCCESS)
         return error;
 
@@ -139,12 +174,8 @@ int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result)
     return error;
 }
 
-int _bigint_substract(BigInt bigint1, BigInt bigint2, BigInt *result)
+int _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
-    // check for pointer issus
-    BIGINT_OPERATION_GARD();
-    int error;
-
     // get the new number buffer size
     size_t size1 = buffer_get_size(bigint1->buffer);
     size_t size2 = buffer_get_size(bigint2->buffer);
@@ -152,7 +183,7 @@ int _bigint_substract(BigInt bigint1, BigInt bigint2, BigInt *result)
 
     // create result buffer
     Buffer buffer;
-    error = buffer_constructor_const(&buffer, size, 0);
+    int error = buffer_constructor_const(&buffer, size, 0);
     if (error != SUCCESS)
         return error;
 
@@ -193,58 +224,65 @@ int _bigint_substract(BigInt bigint1, BigInt bigint2, BigInt *result)
     return error;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                   BITWISE                                  //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+int _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub)
+{
+    (void)sub;
+    // if the first is null it's the second one
+    if (bigint_is_null(bigint1))
+        // if the 2 second is null to return null in the other case return the
+        // second number
+        return bigint_is_null(bigint2)
+                   ? bigint_constructor_null(result)
+                   : bigint_constructor_bigint(result, bigint2);
+
+    // if the second element is null return a copy of the first one
+    if (bigint_is_null(bigint2))
+        return bigint_constructor_bigint(result, bigint1);
+
+    // get bigint order
+    int comparison = _bigint_unsigned_comparison(bigint1, bigint2);
+    // check if the sign are different
+    bool oposite_sign = bigint1->sign != bigint2->sign;
+
+    // if the absolute value of the number are equal (|a| = |b|)
+    if (comparison == 0)
+    {
+        // return null if there are oposite sign (a - a = 0)
+        if (oposite_sign)
+            return bigint_constructor_null(result);
+
+        // if there are the same sign (a + a = 2a = a << 1)
+        // TODO : use bitwise shift
+        int error = _bigint_add(bigint1, bigint2, result);
+        if (error == SUCCESS)
+            (*result)->sign = bigint1->sign;
+        return error;
+    }
+
+    // if the fist number is less that the second (a < b) invert it for the
+    // substraction (need to have first number greater or equal to the second)
+    if (comparison == -1)
+    {
+        BigInt tmp = bigint1;
+        bigint1 = bigint2;
+        bigint2 = tmp;
+    }
+
+    // make a substraction if there as oposite sign and a addition in the other
+    // case
+    int (*fn)(BigInt, BigInt, BigInt *) = oposite_sign ? _bigint_sub : _bigint_add;
+    // apply the operation
+    int error = fn(bigint1, bigint2, result);
+
+    // the result sign is the oposite of the first one
+    if (error == SUCCESS)
+        (*result)->sign = bigint1->sign;
+
+    return error;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                 CONVERSION                                 //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                 COMPARAISON                                //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-int _bigint_unsigned_comparison(BigInt bigint1, BigInt bigint2)
-{
-    u_char *key1 = buffer_get_data(bigint1->buffer);
-    u_char *key2 = buffer_get_data(bigint2->buffer);
-
-    size_t size;
-    if(buffer_get_size(bigint1->buffer) > buffer_get_size(bigint2->buffer))
-        size = buffer_get_size(bigint1->buffer);
-    else
-    {
-        size = buffer_get_size(bigint2->buffer);
-    }
-    for (; size; --size, key1++, key2++)
-        if (*key1 != *key2)
-            return (*key1 > *key2) ? 1 : -1;
-    return 0;
-}
-
-int _bigint_comparison(BigInt bigint1, BigInt bigint2)
-{
-    BigInt x = bigint1;
-    BigInt y = bigint2;
-    if (x->sign != y->sign)
-        return x->sign == POSITIVE ? 1 : -1;
-
-    if (x->exhibitor != y->exhibitor)
-        return (x->sign == POSITIVE) ^ (x->exhibitor > y->exhibitor) ? 1 : -1;
-
-    int unsigned_res = _bigint_unsigned_comparison(bigint1, bigint2);
-    return x->sign == POSITIVE ? unsigned_res : -unsigned_res;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                GETTER/SETTER                               //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////

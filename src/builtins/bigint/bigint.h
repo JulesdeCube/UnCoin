@@ -80,8 +80,9 @@ void bigint_destructor(BigInt *bigint);
 //                               GETTER/SETTER                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
-size_t bigint_get_exhibitor(BigInt bigint);
 
+bool bigint_is_null(BigInt bigint);
+size_t bigint_get_exhibitor(BigInt bigint);
 int bigint_get_byte(BigInt bigint, size_t i, u_char *byte);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -89,10 +90,14 @@ int bigint_get_byte(BigInt bigint, size_t i, u_char *byte);
 //                                 OPERATION                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+
 int bigint_addition(BigInt bigint1, BigInt bigint2, BigInt *result);
+int bigint_substraction(BigInt bigint1, BigInt bigint2, BigInt *result);
+
 ////////////////////////////////////////////////////////////
 //                       CONVERSION                       //
 ////////////////////////////////////////////////////////////
+
 int bigint_to_bool(BigInt bigint, bool *result);
 int bigint_to_int(BigInt bigint, int *result);
 long long int bigint_to_long_long_int(BigInt bigint, long long int *result);
@@ -104,6 +109,7 @@ int bigint_to_string(BigInt bigint, char **str, size_t *len);
 //                                 COMPARAISON                                //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
+
 bool bigint_greater_than(BigInt bigint1, BigInt bigint2);
 bool bigint_less_than(BigInt bigint1, BigInt bigint2);
 bool bigint_equal_than(BigInt bigint1, BigInt bigint2);
