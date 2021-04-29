@@ -5,20 +5,23 @@
 #include <stdlib.h>
 #include <err.h>
 #include "../../utils/bool.h"
+#include "../buffer/buffer.h"
+#include "../../module/hash/hash.h"
+#include "../../module/hash/tests/hash_tools.h"
 
-#define PROOF 4 // 4 premier zero dans le hash
+#define PROOF 5 // 5 premier zero dans le hash
 #define GENESIS_DATA "Genesis block"
 
 struct block
 {
     size_t index;
-    size_t nonce; // Random num by miners (proof)
+    long nonce; // Random num by miners (proof)
 
     //    size_t timestamp;
     void *data;
 
-    char *previousHash;
-    char *hash;
+    Buffer previousHash;
+    Buffer hash;
 
     struct block *previousBlock;
 };
@@ -43,5 +46,7 @@ void blockchain_free_blockchain(Blockchain blockchain);
 int blockchain_check_blockchain(Blockchain blockchain);
 
 int blockchain_add_block(Blockchain blockchain, size_t nonce, void *data);
+
+void blockchain_block_mining(Block block);
 
 #endif //UNCOIN__BUILTINS_BLOCKCHAIN__BLOCKCHAIN_H_
