@@ -66,6 +66,10 @@ typedef struct s_htab *Htab;
 
 // Default capacity of a hash table
 #define DEFAULT_CAPACITY 4
+// Ratio of the hash table equal to (capacity / size)
+// result in percentage
+#define MIN_RATIO 20
+#define MAX_RATIO 80
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -87,6 +91,8 @@ int construct_pair(Pair *pair, Buffer key, void *value, Buffer *hkey);
 // TODO comments
 int htab_destructor(Htab htab, Destructor destructor);
 
+int pair_destructor(Pair pair, Destructor destructor);
+
 void list_clean(Pair list, Destructor destructor);
 
 void htab_clear(Htab htab, Destructor destructor);
@@ -97,11 +103,20 @@ void htab_clear(Htab htab, Destructor destructor);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int htab_get_corresponding_pair(Htab htab, Pair pair_to_test, Pair *pair_result);
+int htab_get_corresponding_pair(Htab htab,
+                                Pair pair_to_test,
+                                Pair *pair_result,
+                                Pair *previous_pair_result);
 // TODO comments
 void print_htab(Htab htab);
 
 int htab_insert(Htab htab, Buffer key, void *value);
+
+int construct_htab_from_array(Htab htab, size_t n_element, char **names,
+                            void **values);
+
+int htab_remove_pair(Htab htab, Pair pair_to_remove, Destructor destructor);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

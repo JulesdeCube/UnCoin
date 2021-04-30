@@ -1,21 +1,30 @@
 #include "../hash_table.h"
 
+int pair_destructor(Pair pair, Destructor destructor)
+{
+    if (pair == NULL)
+        return NO_SELF;
+
+    Buffer buffer;
+    buffer = pair_get_hkey(pair);
+    buffer_destructor_safe(&buffer);
+    buffer = pair_get_key(pair);
+    buffer_destructor_safe(&buffer);
+
+    // If there is a destructor function call it
+    if (destructor != NULL)
+        destructor(pair->value);
+
+    free(pair);
+    return SUCCESS;
+}
+
 void list_clean(Pair list, Destructor destructor)
 {
-    Buffer buffer;
     for (Pair pair = list, next_pair; pair != NULL;)
     {
         next_pair = pair_get_next(pair);
-        buffer = pair_get_hkey(pair);
-        buffer_destructor_safe(&buffer);
-        buffer = pair_get_key(pair);
-        buffer_destructor_safe(&buffer);
-
-        // If there is a destructor function call it
-        if (destructor != NULL)
-            destructor(pair->value);
-
-        free(pair);
+        pair_destructor(pair, destructor);
         pair = next_pair;
     }
 }

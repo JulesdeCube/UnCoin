@@ -30,7 +30,7 @@ void is_pair_test(Pair pair, Htab htab, int error, int is_same, Destructor destr
         assert_equal_p("Htab pointer", NULL, htab);
     else
     {
-        r_error = htab_get_corresponding_pair(htab, pair, &new_pair);
+        r_error = htab_get_corresponding_pair(htab, pair, &new_pair, NULL);
         assert_equal_ul("error corresponding", SUCCESS, r_error);
         // For each test :
         // - hash key
@@ -59,18 +59,6 @@ void is_pair_test(Pair pair, Htab htab, int error, int is_same, Destructor destr
         htab_destructor(htab, destructor);
     }
     putchar('|');
-}
-
-void construct_htab_from_array(Htab htab, size_t n_element, char **names, void **values)
-{
-    Buffer key;
-    u_char *name;
-    for(size_t i = 0; i < n_element; ++i)
-    {
-        name = (u_char *) names[i];
-        buffer_constructor_array(&key, strlen(names[i]) + 1, name);
-        htab_insert(htab, key, values[i]);
-    }
 }
 
 void constructor_test()
@@ -113,10 +101,35 @@ void pair_get_test()
     is_pair_test(pair, htab, error, true, NULL);
 }
 
+void pair_remove_test()
+{
+    Htab htab;
+    htab_constructor(&htab);
+
+    char *names[] = {"Turkey", "Jamaica", "Iraq", "Spain", "test", "CARAMBA"};
+    void *values[] = {"Ankara", "Kingston", "Baghdad", "Madrid", NULL, NULL};
+    construct_htab_from_array(htab, 6, names, values);
+
+    Buffer buf_key;
+    char *str = "Spain";
+    buffer_constructor_array(&buf_key, strlen(str) + 1, (u_char *) str);
+    Pair pair;
+    Buffer buf_hkey;
+    construct_pair(&pair, buf_key, "Madrid", &buf_hkey);
+
+    int error = htab_remove_pair(htab, pair, NULL);
+    if(error != SUCCESS)
+        printf("ERROR : %d\n", error);
+    print_htab(htab);
+
+    htab_destructor(htab, NULL);
+}
+
 Test hash_tests[] = {
     {"constructor", constructor_test},
     {"pair insert", pair_insert_test},
-    {"pair get", pair_get_test}};
+    {"pair get", pair_get_test},
+    {"pair remove", pair_remove_test}};
 
 void test_constructor()
 {
