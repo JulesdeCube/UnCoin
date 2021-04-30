@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <err.h>
+#include <strings.h>
 #include "../../utils/bool.h"
 #include "../buffer/buffer.h"
 #include "../../module/hash/hash.h"
@@ -14,15 +15,14 @@
 
 struct block
 {
-    size_t index;
-    long nonce; // Random num by miners (proof)
+    Buffer previousHash;
 
-    //    size_t timestamp;
+    size_t index;
+    long nonce;
+
     void *data;
 
-    Buffer previousHash;
     Buffer hash;
-
     struct block *previousBlock;
 };
 
@@ -34,19 +34,36 @@ struct blockchain
 typedef struct blockchain *Blockchain;
 typedef struct block *Block;
 
-//char *blockchain_hash(Block block)
+size_t blockchain_size(long nonce);
+void blockchain_block_hash(Block block);
+char *blockchain_block_buffer_to_string(Buffer buff);
 
-//Block blockchain_create_new_block(size_t nonce, void *data, Block last_block);
-Blockchain blockchain_create_blockchain();
+Block blockchain_block_constructor(void *data, Block lastBlock);
+int blockchain_block_check(Block block);
 
-//void blockchain_free_block(Block block);
-void blockchain_free_blockchain(Blockchain blockchain);
+Blockchain blockchain_contructor();
+void blockchain_block_add(Blockchain blockchain, void *data);
+int blockchain_check(Blockchain blockchain);
 
-//int blockchain_proof_of_woork_block(Block block);
-int blockchain_check_blockchain(Blockchain blockchain);
+void blockchain_block_mine(Block block);
+int blockchain_block_proof_of_work(Block block);
 
-int blockchain_add_block(Blockchain blockchain, size_t nonce, void *data);
+void block_destructor(Block block);
+void blockchain_destructor(Blockchain blockchain);
 
-void blockchain_block_mining(Block block);
+/*
+struct transaction
+{
+    char *from; // Key public of me
+    char *to;   // Key public of him
+    long amount;
+    char *signature;
+};
+
+typedef struct transaction *Transaction;
+
+Transaction transaction_contructor(char *from, char *to, long amount, char *privKey);
+Buffer transaction_message(Transaction transaction);
+int isValid(Transaction transaction);*/
 
 #endif //UNCOIN__BUILTINS_BLOCKCHAIN__BLOCKCHAIN_H_
