@@ -3,7 +3,7 @@
 int buffer_equal(Buffer buffer1, Buffer buffer2, bool *result)
 {
     if (result == NULL)
-          return ERROR_VALUE;
+        return ERROR_VALUE;
 
     if (buffer1 == NULL || buffer2 == NULL)
     {
@@ -22,7 +22,8 @@ int buffer_equal(Buffer buffer1, Buffer buffer2, bool *result)
     u_char *data1 = buffer_get_data(buffer1);
     u_char *data2 = buffer_get_data(buffer2);
 
-    for (;size1 && *data1++ == *data2++; --size1);
+    for (; size1 && *data1++ == *data2++; --size1)
+        ;
 
     *result = size1 == 0;
     return SUCCESS;

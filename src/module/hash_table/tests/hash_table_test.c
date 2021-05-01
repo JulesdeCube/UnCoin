@@ -1,8 +1,7 @@
 #include "test_constructor.h"
 
 Test tests[] = {
-    {"HASH TABLE CONSTRUCTOR", test_constructor}
-    };
+    {"HASH TABLE CONSTRUCTOR", test_constructor}};
 
 int main(void)
 {

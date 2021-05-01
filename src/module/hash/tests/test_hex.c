@@ -63,8 +63,7 @@ void with_zero_test()
 Test hash_tests[] = {
     {"blackhyptonique", black_test},
     {"from tp", from_tp_test},
-    {"with zero", with_zero_test}
-    };
+    {"with zero", with_zero_test}};
 
 void test_hex()
 {

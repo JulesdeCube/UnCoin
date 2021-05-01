@@ -135,9 +135,9 @@ void assert_equal_buffer(char *name, Buffer exepted_buf, Buffer got_buf)
         putchar('X');
         putchar('\n');
         errx(1, "ASSERT ERROR: %s. size exepted: %ld, size got: %ld.\n",
-                name,
-                exepted_buf->size,
-                got_buf->size);
+             name,
+             exepted_buf->size,
+             got_buf->size);
     }
 }
 
@@ -157,9 +157,9 @@ void assert_not_equal_arr(char *name, unsigned char *exepted_arr, unsigned char 
     putchar('X');
     putchar('\n');
     errx(1, "ASSERT ERROR: %s. they are the same, got first: %s, got second: %s\n",
-        name,
-        exepted_arr,
-        got_arr);
+         name,
+         exepted_arr,
+         got_arr);
 }
 
 void assert_not_equal_buffer(char *name, Buffer exepted_buf, Buffer got_buf)

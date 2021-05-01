@@ -3,12 +3,12 @@
 int hash_from_buffer(size_t *hash, Buffer *hash_buf)
 {
     // Use the Jenkins's one_at_a_time hash.
-    if(hash_buf == NULL)
+    if (hash_buf == NULL)
         return NO_SELF;
-    if(hash == NULL)
+    if (hash == NULL)
         return ERROR_VALUE;
     u_char *key = buffer_get_data(*hash_buf);
-    if(key == NULL)
+    if (key == NULL)
         return INTERNAL_ERROR;
     size_t size = buffer_get_size(*hash_buf);
 
@@ -33,7 +33,7 @@ int hash(Buffer *buff_result, Buffer *buff_to_hash)
     size_t *p_hash = &hash;
     // call hash function
     int error = hash_from_buffer(p_hash, buff_to_hash);
-    if(error != SUCCESS)
+    if (error != SUCCESS)
         return error;
 
     // change type and call the function to construct.

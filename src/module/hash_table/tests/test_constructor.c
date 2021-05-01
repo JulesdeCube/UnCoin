@@ -25,36 +25,37 @@ void is_pair_test(Pair pair, Htab htab, int error, int is_same, Destructor destr
 {
     int r_error;
     Pair new_pair;
+    Pair previous_pair;
     assert_equal_ul("error code", SUCCESS, error);
     if (error != SUCCESS)
         assert_equal_p("Htab pointer", NULL, htab);
     else
     {
-        r_error = htab_get_corresponding_pair(htab, pair, &new_pair, NULL);
+        r_error = htab_get_corresponding_pair(htab, pair, &new_pair, &previous_pair);
         assert_equal_ul("error corresponding", SUCCESS, r_error);
         // For each test :
         // - hash key
         // - key
         // - value
-        if(is_same)
+        if (is_same)
         {
             assert_equal_buffer("Comparison hash key",
-                            pair->hkey,
-                            new_pair->hkey);
+                                pair->hkey,
+                                new_pair->hkey);
             assert_equal_buffer("Comparison key",
-                            pair->key,
-                            new_pair->key);
+                                pair->key,
+                                new_pair->key);
             assert_equal_p("Comparison value",
-                            pair->value,
-                            new_pair->value);
+                           pair->value,
+                           new_pair->value);
         }
         else
         {
             // But don't forget a hash can be the same but
             // the keys can be different
             assert_not_equal_buffer("Comparison",
-                                pair->key,
-                                new_pair->key);
+                                    pair->key,
+                                    new_pair->key);
         }
         htab_destructor(htab, destructor);
     }
@@ -92,8 +93,12 @@ void pair_get_test()
     construct_htab_from_array(htab, 6, names, values);
 
     Buffer buf_key;
-    char *str = "Iraq";
-    buffer_constructor_array(&buf_key, strlen(str) + 1, (u_char *) str);
+    error = buffer_constructor_str(buf_key, "Iraq", true);
+    if (error != SUCCESS)
+    {
+        errx(1, "can't create buffer key : %i", error);
+    }
+
     Pair pair;
     Buffer buf_hkey;
     construct_pair(&pair, buf_key, "Baghdad", &buf_hkey);
@@ -112,13 +117,13 @@ void pair_remove_test()
 
     Buffer buf_key;
     char *str = "Spain";
-    buffer_constructor_array(&buf_key, strlen(str) + 1, (u_char *) str);
+    buffer_constructor_array(&buf_key, strlen(str) + 1, (u_char *)str);
     Pair pair;
     Buffer buf_hkey;
     construct_pair(&pair, buf_key, "Madrid", &buf_hkey);
 
     int error = htab_remove_pair(htab, pair, NULL);
-    if(error != SUCCESS)
+    if (error != SUCCESS)
         printf("ERROR : %d\n", error);
     print_htab(htab);
 

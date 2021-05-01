@@ -37,7 +37,6 @@ void htab_clear(Htab htab, Destructor destructor)
     {
         list_clean(pair_get_next(data), destructor);
     }
-
 }
 
 int htab_destructor(Htab htab, Destructor destructor)
