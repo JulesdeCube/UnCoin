@@ -1,8 +1,13 @@
 #include "test_constructor.h"
 
-int error;
+int error, r_error;
+Htab htab;
+Buffer buf_key;
+char *names[] = {"Turkey", "Jamaica", "Iraq", "Spain", "c zoli", "CARAMBA", "test"};
+void *values[] = {"Ankara", "Kingston", "Baghdad", "Madrid", NULL, NULL, NULL};
 
-void htab_test(Htab new_htab, int new_code, int error, size_t size, Destructor destructor)
+void htab_test(Htab new_htab, int new_code, int error, size_t size, size_t capacity,
+ Destructor destructor)
 {
     // check the error code
     assert_equal_ul("Error code", error, new_code);
@@ -14,127 +19,128 @@ void htab_test(Htab new_htab, int new_code, int error, size_t size, Destructor d
     {
         // test the size
         assert_equal_ul("Size", size, new_htab->size);
-        // free the htab
-        htab_destructor(new_htab, destructor);
+        // test the capacity
+        assert_equal_ul("Capacity", capacity, new_htab->capacity);
     }
-    // add a htab test separator
+    // free the htab
+    htab_destructor(new_htab, destructor);
+
     putchar('|');
 }
 
-void is_pair_test(Pair pair, Htab htab, int error, int is_same, Destructor destructor)
+void is_pair_test(Buffer key, void *value, Htab htab, int error, int is_same, Destructor destructor)
 {
-    int r_error;
-    Pair new_pair;
-    Pair previous_pair;
     assert_equal_ul("error code", SUCCESS, error);
     if (error != SUCCESS)
         assert_equal_p("Htab pointer", NULL, htab);
     else
     {
-        r_error = htab_get_corresponding_pair(htab, pair, &new_pair, &previous_pair);
+        void *res_value;
+        r_error = htab_get(htab, key, &res_value);
         assert_equal_ul("error corresponding", SUCCESS, r_error);
-        // For each test :
-        // - hash key
-        // - key
-        // - value
         if (is_same)
         {
-            assert_equal_buffer("Comparison hash key",
-                                pair->hkey,
-                                new_pair->hkey);
-            assert_equal_buffer("Comparison key",
-                                pair->key,
-                                new_pair->key);
-            assert_equal_p("Comparison value",
-                           pair->value,
-                           new_pair->value);
+            assert_equal_p("Comparison values",
+                           value,
+                           res_value);
         }
         else
         {
-            // But don't forget a hash can be the same but
-            // the keys can be different
-            assert_not_equal_buffer("Comparison",
-                                    pair->key,
-                                    new_pair->key);
+            assert_not_equal_p("Comparison values",
+                                value,
+                                res_value);
         }
-        htab_destructor(htab, destructor);
+        if(destructor != NULL)
+            destructor(res_value);
     }
+    htab_destructor(htab, destructor);
+    if(destructor != NULL)
+        destructor(value);
+    buffer_destructor_safe(&key);
     putchar('|');
+}
+
+void htab_remove_list(Htab htab, char *str_list[], size_t n)
+{
+    for(size_t i = 0; i < n; ++i)
+    {
+        buffer_constructor_array(&buf_key, strlen(str_list[i]) + 1, (u_char *)str_list[i]);
+        error = htab_remove(htab, buf_key, NULL);
+        if (error != SUCCESS)
+            printf("ERROR : %d\n", error);
+    }
+}
+
+void htab_pop_list(Htab htab, char *str_list[], void *values[], size_t n)
+{
+    void *value;
+    for(size_t i = 0; i < n; ++i)
+    {
+        buffer_constructor_array(&buf_key, strlen(str_list[i]) + 1, (u_char *)str_list[i]);
+        error = htab_pop(htab, buf_key, &value, NULL);
+        if (error != SUCCESS)
+            printf("ERROR : %d\n", error);
+        assert_equal_p("Values", values[i], value);
+    }
 }
 
 void constructor_test()
 {
-    Htab htab;
     error = htab_constructor(&htab);
-    htab_test(htab, error, SUCCESS, 0, NULL);
+    htab_test(htab, error, SUCCESS, 0, 4, NULL);
 }
 
 void pair_insert_test()
 {
-    Htab htab;
     htab_constructor(&htab);
+    construct_htab_from_array(htab, 4, names, values);
 
-    char *names[] = {"Turkey", "Jamaica", "Iraq", "Spain", "test", "CARAMBA"};
-    void *values[] = {"Ankara", "Kingston", "Baghdad", "Madrid", NULL, NULL};
-    construct_htab_from_array(htab, 6, names, values);
-
-    print_htab(htab);
-
-    htab_destructor(htab, NULL);
+    htab_test(htab, error, SUCCESS, 4, 8, NULL);
 }
 
 void pair_get_test()
 {
-    Htab htab;
-    int error = htab_constructor(&htab);
+    htab_constructor(&htab);
+    construct_htab_from_array(htab, 7, names, values);
 
-    char *names[] = {"Turkey", "Jamaica", "Iraq", "Spain", "c zoli", "CARAMBA"};
-    void *values[] = {"Ankara", "Kingston", "Baghdad", "Madrid", NULL, NULL};
-    construct_htab_from_array(htab, 6, names, values);
+    error = buffer_constructor_str(&buf_key, "Iraq", true);
 
-    Buffer buf_key;
-    error = buffer_constructor_str(buf_key, "Iraq", true);
-    if (error != SUCCESS)
-    {
-        errx(1, "can't create buffer key : %i", error);
-    }
-
-    Pair pair;
-    Buffer buf_hkey;
-    construct_pair(&pair, buf_key, "Baghdad", &buf_hkey);
-
-    is_pair_test(pair, htab, error, true, NULL);
+    is_pair_test(buf_key, "Baghdad", htab, error, true, NULL);
 }
 
 void pair_remove_test()
 {
-    Htab htab;
     htab_constructor(&htab);
 
-    char *names[] = {"Turkey", "Jamaica", "Iraq", "Spain", "test", "CARAMBA"};
-    void *values[] = {"Ankara", "Kingston", "Baghdad", "Madrid", NULL, NULL};
-    construct_htab_from_array(htab, 6, names, values);
+    construct_htab_from_array(htab, 4, names, values);
 
-    Buffer buf_key;
-    char *str = "Spain";
-    buffer_constructor_array(&buf_key, strlen(str) + 1, (u_char *)str);
-    Pair pair;
-    Buffer buf_hkey;
-    construct_pair(&pair, buf_key, "Madrid", &buf_hkey);
+    // To remove all of this
+    char *str_list[] = {"Spain", "Turkey", "Iraq", "Jamaica"};
+    htab_remove_list(htab, str_list, 4);
 
-    int error = htab_remove_pair(htab, pair, NULL);
-    if (error != SUCCESS)
-        printf("ERROR : %d\n", error);
-    print_htab(htab);
+    htab_test(htab, error, SUCCESS, 0, 4, NULL);
+}
 
-    htab_destructor(htab, NULL);
+void pair_pop_test()
+{
+    htab_constructor(&htab);
+
+    construct_htab_from_array(htab, 4, names, values);
+
+    // To remove all of this
+    char *str_list[] = {"Spain", "Turkey", "Iraq", "Jamaica"};
+    void *values[] = {"Madrid", "Ankara", "Baghdad", "Kingston"};
+    htab_pop_list(htab, str_list, values, 4);
+
+    htab_test(htab, error, SUCCESS, 0, 4, NULL);
 }
 
 Test hash_tests[] = {
     {"constructor", constructor_test},
     {"pair insert", pair_insert_test},
     {"pair get", pair_get_test},
-    {"pair remove", pair_remove_test}};
+    {"pair remove", pair_remove_test},
+    {"pair pop", pair_pop_test}};
 
 void test_constructor()
 {

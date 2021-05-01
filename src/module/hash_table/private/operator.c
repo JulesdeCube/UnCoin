@@ -1,6 +1,6 @@
 #include "../hash_table.h"
 
-int buffer_equal(Buffer buffer1, Buffer buffer2, bool *result)
+int __buffer_equal(Buffer buffer1, Buffer buffer2, bool *result)
 {
     if (result == NULL)
         return ERROR_VALUE;
@@ -13,7 +13,6 @@ int buffer_equal(Buffer buffer1, Buffer buffer2, bool *result)
 
     size_t size1 = buffer_get_size(buffer1);
     size_t size2 = buffer_get_size(buffer2);
-
     *result = size1 == size2;
 
     if (!*result)
@@ -32,12 +31,11 @@ int buffer_equal(Buffer buffer1, Buffer buffer2, bool *result)
 Pair _get_pair_with_hashkey(Pair pair_list, Buffer hkey, Pair *previous_pair)
 {
     *previous_pair = pair_list;
-    printf("test8.1\n");
     Pair pair = pair_list->next;
     for (; pair != NULL; *previous_pair = pair, pair = pair->next)
     {
         bool result;
-        buffer_equal(pair_list->hkey, hkey, &result);
+        __buffer_equal(pair->hkey, hkey, &result);
         if (result)
             return pair;
     }
@@ -77,5 +75,48 @@ int __htab_reload_pairs(Htab htab, size_t new_capacity)
     free(htab->data);
     htab_set_capacity(htab, new_capacity);
     htab->data = new_pair_list;
+    return SUCCESS;
+}
+
+int __htab_get_corresponding_pair(Htab htab,
+                                Buffer key,
+                                Pair *pair_result,
+                                Pair *previous_pair)
+{
+    if (htab == NULL || key == NULL)
+        return NO_SELF;
+
+    if (htab->size == 0)
+        return OUT_OF_RANGE;
+
+    Buffer hkey;
+    int error = hash(&hkey, &key);
+    if (error != SUCCESS)
+        return error;
+
+    // get the list of the possible position
+    Pair where_can_be_list = __pair_get_list_from_hkey(htab->data,
+                                                       hkey,
+                                                       htab->capacity);
+    // Check if an element in the list has the same hash key
+    Pair where_can_be_pair = _get_pair_with_hashkey(where_can_be_list,
+                                                    hkey,
+                                                    previous_pair);
+    // element not exist
+    if (where_can_be_pair == NULL)
+    {
+        return OUT_OF_RANGE;
+    }
+
+    // test if it is not 2 different key with same hkey
+    bool result;
+    error = __buffer_equal(key, where_can_be_pair->key, &result);
+    if (error != SUCCESS)
+        return error;
+    if (!result)
+    {
+        return OUT_OF_RANGE;
+    }
+    *pair_result = where_can_be_pair;
     return SUCCESS;
 }

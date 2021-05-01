@@ -29,64 +29,27 @@ void __pairlist_append_element(Pair pair_list, Pair element);
 
 int __htab_reload_pairs(Htab htab, size_t new_capacity);
 
+int __buffer_equal(Buffer buffer1, Buffer buffer2, bool *result);
+
+int __htab_get_corresponding_pair(Htab htab,
+                                Buffer key,
+                                Pair *pair_result,
+                                Pair *previous_pair);
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                             PUBLIC IMPLEMENTATIONS                         //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int htab_get_corresponding_pair(Htab htab,
-                                Pair pair_to_test,
-                                Pair *pair_result,
-                                Pair *previous_pair_result)
+int htab_get(Htab htab, Buffer key, void **value)
 {
-    if (htab == NULL || pair_to_test == NULL)
-        return NO_SELF;
+    Pair pair_result, previous_pair;
+    int error = __htab_get_corresponding_pair(htab, key, &pair_result, &previous_pair);
+    if (error != SUCCESS)
+        return error;
 
-    if (htab->size == 0)
-        return OUT_OF_RANGE;
-
-    // get the list of the possible position
-    Pair where_can_be_list = __pair_get_list_from_hkey(htab->data,
-                                                       pair_to_test->hkey,
-                                                       htab->capacity);
-
-    printf("test3.2\n");
-    // Check if an element in the list has the same hash key
-    Pair where_can_be_pair = _get_pair_with_hashkey(where_can_be_list,
-                                                    pair_to_test->hkey,
-                                                    previous_pair_result);
-    printf("test3.3\n");
-    // element not exist
-    if (where_can_be_pair == where_can_be_list)
-    {
-        previous_pair_result = NULL;
-        return OUT_OF_RANGE;
-    }
-    printf("test3.1\n");
-    // test if it is not 2 different key with same hkey
-    char *str1 = (char *)pair_to_test->key->data;
-    char *str2 = (char *)where_can_be_pair->key->data;
-    if (strcmp(str1, str2))
-    {
-        previous_pair_result = NULL;
-        return OUT_OF_RANGE;
-    }
-
-    //we are good now
-    *pair_result = where_can_be_pair;
-    // if we found an element and the previous is null,
-    // the previous have to be the sentinel
-    if (previous_pair_result == NULL)
-    {
-        printf("test5\n");
-        Pair *p = &where_can_be_list;
-        printf("test5.2\n");
-        previous_pair_result = p;
-        printf("test5.3\n");
-        if (previous_pair_result == NULL)
-            printf("test5null\n");
-    }
+    *value = pair_result->value;
     return SUCCESS;
 }
 
@@ -154,6 +117,8 @@ int htab_double_capacity(Htab htab)
 
 int htab_divide_capacity(Htab htab)
 {
+    if (htab->capacity == DEFAULT_CAPACITY)
+        return SUCCESS;
     return __htab_reload_pairs(htab, htab->capacity / 2);
 }
 
@@ -208,26 +173,18 @@ int construct_htab_from_array(Htab htab, size_t n_element, char **names,
     return SUCCESS;
 }
 
-int htab_remove_pair(Htab htab, Pair pair_to_remove, Destructor destructor)
+int htab_remove(Htab htab, Buffer key, Destructor destructor)
 {
-    if (htab == NULL || pair_to_remove == NULL)
-        return NO_SELF;
-
-    //The pair in the htab for remove it
-    Pair corresponding_pair;
-    Pair previous_pair;
-
-    int error = htab_get_corresponding_pair(htab,
-                                            pair_to_remove,
+    Pair corresponding_pair, previous_pair;
+    int error = __htab_get_corresponding_pair(htab,
+                                            key,
                                             &corresponding_pair,
                                             &previous_pair);
     if (error != SUCCESS)
         return error;
 
-    printf("test1\n");
     // remove in the hash table
     previous_pair->next = corresponding_pair->next;
-    printf("test A AVOIR ABSOLUMENT\n");
 
     // change capacity oh the hash table if we need
     htab->size -= 1;
@@ -238,6 +195,33 @@ int htab_remove_pair(Htab htab, Pair pair_to_remove, Destructor destructor)
             return error;
     }
 
+    // destruct the pair (free all things)
+    return pair_destructor(corresponding_pair, destructor);
+}
+
+int htab_pop(Htab htab, Buffer key, void **value, Destructor destructor)
+{
+    Pair corresponding_pair, previous_pair;
+    int error = __htab_get_corresponding_pair(htab,
+                                            key,
+                                            &corresponding_pair,
+                                            &previous_pair);
+    if (error != SUCCESS)
+        return error;
+
+    *value = corresponding_pair->value;
+
+    // remove in the hash table
+    previous_pair->next = corresponding_pair->next;
+
+    // change capacity oh the hash table if we need
+    htab->size -= 1;
+    if (htab_get_ratio(htab) <= MIN_RATIO)
+    {
+        error = htab_divide_capacity(htab);
+        if (error != SUCCESS)
+            return error;
+    }
     // destruct the pair (free all things)
     return pair_destructor(corresponding_pair, destructor);
 }

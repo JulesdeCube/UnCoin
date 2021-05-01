@@ -103,10 +103,7 @@ void htab_clear(Htab htab, Destructor destructor);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int htab_get_corresponding_pair(Htab htab,
-                                Pair pair_to_test,
-                                Pair *pair_result,
-                                Pair *previous_pair_result);
+int htab_get(Htab htab, Buffer key, void **value);
 // TODO comments
 void print_htab(Htab htab);
 
@@ -115,7 +112,9 @@ int htab_insert(Htab htab, Buffer key, void *value);
 int construct_htab_from_array(Htab htab, size_t n_element, char **names,
                               void **values);
 
-int htab_remove_pair(Htab htab, Pair pair_to_remove, Destructor destructor);
+int htab_remove(Htab htab, Buffer key, Destructor destructor);
+
+int htab_pop(Htab htab, Buffer key, void **value, Destructor destructor);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
