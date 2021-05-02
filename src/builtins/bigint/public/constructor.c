@@ -67,14 +67,10 @@ int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
 
     bigint->sign = bigint->exhibitor ? sign : POSITIVE;
 
-    int error = buffer_constructor_array(&bigint->buffer,
-                                         normalize_size,
-                                         array);
-    if (error != SUCCESS)
-    {
-        bigint_destructor(&bigint);
-        return error;
-    }
+    TRY_CATCH(buffer_constructor_array(&bigint->buffer,
+                                       normalize_size,
+                                       array),
+              bigint_destructor(&bigint));
 
     *new_bigint = bigint;
 

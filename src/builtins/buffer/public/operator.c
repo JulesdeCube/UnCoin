@@ -31,11 +31,7 @@ int buffer_get_index(Buffer buffer, size_t index, u_char *byte)
 {
     u_char *ptr;
     // get the coresponding pointer
-    int error = _buffer_get_index_pointer(buffer, index, &ptr);
-
-    // if we can't get the pointer
-    if (error != SUCCESS)
-        return error;
+    TRY(_buffer_get_index_pointer(buffer, index, &ptr));
 
     // return the value
     *byte = *ptr;
@@ -47,10 +43,7 @@ int buffer_set_index(Buffer buffer, size_t index, u_char byte)
 {
     u_char *ptr;
     // get the coresponding pointer
-    int error = _buffer_get_index_pointer(buffer, index, &ptr);
-
-    if (error != SUCCESS)
-        return error;
+    TRY(_buffer_get_index_pointer(buffer, index, &ptr));
 
     // update the value
     *ptr = byte;

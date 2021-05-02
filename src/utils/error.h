@@ -14,4 +14,32 @@
 // The value is not valid
 #define ERROR_VALUE 5
 
+/**
+* call the function and on error call the clean function and return the error
+*
+* @param function the function that need to be call
+* @param clear function to clear all the alloced memory;
+*
+* @throw the error code thow by the function
+*/
+#define TRY_CATCH(function, clear) \
+    {                              \
+        int error = function;      \
+        if (error != SUCCESS)      \
+        {                          \
+            clear;                 \
+            return error;          \
+        }                          \
+    }
+
+/**
+* call the function and on error return the error
+*
+* @param function the function that need to be call
+*
+* @throw the error code thow by the function
+*/
+#define TRY(function) \
+    TRY_CATCH(function, {})
+
 #endif // UNCOIN__UTILS__ERROR_H_
