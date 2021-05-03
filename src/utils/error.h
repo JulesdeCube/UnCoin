@@ -1,7 +1,7 @@
 #ifndef UNCOIN__UTILS__ERROR_H_
 #define UNCOIN__UTILS__ERROR_H_
 
-// Task success succesfuly
+// Task is a success
 #define SUCCESS 0
 // Error that is not normaly possible
 #define INTERNAL_ERROR 1
