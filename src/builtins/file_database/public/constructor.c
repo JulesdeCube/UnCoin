@@ -3,7 +3,7 @@
 Blockchain database_init()
 {
     // Init blockchain
-    Blockchain bc = blockchain_create_blockchain();
+    Blockchain bc = blockchain_contructor();
 
     // Find file and add block in blockchain
     database_findFile(bc);
@@ -84,21 +84,17 @@ void database_readFile_addBlock(Blockchain blockchain, char *path_file)
     // Buffer
     char line[LINE_SIZE];
     char *buff = NULL, *data = NULL;
-    size_t nonce = -1;
+    //size_t nonce = -1;
 
     // TODO: A changer
     while (fgets(line, LINE_SIZE, file) != NULL)
     {
-        // Nonce (char * to size_t)
-        buff = strtok(line, ";");
-        if (sscanf(buff, "%li", &nonce) != 1)
-            errx(EXIT_FAILURE, "sscanf nonce");
-
         // Data (char *)
-        buff = strtok(NULL, ";");
+        buff = strtok(line, ";");
         data = database_duplicate_string(buff);
+	//printf("%s\n", data);
 
         // Create and add block in blockchain
-        blockchain_add_block(blockchain, nonce, data);
+        blockchain_block_add(blockchain, data);
     }
 }
