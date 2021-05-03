@@ -97,6 +97,7 @@ int bigint_substraction(BigInt bigint1, BigInt bigint2, BigInt *result);
 int bigint_left_shift(BigInt bigint, size_t shift, BigInt *result);
 int bigint_right_shift(BigInt bigint, size_t shift, BigInt *result);
 int bigint_shift(BigInt bigint, ssize_t shift, BigInt *result);
+int bigint_multiplication(BigInt bigint1,BigInt bigint2,BigInt *result);
 
 ////////////////////////////////////////////////////////////
 //                       CONVERSION                       //

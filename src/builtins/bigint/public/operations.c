@@ -129,6 +129,8 @@ int _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result);
 
 int _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub);
 
+int _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result);
+
 #define BIGINT_OPERATION_GARD()                      \
     if (result == NULL)                              \
         return ERROR_VALUE;                          \
@@ -245,6 +247,12 @@ int bigint_shift(BigInt bigint, ssize_t shift, BigInt *result)
                ? bigint_left_shift(bigint, shift, result)
                : bigint_right_shift(bigint, -shift, result);
 }
+int bigint_multiplication(BigInt bigint1,BigInt bigint2,BigInt *result)
+{
+    //BIGINT_OPERATION_GARD();
+    return _bigint_mul(bigint1,bigint2,result);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

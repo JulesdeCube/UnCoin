@@ -149,7 +149,7 @@ int _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow)
 
         TRY(bigint_get_byte(bigint2, i, &byte2))
 
-        // ceck if there is not an overflow
+        // check if there is not an overflow
         if (__builtin_add_overflow(byte1, byte2, &r))
         {
             *overflow = true;
@@ -177,6 +177,7 @@ int _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size)
 
     return SUCCESS;
 }
+
 
 int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
@@ -260,6 +261,77 @@ int _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub)
     return SUCCESS;
 }
 
+int _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result)
+{
+    int error;
+    bool b_sign = POSITIVE;
+    if(bigint1->sign != bigint2->sign)
+        b_sign = NEGATIVE;
+
+    // get the new number buffer size
+    size_t size1 = buffer_get_size(bigint1->buffer);
+    size_t size2 = buffer_get_size(bigint2->buffer);
+    size_t size = size1+size2;
+
+    Buffer buffer_res;
+    error = buffer_constructor_size(&buffer_res, size);
+    if (error != SUCCESS)
+        return error;
+
+    int int2;
+    error = bigint_to_int(bigint2, &int2);
+    if (error != SUCCESS)
+        return error;
+
+    error = bigint_constructor_buffer(result,b_sign,buffer_res);
+    buffer_destructor_safe(&buffer_res);
+    if (error != SUCCESS)
+    {
+        bigint_destructor(result);
+        return error;
+    }
+
+    for(;int2 > 1;int2--)
+    {
+        int error;
+        error = bigint_addition(bigint1,bigint1,result);
+        if(error != SUCCESS)
+        {
+            buffer_destructor(&buffer_res);
+            return error;
+        }
+    }
+
+    /*
+    u_char *p = buffer_get_data(buffer_res);
+    u_char byte1;
+    u_char byte2;
+    for(size_t i = 0;i < size1;i++,p++)
+    {
+        for (size_t j = 0; i < size2; j++, p++)
+        {
+
+            // get both byte
+            error = bigint_get_byte(bigint1, i, &byte1);
+            if (error != SUCCESS)
+            {
+                buffer_destructor(&buffer_res);
+                return error;
+            }
+
+            error = bigint_get_byte(bigint2, j, &byte2);
+            if (error != SUCCESS)
+            {
+                buffer_destructor(&buffer_res);
+                return error;
+            }
+
+
+        }
+    }*/
+
+    return SUCCESS;
+}
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                 CONVERSION                                 //

@@ -244,6 +244,58 @@ void bigint_substract_test(int exprected_error, BigInt bigint1, BigInt bigint2, 
     putchar('|');
 }
 
+void bigint_mul_private_test(int expected_error, BigInt bigint1, BigInt bigint2, BigInt expected_result)
+{
+    BigInt result;
+    int error, res;
+
+    char *b1, *b2, *title, *error_title;
+
+    if (bigint1 != NULL)
+    {
+        error = bigint_to_string(bigint1, &b1, NULL);
+        if (error != SUCCESS)
+            errx(1, "can't create bigint1 : %i", error);
+    }
+    else
+        b1 = "NULL";
+
+    if (bigint2 != NULL)
+    {
+
+        error = bigint_to_string(bigint2, &b2, NULL);
+        if (error != SUCCESS)
+            errx(1, "can't create bigint2 : %i", error);
+    }
+    else
+        b2 = "NULL";
+
+    if (asprintf(&title, "%s * %s", b1, b2) == -1)
+        errx(1, "cant create title test");
+
+    if (asprintf(&error_title, "%s : wong error code", title) == -1)
+        errx(1, "cant create error title test");
+
+    res = bigint_multiplication(bigint1, bigint2, &result);
+    assert_equal_i(error_title, expected_error, res);
+
+    if (res == SUCCESS)
+        assert_equal_bigint(title, expected_result, result);
+
+    if (bigint1 != NULL)
+        free(b1);
+    if (bigint2 != NULL)
+        free(b2);
+    free(title);
+    free(error_title);
+
+    bigint_destructor(&bigint1);
+    bigint_destructor(&bigint2);
+    bigint_destructor(&result);
+
+    putchar('|');
+}
+
 void bigint_left_shift_test(int exprected_error, BigInt bigint, size_t shift, BigInt exprected_result)
 {
     BigInt result;
@@ -467,12 +519,12 @@ void bigint_addition_tests()
     bigint_constructor_from_int(&result, -2);
     bigint_addition_test(SUCCESS, bigint1, bigint2, result);
 
-    /*
-    bigint_constructor_from_int(&bigint1, 1);
-    bigint_constructor_from_int(&bigint2, -20);
-    bigint_constructor_from_int(&result, -19);
-    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
 
+    bigint_constructor_from_int(&bigint1, 1);
+    bigint_constructor_from_int(&bigint2, -2);
+    bigint_constructor_from_int(&result, -1);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+    /*
     bigint_constructor_from_int(&bigint1, -20);
     bigint_constructor_from_int(&bigint2, 1);
     bigint_constructor_from_int(&result, -19);
@@ -604,6 +656,30 @@ void bigint_left_shift_tests()
     bigint_left_shift_test(SUCCESS, bigint1, 5, result);
 }
 
+void bigint_mul_private_tests()
+{
+    BigInt result;
+    bigint_constructor_from_int(&bigint1, 1);
+    bigint_constructor_from_int(&bigint2, 2);
+    bigint_constructor_from_int(&result, 2);
+    bigint_mul_private_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 1);
+    bigint_constructor_from_int(&bigint2, 1000);
+    bigint_constructor_from_int(&result, 1000);
+    bigint_mul_private_test(SUCCESS, bigint1, bigint2, result);
+
+    /*
+    bigint_constructor_from_int(&bigint1, 100);
+    bigint_constructor_from_int(&bigint2, 4);
+    bigint_constructor_from_int(&result, 400);
+    bigint_mul_private_tests(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 2);
+    bigint_constructor_from_int(&bigint2, 1);
+    bigint_constructor_from_int(&result, 2);
+    bigint_mul_private_tests(SUCCESS, bigint1, bigint2, result);*/
+}
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   TESTS                                    //
@@ -616,7 +692,8 @@ Test operations_tests[] = {
     {"_bigint_add", bigint_add_private_tests},
     {"bigint_addition", bigint_addition_tests},
     {"bigint_subtract", bigint_substract_tests},
-    {"bigint_left_shift", bigint_left_shift_tests}};
+    {"bigint_left_shift", bigint_left_shift_tests},
+    {"bigint_multiplication", bigint_mul_private_tests}};
 
 void test_operations()
 {
