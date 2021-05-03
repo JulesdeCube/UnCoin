@@ -3,45 +3,49 @@
 void print_blockchain(Blockchain bc)
 {
     Block b = bc->block;
-    //printf("{\n");
     while (b != NULL)
     {
+        char *str1 = blockchain_block_buffer_to_string(b->previousHash);
+        char *str2 = blockchain_block_buffer_to_string(b->hash);
+
         printf("\n    [%p]\n\n", b);
         printf("    index         : %li,\n", b->index);
         printf("    nonce         : %li,\n", b->nonce);
         printf("    data          : %s,\n", (char *)b->data);
-        printf("    previousHash  : %s,\n", b->previousHash);
-        printf("    hash          : %s,\n", b->hash);
-        printf("    previousBlock : %p\n", b->previousBlock);
-        printf("\n");
+        printf("    previousHash  : %s,\n", str1);
+        printf("    hash          : %s,\n", str2);
+        printf("    previousBlock : %p\n\n", b->previousBlock);
+
         b = b->previousBlock;
     }
 }
 
 int main()
 {
-    Blockchain bc = blockchain_create_blockchain();
+    //printf("%s\n", buffer_toString(hash_StringToBuffer("Genesis block805230")));
+    Blockchain bc = blockchain_contructor();
 
-    blockchain_add_block(bc, 1, "Hello 1");
-    //printf("hash 1 0000111: %s\n", bc->block->hash);
+    blockchain_block_add(bc, "Hello 1");
+    blockchain_block_add(bc, "Hello 2");
+    blockchain_block_add(bc, "Hello 3");
+    blockchain_block_add(bc, "Hello 4");
+    blockchain_block_add(bc, "Hello 1");
+    blockchain_block_add(bc, "Hello 2");
+    blockchain_block_add(bc, "Hello 3");
+    blockchain_block_add(bc, "Hello 4");
+    blockchain_block_add(bc, "Hello 1");
+    blockchain_block_add(bc, "Hello 2");
+    blockchain_block_add(bc, "Hello 3");
+    blockchain_block_add(bc, "Hello 4");
 
-    blockchain_add_block(bc, 2, "Hello 2");
-    //printf("hash 2 0000222: %s\n", bc->block->hash);
-
-    blockchain_add_block(bc, 16, "Hello 16");
-    //printf("hash 16 0000default: %s\n", bc->block->hash);
-
-    blockchain_add_block(bc, 999, "Hello 999");
-    //printf("hash 999 error: %s\n", bc->block->hash);
-
-    print_blockchain(bc);
-
-    size_t error_check_blockchain = blockchain_check_blockchain(bc);
+    size_t error_check_blockchain = blockchain_check(bc);
     if (error_check_blockchain == 1)
         printf("Blockchain is correct !\n");
     else
-        printf("Blockcahin is incorrect (error in block index: %li) !\n", error_check_blockchain);
-    blockchain_free_blockchain(bc);
+        printf("Blockchain is incorrect (error in block index: %li) !\n", error_check_blockchain);
+
+    print_blockchain(bc);
+    blockchain_destructor(bc);
 
     return 0;
 }
