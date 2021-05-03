@@ -244,6 +244,45 @@ void bigint_substract_test(int exprected_error, BigInt bigint1, BigInt bigint2, 
     putchar('|');
 }
 
+void bigint_left_shift_test(int exprected_error, BigInt bigint, size_t shift, BigInt exprected_result)
+{
+    BigInt result;
+    int error, res;
+
+    char *str, *title, *error_title;
+
+    if (bigint != NULL)
+    {
+        error = bigint_to_string(bigint, &str, NULL);
+        if (error != SUCCESS)
+            errx(1, "can't create bigint : %i", error);
+    }
+    else
+        str = "NULL";
+
+    if (asprintf(&title, "%s << %lu", str, shift) == -1)
+        errx(1, "cant create title test");
+
+    if (asprintf(&error_title, "%s : wong error code", title) == -1)
+        errx(1, "cant create error title test");
+
+    res = bigint_left_shift(bigint, shift, &result);
+    assert_equal_i(error_title, exprected_error, res);
+
+    if (res == SUCCESS)
+        assert_equal_bigint(title, exprected_result, result);
+
+    if (bigint != NULL)
+        free(str);
+    free(title);
+    free(error_title);
+
+    bigint_destructor(&bigint);
+    bigint_destructor(&result);
+    bigint_destructor(&exprected_result);
+
+    putchar('|');
+}
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   PUBLIC                                   //
@@ -536,6 +575,27 @@ void bigint_substract_tests()
     assert_equal_i("no return pointer", ERROR_VALUE, error);
 }
 
+void bigint_left_shift_tests()
+{
+    BigInt result;
+
+    bigint_constructor_from_int(&bigint1, 0);
+    bigint_constructor_from_int(&result, 0);
+    bigint_left_shift_test(SUCCESS, bigint1, 100, result);
+
+    bigint_constructor_from_int(&bigint1, 0xff);
+    bigint_constructor_from_int(&result, 0xff00);
+    bigint_left_shift_test(SUCCESS, bigint1, 8, result);
+
+    bigint_constructor_from_int(&bigint1, 0x132413);
+    bigint_constructor_from_int(&result, 0x1324 << 16);
+    bigint_left_shift_test(SUCCESS, bigint1, 16, result);
+
+    bigint_constructor_from_int(&bigint1, 1);
+    bigint_constructor_from_int(&result, 2);
+    bigint_left_shift_test(SUCCESS, bigint1, 1, result);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   TESTS                                    //
@@ -547,7 +607,8 @@ Test operations_tests[] = {
     {"_bigint_subtract", bigint_substract_private_tests},
     {"_bigint_add", bigint_add_private_tests},
     {"bigint_addition", bigint_addition_tests},
-    {"bigint_subtract", bigint_substract_tests}};
+    {"bigint_subtract", bigint_substract_tests},
+    {"bigint_left_shift", bigint_left_shift_tests}};
 
 void test_operations()
 {

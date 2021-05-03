@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <limits.h>
+#include <sys/types.h>
 
 #include "builtins/buffer/buffer.h"
 
@@ -93,6 +94,9 @@ int bigint_get_byte(BigInt bigint, size_t i, u_char *byte);
 
 int bigint_addition(BigInt bigint1, BigInt bigint2, BigInt *result);
 int bigint_substraction(BigInt bigint1, BigInt bigint2, BigInt *result);
+int bigint_left_shift(BigInt bigint, size_t shift, BigInt *result);
+int bigint_right_shift(BigInt bigint, size_t shift, BigInt *result);
+int bigint_shift(BigInt bigint, ssize_t shift, BigInt *result);
 
 ////////////////////////////////////////////////////////////
 //                       CONVERSION                       //
