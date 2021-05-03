@@ -32,9 +32,9 @@ _Pair _get_pair_with_hashkey(_Pair pair_list, Buffer hkey, _Pair *previous_pair)
 {
     *previous_pair = pair_list;
     _Pair pair = pair_list->next;
+    bool result;
     for (; pair != NULL; *previous_pair = pair, pair = pair->next)
     {
-        bool result;
         _buffer_equal(pair->hkey, hkey, &result);
         if (result)
             return pair;
@@ -101,27 +101,27 @@ int _htab_get_corresponding_pair(Htab htab,
     _Pair where_can_be_list = _pair_get_list_from_hkey(htab->data,
                                                        hkey,
                                                        htab->capacity);
-    // Check if an element in the list has the same hash key
-    _Pair where_can_be_pair = _get_pair_with_hashkey(where_can_be_list,
-                                                     hkey,
-                                                     previous_pair);
-    // element not exist
-    if (where_can_be_pair == NULL)
-    {
-        return OUT_OF_RANGE;
-    }
-
-    // test if it is not 2 different key with same hkey
     bool result;
-    error = _buffer_equal(key, where_can_be_pair->key, &result);
-    if (error != SUCCESS)
-        return error;
-    if (!result)
+    _Pair where_can_be_pair;
+    do
     {
-        return OUT_OF_RANGE;
+        // Check if an element in the list has the same hash key
+        where_can_be_pair = _get_pair_with_hashkey(where_can_be_list,
+                                                        hkey,
+                                                        previous_pair);
+        if(where_can_be_pair == NULL)
+            return OUT_OF_RANGE;
+
+        // test if it is not 2 different key with same hkey
+        error = _buffer_equal(key, where_can_be_pair->key, &result);
+        if (error != SUCCESS)
+            return error;
+        where_can_be_list = where_can_be_pair;
     }
+    while(!result);
     *pair_result = where_can_be_pair;
     return SUCCESS;
+
 }
 
 void _print_pairs(_Pair pair)
