@@ -7,7 +7,7 @@ char *names[] = {"Turkey", "Jamaica", "Iraq", "Spain", "c zoli", "CARAMBA", "tes
 void *values[] = {"Ankara", "Kingston", "Baghdad", "Madrid", NULL, NULL, NULL};
 
 void htab_test(Htab new_htab, int new_code, int error, size_t size, size_t capacity,
- Destructor destructor)
+               Destructor destructor)
 {
     // check the error code
     assert_equal_ul("Error code", error, new_code);
@@ -47,22 +47,25 @@ void is_pair_test(Buffer key, void *value, Htab htab, int error, int is_same, De
         else
         {
             assert_not_equal_p("Comparison values",
-                                value,
-                                res_value);
+                               value,
+                               res_value);
         }
-        if(destructor != NULL)
+        if (destructor != NULL)
             destructor(res_value);
     }
+
     htab_destructor(htab, destructor);
-    if(destructor != NULL)
+
+    if (destructor != NULL)
         destructor(value);
+
     buffer_destructor_safe(&key);
     putchar('|');
 }
 
 void htab_remove_list(Htab htab, char *str_list[], size_t n)
 {
-    for(size_t i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
         buffer_constructor_array(&buf_key, strlen(str_list[i]) + 1, (u_char *)str_list[i]);
         error = htab_remove(htab, buf_key, NULL);
@@ -74,7 +77,7 @@ void htab_remove_list(Htab htab, char *str_list[], size_t n)
 void htab_pop_list(Htab htab, char *str_list[], void *values[], size_t n)
 {
     void *value;
-    for(size_t i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
         buffer_constructor_array(&buf_key, strlen(str_list[i]) + 1, (u_char *)str_list[i]);
         error = htab_pop(htab, buf_key, &value, NULL);

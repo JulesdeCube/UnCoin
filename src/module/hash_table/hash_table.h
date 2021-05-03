@@ -44,7 +44,7 @@ struct s_pair
     struct s_pair *next;
 };
 
-typedef struct s_pair *Pair;
+typedef struct s_pair *_Pair;
 
 /**
 ** \struct s_htab
@@ -59,7 +59,7 @@ struct s_htab
 {
     size_t capacity;
     size_t size;
-    Pair data;
+    _Pair data;
 };
 
 typedef struct s_htab *Htab;
@@ -80,7 +80,8 @@ typedef struct s_htab *Htab;
 // TODO COMMENTS
 int htab_constructor(Htab *new_htab);
 
-int construct_pair(Pair *pair, Buffer key, void *value, Buffer *hkey);
+int construct_htab_from_array(Htab htab, size_t n_element, char **names,
+                              void **values);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -89,11 +90,7 @@ int construct_pair(Pair *pair, Buffer key, void *value, Buffer *hkey);
 ////////////////////////////////////////////////////////////////////////////////
 
 // TODO comments
-int htab_destructor(Htab htab, Destructor destructor);
-
-int pair_destructor(Pair pair, Destructor destructor);
-
-void list_clean(Pair list, Destructor destructor);
+void htab_destructor(Htab htab, Destructor destructor);
 
 void htab_clear(Htab htab, Destructor destructor);
 
@@ -103,18 +100,17 @@ void htab_clear(Htab htab, Destructor destructor);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int htab_get(Htab htab, Buffer key, void **value);
 // TODO comments
-void print_htab(Htab htab);
+
+int htab_get(Htab htab, Buffer key, void **value);
 
 int htab_insert(Htab htab, Buffer key, void *value);
-
-int construct_htab_from_array(Htab htab, size_t n_element, char **names,
-                              void **values);
 
 int htab_remove(Htab htab, Buffer key, Destructor destructor);
 
 int htab_pop(Htab htab, Buffer key, void **value, Destructor destructor);
+
+void htab_print(Htab htab);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -133,14 +129,6 @@ int htab_pop(Htab htab, Buffer key, void **value, Destructor destructor);
 size_t htab_get_size(Htab htab);
 
 /**
-** \brief set the size of the number of actual elements within the data array
-**
-** \param htab the hash table
-** \param size the new size
-*/
-void htab_set_size(Htab htab, size_t size);
-
-/**
 ** \brief get the length of the data array
 **
 ** \param htab the hash table
@@ -150,23 +138,6 @@ void htab_set_size(Htab htab, size_t size);
 size_t htab_get_capacity(Htab htab);
 
 /**
-** \brief set the max capacity of elements can be in the data array
-**
-** \param htab the hash table
-** \param new_capacity the new capacity
-*/
-void htab_set_capacity(Htab htab, size_t new_capacity);
-
-/**
-** \brief get pair
-**
-** \param htab the hash table
-**
-** \return the length of the data array or 0 if the htab is null
-*/
-Pair htab_get_pair(Htab htab);
-
-/**
 ** \brief get ratio
 **
 ** \param htab the hash table
@@ -174,14 +145,5 @@ Pair htab_get_pair(Htab htab);
 ** \return the ratio in percentage equal to (capacity / size)
 */
 size_t htab_get_ratio(Htab htab);
-
-// Comments TODO
-Buffer pair_get_hkey(Pair pair);
-
-Buffer pair_get_key(Pair pair);
-
-void *pair_get_value(Pair pair);
-
-Pair pair_get_next(Pair pair);
 
 #endif // UNCOIN__MODULE__HASH_TABLE__HASH_TABLE_H_
