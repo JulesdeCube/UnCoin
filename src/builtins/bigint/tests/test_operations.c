@@ -344,7 +344,7 @@ void bigint_comparison_tests()
     bigint_constructor_from_int(&bigint1, 2);
     bigint_constructor_from_int(&bigint2, -2);
     result = _bigint_comparison(bigint1, bigint2);
-    bigint_comparison_test(-1, result, bigint1, bigint2);
+    bigint_comparison_test(1, result, bigint1, bigint2);
 
     //different size and exhib
     bigint_constructor_from_int(&bigint1, -2);
@@ -579,6 +579,14 @@ void bigint_left_shift_tests()
 {
     BigInt result;
 
+    for (size_t i = 1; i < 32; i *= 3)
+        for (size_t j = 0; j < 27; j++)
+        {
+            bigint_constructor_from_int(&bigint1, i);
+            bigint_constructor_from_int(&result, i << j);
+            bigint_left_shift_test(SUCCESS, bigint1, j, result);
+        }
+
     bigint_constructor_from_int(&bigint1, 0);
     bigint_constructor_from_int(&result, 0);
     bigint_left_shift_test(SUCCESS, bigint1, 100, result);
@@ -587,13 +595,13 @@ void bigint_left_shift_tests()
     bigint_constructor_from_int(&result, 0xff00);
     bigint_left_shift_test(SUCCESS, bigint1, 8, result);
 
-    bigint_constructor_from_int(&bigint1, 0x132413);
+    bigint_constructor_from_int(&bigint1, 0x1324);
     bigint_constructor_from_int(&result, 0x1324 << 16);
     bigint_left_shift_test(SUCCESS, bigint1, 16, result);
 
-    bigint_constructor_from_int(&bigint1, 1);
-    bigint_constructor_from_int(&result, 2);
-    bigint_left_shift_test(SUCCESS, bigint1, 1, result);
+    bigint_constructor_from_int(&bigint1, 30);
+    bigint_constructor_from_int(&result, 30 << 5);
+    bigint_left_shift_test(SUCCESS, bigint1, 5, result);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -603,7 +611,7 @@ void bigint_left_shift_tests()
 ////////////////////////////////////////////////////////////////////////////////
 
 Test operations_tests[] = {
-    //{"_bigint_comparison", bigint_comparison_tests},
+    {"_bigint_comparison", bigint_comparison_tests},
     {"_bigint_subtract", bigint_substract_private_tests},
     {"_bigint_add", bigint_add_private_tests},
     {"bigint_addition", bigint_addition_tests},
