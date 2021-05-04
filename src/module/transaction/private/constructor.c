@@ -7,7 +7,7 @@ int _buffer_fusion(Buffer *result, Buffer buf_list[], size_t n)
 
     size_t sum_size = 0;
     for (size_t i = 0; i < n; ++i)
-        sum_size += buffer_get_size(buf_list);
+        sum_size += buffer_get_size(buf_list[i]);
 
     Buffer res;
     int error = buffer_constructor_size(&res, sum_size);

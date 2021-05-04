@@ -16,10 +16,12 @@
 
 int transaction_is_valid(Transaction transaction, bool *result)
 {
+
     if (transaction == NULL)
         return NO_SELF;
-    result = transaction->from == NULL || Pki_isValid(transaction_message(transaction),
+    /*result = transaction->from == NULL || Pki_isValid(transaction_message(transaction),
                                                     transaction->signature,
-                                                    transaction->from));
+                                                    transaction->from));*/
+    (void) result;
     return SUCCESS;
 }

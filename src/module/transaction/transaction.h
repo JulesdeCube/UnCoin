@@ -29,7 +29,7 @@ struct s_transaction
     Buffer to;   // Key public of him
     double amount;
     Buffer signature;
-    char *date;
+    Buffer date;
 };
 
 typedef struct s_transaction *Transaction;

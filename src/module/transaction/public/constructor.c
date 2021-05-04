@@ -34,12 +34,16 @@ int transaction_constructor(Transaction *p_tran,
     tran->to = to;
     tran->amount = amount;
 
-    // TO CHANGE WITH CURRENT DATE
-    tran->date = "04/05/2021";
+    // FIX TO CHANGE WITH CURRENT DATE
+    Buffer buf_date;
+    int error = buffer_constructor_str(&buf_date, "04/05/2021", false);
+    if (error != SUCCESS)
+        return error;
+    tran->date = buf_date;
 
     Buffer buf_to_hash;
-    Buffer buf_list[] = {from, to, privKey};
-    int error = _buffer_fusion(&buf_to_hash, buf_list, 3);
+    Buffer buf_list[] = {from, to, privKey, buf_date};
+    error = _buffer_fusion(&buf_to_hash, buf_list, 4);
     if (error != SUCCESS)
         return error;
 
@@ -49,10 +53,12 @@ int transaction_constructor(Transaction *p_tran,
         return error;
 
     tran->signature = hkey;
+    buffer_destructor_safe(&buf_to_hash);
     // IN OTHER WAY
     /*
     Pki_encrypt(tran, _transaction_message(tran), privKey);
     */
+
     // return the transaction
     *p_tran = tran;
 
