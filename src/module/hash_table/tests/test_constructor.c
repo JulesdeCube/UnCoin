@@ -3,8 +3,10 @@
 int error, r_error;
 Htab htab;
 Buffer buf_key;
-char *names[] = {"Turkey", "Jamaica", "Iraq", "Spain", "c zoli", "CARAMBA", "test"};
-void *values[] = {"Ankara", "Kingston", "Baghdad", "Madrid", NULL, NULL, NULL};
+char *names[] = {"Turkey", "Jamaica", "Iraq", "Spain", "Brazil",
+ "France", "United Kingdom", "Italy", "Belgium", "Germany", "Russia"};
+void *values[] = {"Ankara", "Kingston", "Baghdad", "Madrid", "Rio de Janeiro",
+ "Paris", "London", "Roma", "Brussel", "Berlin", "Moscow"};
 
 void htab_test(Htab new_htab, int new_code, int error, size_t size, size_t capacity,
                Destructor destructor)
@@ -104,7 +106,9 @@ void pair_insert_test()
 void pair_get_test()
 {
     htab_constructor(&htab);
-    construct_htab_from_array(htab, 7, names, values);
+    construct_htab_from_array(htab, 11, names, values);
+
+    htab_print(htab);
 
     error = buffer_constructor_str(&buf_key, "Iraq", true);
 
