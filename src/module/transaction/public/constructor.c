@@ -6,7 +6,9 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-Buffer _transaction_message(Transaction transaction);
+int _buffer_fusion(Buffer *result, Buffer buf_list[], size_t n);
+
+//Buffer _transaction_message(Transaction transaction);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -35,8 +37,14 @@ int transaction_constructor(Transaction *p_tran,
     // TO CHANGE WITH CURRENT DATE
     tran->date = "04/05/2021";
 
+    Buffer buf_to_hash;
+    Buffer buf_list[] = {from, to, privKey};
+    int error = _buffer_fusion(&buf_to_hash, buf_list, 3);
+    if (error != SUCCESS)
+        return error;
+
     Buffer hkey;
-    int error = hash(&hkey, &privKey);
+    error = hash(&hkey, &buf_to_hash);
     if (error != SUCCESS)
         return error;
 
