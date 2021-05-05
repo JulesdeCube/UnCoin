@@ -292,6 +292,7 @@ void bigint_mul_private_test(int expected_error, BigInt bigint1, BigInt bigint2,
     bigint_destructor(&bigint1);
     bigint_destructor(&bigint2);
     bigint_destructor(&result);
+    bigint_destructor(&expected_result);
 
     putchar('|');
 }
@@ -519,7 +520,6 @@ void bigint_addition_tests()
     bigint_constructor_from_int(&result, -2);
     bigint_addition_test(SUCCESS, bigint1, bigint2, result);
 
-
     bigint_constructor_from_int(&bigint1, 1);
     bigint_constructor_from_int(&bigint2, -2);
     bigint_constructor_from_int(&result, -1);
@@ -533,6 +533,81 @@ void bigint_addition_tests()
     bigint_constructor_from_int(&bigint1, -10);
     bigint_constructor_from_int(&bigint2, -1);
     bigint_constructor_from_int(&result, -11);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x0);
+    bigint_constructor_from_int(&bigint2, 0xffff);
+    bigint_constructor_from_int(&result, 0xffff);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0xffff);
+    bigint_constructor_from_int(&bigint2, 0x1fffe);
+    bigint_constructor_from_int(&result, 0x2fffd);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x2fffd);
+    bigint_constructor_from_int(&bigint2, 0x3fffc);
+    bigint_constructor_from_int(&result, 0x6fff9);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x6fff9);
+    bigint_constructor_from_int(&bigint2, 0x7fff8);
+    bigint_constructor_from_int(&result, 0xefff1);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0xefff1);
+    bigint_constructor_from_int(&bigint2, 0xffff0);
+    bigint_constructor_from_int(&result, 0x1effe1);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x1effe1);
+    bigint_constructor_from_int(&bigint2, 0x1fffe0);
+    bigint_constructor_from_int(&result, 0x3effc1);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x3effc1);
+    bigint_constructor_from_int(&bigint2, 0x3fffc0);
+    bigint_constructor_from_int(&result, 0x7eff81);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x7eff81);
+    bigint_constructor_from_int(&bigint2, 0x7fff80);
+    bigint_constructor_from_int(&result, 0xfeff01);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0xfeff01);
+    bigint_constructor_from_int(&bigint2, 0xffff00);
+    bigint_constructor_from_int(&result, 0x1fefe01);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x1fefe01);
+    bigint_constructor_from_int(&bigint2, 0x1fffe00);
+    bigint_constructor_from_int(&result, 0x3fefc01);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x3fefc01);
+    bigint_constructor_from_int(&bigint2, 0x3fffc00);
+    bigint_constructor_from_int(&result, 0x7fef801);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x7fef801);
+    bigint_constructor_from_int(&bigint2, 0x7fff800);
+    bigint_constructor_from_int(&result, 0xffef001);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0xffef001);
+    bigint_constructor_from_int(&bigint2, 0xffff000);
+    bigint_constructor_from_int(&result, 0x1ffee001);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x1ffee001);
+    bigint_constructor_from_int(&bigint2, 0x1fffe000);
+    bigint_constructor_from_int(&result, 0x3ffec001);
+    bigint_addition_test(SUCCESS, bigint1, bigint2, result);
+
+    bigint_constructor_from_int(&bigint1, 0x3ffec001);
+    bigint_constructor_from_int(&bigint2, 0x3fffc000);
+    bigint_constructor_from_int(&result, 0x7ffe8001);
     bigint_addition_test(SUCCESS, bigint1, bigint2, result);
 
     bigint_constructor_from_int(&bigint1, 0x4386788);
@@ -673,12 +748,12 @@ void bigint_mul_private_tests()
     bigint_constructor_from_int(&bigint1, 100);
     bigint_constructor_from_int(&bigint2, 4);
     bigint_constructor_from_int(&result, 400);
-    bigint_mul_private_tests(SUCCESS, bigint1, bigint2, result);
+    bigint_mul_private_test(SUCCESS, bigint1, bigint2, result);
 
     bigint_constructor_from_int(&bigint1, 2);
     bigint_constructor_from_int(&bigint2, 1);
     bigint_constructor_from_int(&result, 2);
-    bigint_mul_private_tests(SUCCESS, bigint1, bigint2, result);*/
+    bigint_mul_private_test(SUCCESS, bigint1, bigint2, result);*/
 }
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

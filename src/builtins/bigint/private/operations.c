@@ -142,12 +142,12 @@ int _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow)
     u_char byte1;
     u_char byte2;
     // while we are not to the last byte and we are likely to overflow
-    for (size_t i = 0; i < size_result && r == UCHAR_MAX; i++)
+    for (; size_result && r == UCHAR_MAX; --size_result)
     {
         // get both byte
-        TRY(bigint_get_byte(bigint1, i, &byte1));
+        TRY(bigint_get_byte(bigint1, size_result - 1, &byte1));
 
-        TRY(bigint_get_byte(bigint2, i, &byte2))
+        TRY(bigint_get_byte(bigint2, size_result - 1, &byte2))
 
         // check if there is not an overflow
         if (__builtin_add_overflow(byte1, byte2, &r))
@@ -170,20 +170,20 @@ int _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size)
 
     *size = MAX(size1, size2);
 
-    bool overflow;
-    TRY(_bigint_add_buffer_overflow(bigint1, bigint2, &overflow));
+    bool overflow = true;
+    // TRY(_bigint_add_buffer_overflow(bigint1, bigint2, &overflow));
 
     *size += overflow == true;
 
     return SUCCESS;
 }
 
-
 int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
-    // get the new buffer size
-    size_t size;
-    TRY(_bigint_add_size(bigint1, bigint2, &size));
+    // get the new number buffer size
+    size_t size1 = buffer_get_size(bigint1->buffer);
+    size_t size2 = buffer_get_size(bigint2->buffer);
+    size_t size = MAX(size1, size2) + 1;
 
     return _bigint_byte_operation(bigint1, bigint2, result, size, _bigint_add_byte);
 }
@@ -261,74 +261,76 @@ int _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub)
     return SUCCESS;
 }
 
+int _bigint_count_bit(BigInt bigint, size_t *result)
+{
+    if (bigint == NULL)
+        return NO_SELF;
+
+    if (result == NULL)
+        return ERROR_VALUE;
+
+    if (bigint->buffer == NULL)
+        return INTERNAL_ERROR;
+
+    size_t size = buffer_get_size(bigint->buffer);
+    u_char *d = buffer_get_data(bigint->buffer);
+
+    *result = 0;
+
+    for (; size; --size, ++d)
+        for (u_char mask = 1; mask; mask <<= 1)
+            *result += !!(*d & mask);
+
+    return SUCCESS;
+}
+
 int _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
-    int error;
-    bool b_sign = POSITIVE;
-    if(bigint1->sign != bigint2->sign)
-        b_sign = NEGATIVE;
+    BigInt tmp, bigint_shift;
+    size_t nb_bit1, nb_bit2;
+    TRY(_bigint_count_bit(bigint1, &nb_bit1));
+    TRY(_bigint_count_bit(bigint2, &nb_bit2));
 
-    // get the new number buffer size
-    size_t size1 = buffer_get_size(bigint1->buffer);
-    size_t size2 = buffer_get_size(bigint2->buffer);
-    size_t size = size1+size2;
-
-    Buffer buffer_res;
-    error = buffer_constructor_size(&buffer_res, size);
-    if (error != SUCCESS)
-        return error;
-
-    int int2;
-    error = bigint_to_int(bigint2, &int2);
-    if (error != SUCCESS)
-        return error;
-
-    error = bigint_constructor_buffer(result,b_sign,buffer_res);
-    buffer_destructor_safe(&buffer_res);
-    if (error != SUCCESS)
+    if (nb_bit1 > nb_bit2)
     {
-        bigint_destructor(result);
-        return error;
+        tmp = bigint1;
+        bigint1 = bigint2;
+        bigint2 = tmp;
     }
 
-    for(;int2 > 1;int2--)
-    {
-        int error;
-        error = bigint_addition(bigint1,bigint1,result);
-        if(error != SUCCESS)
-        {
-            buffer_destructor(&buffer_res);
-            return error;
-        }
-    }
+    size_t size = buffer_get_size(bigint1->buffer);
+    u_char *d = buffer_get_data(bigint1->buffer);
 
-    /*
-    u_char *p = buffer_get_data(buffer_res);
-    u_char byte1;
-    u_char byte2;
-    for(size_t i = 0;i < size1;i++,p++)
-    {
-        for (size_t j = 0; i < size2; j++, p++)
-        {
+    TRY(bigint_constructor_null(result));
 
-            // get both byte
-            error = bigint_get_byte(bigint1, i, &byte1);
-            if (error != SUCCESS)
+    size_t bit = 0;
+    for (; size; --size, ++d)
+        for (u_char mask = 1; mask; mask <<= 1, ++bit)
+            if (*d & mask)
             {
-                buffer_destructor(&buffer_res);
-                return error;
+                tmp = *result;
+                TRY_CATCH(bigint_left_shift(bigint2, bit, &bigint_shift),
+                          bigint_destructor(result));
+                TRY_CATCH(_bigint_add(*result, bigint_shift, result),
+                          {
+                              bigint_destructor(&bigint_shift);
+                              bigint_destructor(result);
+                          });
+                char *res_hex, *shift_hex, *tmp_hex;
+                TRY(bigint_to_string(*result, &res_hex, NULL));
+                TRY(bigint_to_string(bigint_shift, &shift_hex, NULL));
+                TRY(bigint_to_string(tmp, &tmp_hex, NULL));
+                // printf("print(hex(%s + %s));", tmp_hex, shift_hex);
+                // printf("%s\n", res_hex);
+                // printf("%s\n", shift_hex);
+                // printf("%s + %s (<< %lu) = %s\n", tmp_hex, shift_hex, bit, res_hex);
+                free(res_hex);
+                free(shift_hex);
+                free(tmp_hex);
+
+                bigint_destructor(&bigint_shift);
+                bigint_destructor(&tmp);
             }
-
-            error = bigint_get_byte(bigint2, j, &byte2);
-            if (error != SUCCESS)
-            {
-                buffer_destructor(&buffer_res);
-                return error;
-            }
-
-
-        }
-    }*/
 
     return SUCCESS;
 }

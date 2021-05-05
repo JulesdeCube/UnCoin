@@ -249,7 +249,7 @@ int bigint_shift(BigInt bigint, ssize_t shift, BigInt *result)
 }
 int bigint_multiplication(BigInt bigint1,BigInt bigint2,BigInt *result)
 {
-    //BIGINT_OPERATION_GARD();
+    BIGINT_OPERATION_GARD();
     return _bigint_mul(bigint1,bigint2,result);
 }
 
