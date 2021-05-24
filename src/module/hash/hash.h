@@ -1,5 +1,5 @@
-#ifndef UNCOIN__MODULE_HASH_HASH_H_
-#define UNCOIN__MODULE_HASH_HASH_H_
+#ifndef UNCOIN__MODULE__HASH__HASH_H_
+#define UNCOIN__MODULE__HASH__HASH_H_
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "utils/error.h"
 #include "utils/bool.h"
@@ -17,32 +18,18 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//                              TYPE DEFINTIONS                               //
+//                                 FUNCTIONS                                  //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \brief Hash a buffer
+ *
+ * \param buff_result the buffer resulting of the hash function.
+ * \param buff_to_hash the buffer to be hash.
+ *
+ * \return the error occur
+ */
+int hash(Buffer *buff_result, Buffer *buff_to_hash);
 
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                CONSTRUCTOR                                 //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                 DESTRUCTOR                                 //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                                 OPERATION                                  //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-int hash(Buffer *hash_result, Buffer *key);
-
-#endif // UNCOIN__MODULE_HASH_HASH_H_
+#endif // UNCOIN__MODULE__HASH__HASH_H_

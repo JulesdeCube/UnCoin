@@ -51,19 +51,4 @@ int blockchain_block_proof_of_work(Block block);
 void block_destructor(Block block);
 void blockchain_destructor(Blockchain blockchain);
 
-/*
-struct transaction
-{
-    char *from; // Key public of me
-    char *to;   // Key public of him
-    long amount;
-    char *signature;
-};
-
-typedef struct transaction *Transaction;
-
-Transaction transaction_contructor(char *from, char *to, long amount, char *privKey);
-Buffer transaction_message(Transaction transaction);
-int isValid(Transaction transaction);*/
-
 #endif //UNCOIN__BUILTINS_BLOCKCHAIN__BLOCKCHAIN_H_
