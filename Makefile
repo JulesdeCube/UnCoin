@@ -73,7 +73,7 @@ build_$1:
 	@$(build_command) -out=build/$1 -main=src/$1/$1.c -cflag="$(cflag)"
 	@echo
 
-run_$1:
+run_$1: build_$1
 	@./build/$1
 endef
 
