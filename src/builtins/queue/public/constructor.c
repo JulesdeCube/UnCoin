@@ -49,7 +49,7 @@ void queue_enqueue(Queue queue, void *data)
     queue->size++;
 }
 
-void* queue_dequeue(Queue queue)
+void *queue_dequeue(Queue queue)
 {
     // queue is empty
     // Do nothing, return NULL

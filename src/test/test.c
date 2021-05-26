@@ -68,6 +68,22 @@ void assert_equal_ul(char *name, size_t exepted, size_t got)
         putchar('.');
 }
 
+void assert_equal_b(char *name, bool exepted, bool got)
+{
+    if (exepted != got)
+    {
+        putchar('X');
+        putchar('\n');
+        errx(1,
+             "ASSERT ERROR: %s. exepted: %s, got: %s\n",
+             name,
+             exepted ? "true" : "false",
+             got ? "true" : "false");
+    }
+    else
+        putchar('.');
+}
+
 void assert_equal_p(char *name, void *exepted, void *got)
 {
     if (exepted != got)
@@ -159,4 +175,16 @@ void assert_equal_s(char *name, char *exepted, char *got)
     }
 
     putchar('.');
+}
+
+void assert_equal_i(char *name, int exepted, int got)
+{
+    if (exepted != got)
+    {
+        putchar('X');
+        putchar('\n');
+        errx(1, "ASSERT ERROR: %s. exepted: %i, got: %i\n", name, exepted, got);
+    }
+    else
+        putchar('.');
 }

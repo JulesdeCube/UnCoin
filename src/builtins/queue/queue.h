@@ -5,14 +5,15 @@
 #include <stdlib.h>
 #include <err.h>
 
-typedef int bool;
+#include "../../utils/bool.h"
+
 typedef void (*Callback)(void *);
 typedef Callback Destructor;
 
 /**
 ** \private
 **
-** repesent 
+** repesent
 */
 struct _s_queue_block
 {
@@ -35,9 +36,9 @@ bool queue_is_empty(Queue queue);
 void queue_enqueue(Queue queue, void *data);
 void *queue_dequeue(Queue queue);
 
-void queue_proccess(Queue queue, Callback callback);
-void queue_foreach(Queue queue, Callback callback);
 void queue_free(Queue queue, Destructor destructor);
+void _queue_process(Queue queue, Callback callback);
+void _queue_foreach(Queue queue, Callback callback);
 
 void queue_debug(Queue queue);
 

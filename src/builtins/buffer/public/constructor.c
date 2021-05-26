@@ -2,12 +2,17 @@
 
 int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer)
 {
+    // if there is no return pointer throw an error
+    if (new_buffer == NULL)
+        return NO_SELF;
+
     // if there is no buffer parse as parameter return an error
     if (buffer == NULL)
     {
         *new_buffer = NULL;
-        return NO_SELF;
+        return ERROR_VALUE;
     }
+
     u_char *data = buffer_get_data(buffer);
     if (data == NULL)
     {
@@ -23,6 +28,10 @@ int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer)
 
 int buffer_constructor_size(Buffer *new_buffer, size_t size)
 {
+    // if there is no return pointer throw an error
+    if (new_buffer == NULL)
+        return NO_SELF;
+
     // get the struct malloc
     Buffer buffer = malloc(sizeof(struct s_buffer));
 
@@ -52,11 +61,7 @@ int buffer_constructor_size(Buffer *new_buffer, size_t size)
 int buffer_constructor_const(Buffer *new_buffer, size_t size, u_char constant)
 {
     // create a buffer of the correct size
-    int error = buffer_constructor_size(new_buffer, size);
-
-    // if there is an error stop and retur the error
-    if (error != SUCCESS)
-        return error;
+    TRY(buffer_constructor_size(new_buffer, size));
 
     // fill all the buffer with the coresponding constant
     memset(buffer_get_data(*new_buffer), constant, size);
@@ -67,21 +72,21 @@ int buffer_constructor_const(Buffer *new_buffer, size_t size, u_char constant)
 
 int buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array)
 {
+    // if there is no return pointer throw an error
+    if (new_buffer == NULL)
+        return NO_SELF;
+
     // if the array is null do nothing
     if (array == NULL)
     {
         *new_buffer = NULL;
-        return NO_SELF;
+        return ERROR_VALUE;
     }
 
     // get a new buffer
-    int error = buffer_constructor_size(new_buffer, size);
+    TRY(buffer_constructor_size(new_buffer, size));
 
-    // if there is an error stop and retur the error
-    if (error != SUCCESS)
-        return error;
-
-    // fill the
+    // fill the buffer with the values
     memcpy(buffer_get_data(*new_buffer), array, size);
 
     // return a success code
@@ -90,11 +95,15 @@ int buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array)
 
 int buffer_constructor_str(Buffer *new_buffer, char *str, bool strict)
 {
+    // if there is no return pointer throw an error
+    if (new_buffer == NULL)
+        return NO_SELF;
+
     // if the string is null do nothing
     if (str == NULL)
     {
         *new_buffer = NULL;
-        return NO_SELF;
+        return ERROR_VALUE;
     }
     // create a array buffer with the correct lenght
     return buffer_constructor_array(new_buffer,
