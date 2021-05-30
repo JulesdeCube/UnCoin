@@ -19,8 +19,8 @@ build_rules=$(addprefix $(build_prefix)_, $(bins))
 debug_rules=$(addprefix $(debug_prefix)_, $(bins))
 run_rules=$(addprefix $(run_prefix)_, $(bins))
 
-cflag= -Wall -Wextra -Werror -std=c99 -pedantic -export-dynamic -lm
-test_cflag= -Wall -Wextra -Werror -std=c99 -g
+cflag= -Wall -Wextra -Werror -std=c99 -pedantic -export-dynamic -lm -pthread -fsanitize=address
+test_cflag= -Wall -Wextra -Werror -std=c99 -g -pthread -fsanitize=address
 
 .PHONY: help clean all build debug tests tests_build tests_run $(build_rules) $(debug_rules) $(run_rules)
 
