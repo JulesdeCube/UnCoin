@@ -8,11 +8,13 @@
 #include <dirent.h>
 #include <linux/kernel.h>
 #include "../buffer/buffer.h"
+#include "../module/transaction/transaction.h"
 
 #include "../blockchain/blockchain.h"
 
 #define LINE_SIZE 256
 #define BUFFER_SIZE 256
+
 
 #define DIR_PATH "src/builtins/file_database/tests/"
 

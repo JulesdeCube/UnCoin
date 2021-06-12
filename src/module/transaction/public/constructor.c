@@ -19,7 +19,7 @@ int _buffer_fusion(Buffer *result, Buffer buf_list[], size_t n);
 int transaction_constructor(Transaction *p_tran,
                             Buffer from,
                             Buffer to,
-                            long amount,
+                            double amount,
                             Buffer privKey)
 {
     // get the struct malloc

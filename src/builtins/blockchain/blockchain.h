@@ -23,8 +23,8 @@ struct block
 
     //Transaction transaction;
     //TODO : add hashtable
-    Transaction data[];
-
+    //Transaction data[];
+    Transaction *data;
     Buffer hash;
     struct block *previousBlock;
 };

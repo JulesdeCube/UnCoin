@@ -1,12 +1,12 @@
 #include "../file_database.h"
 
-Blockchain database_init()
+Blockchain database_init(Buffer privateKey)
 {
     // Init blockchain
     Blockchain bc = blockchain_contructor();
 
     // Find file and add block in blockchain
-    database_findFile(bc);
+    database_findFile(bc,privateKey);
 
     return bc;
 }
@@ -55,7 +55,7 @@ char *database_findLast_block(size_t last_block_index)
     closedir(dir);
 }*/
 
-void database_findFile(Blockchain bc)
+void database_findFile(Blockchain bc, Buffer privateKey)
 {
     // Create directory
     DIR *dir = opendir(DIR_PATH);
@@ -89,7 +89,7 @@ void database_findFile(Blockchain bc)
                          bc->block->index, bc->block->hash, name);*/
 
             // Transfert info file in block and add in blockchain
-            database_readFile_addBlock(bc, filename);
+            database_readFile_addBlock(bc, filename,privateKey);
 
             // Free path of file
             free(filename);
@@ -117,7 +117,7 @@ char *database_duplicate_string(const char *str)
     return dup;
 }
 
-void database_readFile_addBlock(Blockchain blockchain, char *path_file)
+void database_readFile_addBlock(Blockchain blockchain, char *path_file, Buffer private_key)
 {
     // Open file (reading)
     FILE *file = fopen(path_file, "r");
@@ -126,20 +126,55 @@ void database_readFile_addBlock(Blockchain blockchain, char *path_file)
 
     // Buffer
     char line[LINE_SIZE];
-    char *buff = NULL, *data = NULL;
+    char *buff = NULL;//, *data = NULL;
     //size_t nonce = -1;
+
+    Buffer from;
+    Buffer to;
+    double amount;
+    Buffer signature;
+    Buffer date;
+    int i = 1;
 
     // TODO: A changer
     while (fgets(line, LINE_SIZE, file) != NULL)
     {
         // Data (char *)
         buff = strtok(line, ";");
-        data = database_duplicate_string(buff);
-        //printf("%s\n", data);
 
-        // Create and add block in blockchain
-        blockchain_block_add(blockchain, data);
+        if(i == 1)
+        {
+            from = buffer_constructor_str(&from, buff, true);
+            i++;
+        }
+        if(i == 2)
+        {
+            to = buffer_constructor_str(&to, buff, true);
+            i++;
+        }
+        if(i == 3)
+        {
+            //amount = ??;
+            i++;
+        }
+        if(i == 4)
+        {
+            to = buffer_constructor_str(&signature, buff, true);
+            i++;
+        }
+        if(i == 5)
+        {
+            to = buffer_constructor_str(&date, buff, true);
+            i++;
+        }
+        //data = database_duplicate_string(buff);
+        //printf("%s\n", data);
     }
+    Transaction *transac;
+    transaction_constructor(transac, from, to, amount, private_key);
+    
+    // Create and add block in blockchain
+    blockchain_block_add(blockchain, data);
 }
 
 size_t size_sizet(size_t index)
@@ -177,15 +212,15 @@ void database_createFile_FromBlock(Blockchain bc)
     char *filedir = malloc(sizeof(char)*33);
     sprintf(filedir, "%s", "src/builtins/file_database/tests/");
     strcat(filedir,filename);
-    printf("%s\n",filedir);
+    //printf("%s\n",filedir);
 
     //écriture
     FILE *fic = NULL;
     fic = fopen(filedir, "w");
-
+    /*
     char *transactions = NULL;
     if(buffer_to_hex(bc->block->h, &transactions, NULL) != SUCCESS)
-        printf("BUG\n");
+        printf("BUG\n");*/
 
     if (fic != NULL)
     {
