@@ -32,10 +32,12 @@ void print_blockchain_check(Blockchain bc)
 int main()
 {
     Blockchain bc = database_init();
-
+    /*
     // Debug
     print_blockchain(bc);
-    print_blockchain_check(bc);
+    print_blockchain_check(bc);*/
+
+    //database_createFile_FromBlock(bc);
 
     // Free blockchain
     blockchain_destructor(bc);

@@ -20,8 +20,9 @@ struct block
     size_t index;
     long nonce;
 
-    void *data;
-
+    //Transaction transaction;
+    //TODO : add hashtable
+    
     Buffer hash;
     struct block *previousBlock;
 };
