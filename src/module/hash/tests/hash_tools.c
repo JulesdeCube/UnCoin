@@ -7,10 +7,10 @@ size_t max_size_t(size_t first, size_t second)
     return second;
 }
 
-Buffer *create_buff_hashed(Buffer *buff_result ,char *str)
+Buffer *create_buff_hashed(Buffer *buff_result, char *str, size_t size)
 {
     Buffer buff;
-    buffer_constructor_str(&buff, str, true);
+    buffer_constructor_array(&buff, size, (u_char *)str);
     hash(buff_result, &buff);
     Buffer *p_buff = &buff;
     return p_buff;
