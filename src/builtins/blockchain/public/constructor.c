@@ -50,7 +50,7 @@ void blockchain_block_hash(Block block)
     //printf("%s\n", data);
 
     // Hash in buff
-    create_buff_hashed(&block->hash, data);
+    create_buff_hashed(&block->hash, data,len);
 
     // Free
     free(data);

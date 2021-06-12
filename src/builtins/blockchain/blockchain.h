@@ -9,6 +9,7 @@
 #include "../buffer/buffer.h"
 #include "../../module/hash/hash.h"
 #include "../../module/hash/tests/hash_tools.h"
+#include "../../module/hash_table/hash_table.h"
 
 #define PROOF 5 // 5 premier zero dans le hash
 #define GENESIS_DATA "Genesis block"
@@ -22,7 +23,8 @@ struct block
 
     //Transaction transaction;
     //TODO : add hashtable
-    
+    Transaction data[];
+
     Buffer hash;
     struct block *previousBlock;
 };

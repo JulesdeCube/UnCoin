@@ -37,7 +37,7 @@ int main()
     print_blockchain(bc);
     print_blockchain_check(bc);*/
 
-    //database_createFile_FromBlock(bc);
+    database_createFile_FromBlock(bc);
 
     // Free blockchain
     blockchain_destructor(bc);

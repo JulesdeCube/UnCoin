@@ -95,7 +95,6 @@ void database_findFile(Blockchain bc)
             free(filename);
         }
     }
-
     closedir(dir);
 }
 
@@ -173,22 +172,26 @@ void database_createFile_FromBlock(Blockchain bc)
 
     strcat(hash, ".csv");
     strcat(filename, hash);
-    printf("%s\n",filename);
     //free(filename);
+
+    char *filedir = malloc(sizeof(char)*33);
+    sprintf(filedir, "%s", "src/builtins/file_database/tests/");
+    strcat(filedir,filename);
+    printf("%s\n",filedir);
 
     //écriture
     FILE *fic = NULL;
-    fic = fopen(filename, "w");
+    fic = fopen(filedir, "w");
 
     char *transactions = NULL;
-    if(buffer_to_hex(bc->block->data, &transactions, NULL) != SUCCESS)
+    if(buffer_to_hex(bc->block->h, &transactions, NULL) != SUCCESS)
         printf("BUG\n");
 
     if (fic != NULL)
     {
+        char transactions[10] = "reussi";
         if (fputs(transactions, fic) == EOF)
         {
-            //printf("oui\n");
             free(filename);
             fclose(fic);
             errx(EXIT_FAILURE, "Error file_database_createFile write in file");
