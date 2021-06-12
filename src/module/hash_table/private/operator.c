@@ -133,7 +133,7 @@ void _print_pairs(_Pair pair)
         buffer_to_hex(pair->hkey, &s_hkey, NULL);
         buffer_to_hex(pair->key, &s_key, NULL);
 
-        printf(" -> (%s, %s, %p)", s_hkey, s_key, pair->value);
+        printf(" -> (%s, %s, %s)", s_hkey, (char *) pair->key->data, (char *)pair->value);
 
         free(s_hkey);
         free(s_key);
