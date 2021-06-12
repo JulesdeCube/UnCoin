@@ -11,11 +11,13 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 #include "utils/error.h"
 #include "utils/bool.h"
 #include "builtins/buffer/buffer.h"
 #include "../hash_table/hash_table.h"
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -27,9 +29,9 @@ struct s_transaction
 {
     Buffer from; // Key public of me
     Buffer to;   // Key public of him
-    double amount;
-    Buffer signature;
-    Buffer date;
+    long long unsigned int amount;
+    Buffer message;
+    time_t date;
 };
 
 typedef struct s_transaction *Transaction;
@@ -40,11 +42,11 @@ typedef struct s_transaction *Transaction;
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int transaction_constructor(Transaction *p_tran,
+int transaction_constructor_client(Transaction *p_tran,
                             Buffer from,
                             Buffer to,
-                            long amount,
-                            Buffer privKey);
+                            long long unsigned int amount,
+                            time_t time);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -60,6 +62,13 @@ void transaction_destructor(Transaction transac);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int transaction_is_valid(Transaction transaction, bool *result);
+//int transaction_is_valid(Transaction transaction, bool *result);
 
+int transaction_to_buffer(Transaction t, Buffer *buf_result);
+
+int transaction_from_buffer(Transaction *t, Buffer *buf);
+
+int buf_trans_encrypt(Buffer *buf_to_encrypt, Buffer private_key, Buffer *result);
+
+int buf_trans_decrypt(Buffer *buf_to_decrypt, Buffer public_key, Buffer *result);
 #endif // UNCOIN__MODULE__TRANSACTION__TRANSACTION_H_

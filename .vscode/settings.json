@@ -19,6 +19,8 @@
         "test.h": "c",
         "test_1.h": "c",
         "hash_table.h": "c",
-        "queue.h": "c"
+        "queue.h": "c",
+        "test_constructor.h": "c",
+        "buffer_date.h": "c"
     },
 }
