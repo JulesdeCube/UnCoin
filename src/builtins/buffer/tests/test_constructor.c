@@ -137,14 +137,14 @@ void constructor_buffer_test()
 void constructor_str_test()
 {
     // normal use
-    char *str1 = "hello";
+    string_t str1 = "hello";
     error = buffer_constructor_str(&buffer, str1, false);
     buffer_test(buffer, error, SUCCESS, 5, (u_char *)str1);
     error = buffer_constructor_str(&buffer, str1, true);
     buffer_test(buffer, error, SUCCESS, 6, (u_char *)str1);
 
     // empty string
-    char *str2 = "";
+    string_t str2 = "";
     error = buffer_constructor_str(&buffer, str2, false);
     buffer_test(buffer, error, SUCCESS, 0, (u_char *)str2);
     error = buffer_constructor_str(&buffer, str2, true);

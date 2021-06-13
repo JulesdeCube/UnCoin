@@ -1,8 +1,8 @@
 #include "test.h"
 
-void assert_equal_bigint(char *title, BigInt expected, BigInt got)
+void assert_equal_bigint(string_t title, BigInt expected, BigInt got)
 {
-    char *title_value, *exp_str, *got_str;
+    string_t title_value, exp_str, got_str;
 
     if (asprintf(&title_value, "%s: value", title) == -1)
         errx(1, "cant create bigint title value test");
@@ -21,7 +21,7 @@ void assert_equal_bigint(char *title, BigInt expected, BigInt got)
     free(got_str);
     free(title_value);
 
-    char *title_exib;
+    string_t title_exib;
 
     if (asprintf(&title_exib, "%s: exhibitor", title) == -1)
         errx(1, "cant create bigint title exhibitor test");

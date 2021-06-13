@@ -84,15 +84,15 @@ int main()
     printf("==================================================\n");
 
     printf("[Dequeue q \"hello\"]\n");
-    printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q));
+    printf("Elm dequeue : \"%s\"\n", (string_t)queue_dequeue(q));
     queue_debug(q);
 
     printf("[Dequeue q \"1\"]\n");
-    printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q));
+    printf("Elm dequeue : \"%s\"\n", (string_t)queue_dequeue(q));
     queue_debug(q);
 
     printf("[Dequeue q1 \"Helloooooooo\"]\n");
-    printf("Elm dequeue : \"%s\"\n", (char *)queue_dequeue(q1));
+    printf("Elm dequeue : \"%s\"\n", (string_t)queue_dequeue(q1));
     queue_debug(q1);
 
     // Test free

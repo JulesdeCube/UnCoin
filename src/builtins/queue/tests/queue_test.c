@@ -81,8 +81,8 @@ int main()
         if (cmd == 1)
         {
             printf("(Enqueue) Enter element : ");
-            char *element = NULL;
-            while(1)
+            string_t element = NULL;
+            while (1)
             {
                 getchar();
                 if (scanf("%m[a-zA-Z0-9]", &element) != 1)
@@ -95,7 +95,7 @@ int main()
 
         // DEQUEUE
         else if (cmd == 2)
-            printf("(Dequeue) %s\n", (char *)queue_dequeue(q));
+            printf("(Dequeue) %s\n", (string_t)queue_dequeue(q));
 
         // PRINT QUEUE
         else if (cmd == 3)

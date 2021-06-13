@@ -8,9 +8,9 @@ Buffer buffer_size_t(size_t value)
     return new_buffer;
 }
 
-void hex_test(Buffer buffer, int error, char *expected)
+void hex_test(Buffer buffer, int error, string_t expected)
 {
-    char *str;
+    string_t str;
     size_t len;
     int r_error = buffer_to_hex(buffer, &str, &len);
 

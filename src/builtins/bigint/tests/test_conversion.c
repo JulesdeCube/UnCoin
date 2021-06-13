@@ -9,12 +9,12 @@ error_t error;
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-void test_to_bool(char *name, BigInt bigint, int expected_error, bool_t exepted_value)
+void test_to_bool(string_t name, BigInt bigint, int expected_error, bool_t exepted_value)
 {
     bool_t result;
 
     int return_code = bigint_to_bool(bigint, &result);
-    char *str;
+    string_t str;
 
     asprintf(&str, "%s: error code", name);
     assert_equal_i(str, expected_error, return_code);
@@ -30,12 +30,12 @@ void test_to_bool(char *name, BigInt bigint, int expected_error, bool_t exepted_
     putchar('|');
 }
 
-void test_to_int(char *name, BigInt bigint, int expected_error, int exepted_value)
+void test_to_int(string_t name, BigInt bigint, int expected_error, int exepted_value)
 {
     int result;
 
     int return_code = bigint_to_int(bigint, &result);
-    char *str;
+    string_t str;
 
     asprintf(&str, "%s: error code", name);
     assert_equal_i(str, expected_error, return_code);

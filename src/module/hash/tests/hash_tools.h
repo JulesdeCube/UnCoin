@@ -37,6 +37,6 @@ size_t max_size_t(size_t first, size_t second);
  *
  * \return the buff before hashing
  */
-Buffer *create_buff_hashed(Buffer *buff_result, char *str, size_t size);
+Buffer create_buff_hashed(Buffer *buff_result, char *str, size_t size);
 
 #endif // UNCOIN__BUILTINS_MODULE_HASH_TESTS__HASH_TOOLS_H_

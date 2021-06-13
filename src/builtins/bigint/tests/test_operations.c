@@ -37,7 +37,7 @@ void bigint_add_private_test(int exprected_error, BigInt bigint1, BigInt bigint2
     BigInt result;
     int error, res;
 
-    char *b1, *b2, *title, *error_title;
+    string_t b1, b2, title, error_title;
 
     if (bigint1 != NULL)
     {
@@ -90,7 +90,7 @@ void bigint_addition_test(int exprected_error, BigInt bigint1, BigInt bigint2, B
     BigInt result;
     int error, res;
 
-    char *b1, *b2, *title, *error_title;
+    string_t b1, b2, title, error_title;
 
     if (bigint1 != NULL)
     {
@@ -143,7 +143,7 @@ void bigint_substract_private_test(int exprected_error, BigInt bigint1, BigInt b
     BigInt result;
     int error, res;
 
-    char *b1, *b2, *title, *error_title;
+    string_t b1, b2, title, error_title;
 
     if (bigint1 != NULL)
     {
@@ -196,7 +196,7 @@ void bigint_substract_test(int exprected_error, BigInt bigint1, BigInt bigint2, 
     BigInt result;
     int error, res;
 
-    char *b1, *b2, *title, *error_title;
+    string_t b1, b2, title, error_title;
 
     if (bigint1 != NULL)
     {
@@ -249,7 +249,7 @@ void bigint_mul_private_test(int expected_error, BigInt bigint1, BigInt bigint2,
     BigInt result;
     int error, res;
 
-    char *b1, *b2, *title, *error_title;
+    string_t b1, b2, title, error_title;
 
     if (bigint1 != NULL)
     {
@@ -302,7 +302,7 @@ void bigint_left_shift_test(int exprected_error, BigInt bigint, size_t shift, Bi
     BigInt result;
     int error, res;
 
-    char *str, *title, *error_title;
+    string_t str, title, error_title;
 
     if (bigint != NULL)
     {

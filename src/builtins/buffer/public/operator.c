@@ -51,7 +51,7 @@ error_t buffer_set_index(Buffer buffer, size_t index, u_char byte)
     return SUCCESS;
 }
 
-error_t buffer_to_hex(Buffer buffer, char **str, size_t *len)
+error_t buffer_to_hex(Buffer buffer, string_t *str, size_t *len)
 {
     // set paramerer to default value
     if (str)
@@ -85,7 +85,7 @@ error_t buffer_to_hex(Buffer buffer, char **str, size_t *len)
 
     u_char *start = buffer_get_data(buffer);
     u_char *end = start + buff_size - 1;
-    char *c = *str;
+    string_t c = *str;
     while (start <= end)
     {
         *c++ = int_to_hex[(*end & 0xf0) >> 4];

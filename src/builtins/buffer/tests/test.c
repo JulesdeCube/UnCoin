@@ -1,6 +1,6 @@
 #include "test.h"
 
-void assert_equal_buffer(char *name, Buffer exepted, Buffer got)
+void assert_equal_buffer(string_t name, Buffer exepted, Buffer got)
 {
     if (got == NULL)
     {
@@ -14,7 +14,7 @@ void assert_equal_buffer(char *name, Buffer exepted, Buffer got)
 
     putchar('.');
 
-    char *str;
+    string_t str;
 
     asprintf(&str, "%s: size", name);
     // printf("string %s\n", str);

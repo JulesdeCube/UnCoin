@@ -118,7 +118,7 @@ int main(void)
 
     TRY(apply_opt(opt, &bigint, &result));
 
-    char *str;
+    string_t str;
     TRY(bigint_to_string(result, &str, NULL));
     printf("= %s\n", str);
     free(str);

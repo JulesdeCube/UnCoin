@@ -327,7 +327,7 @@ error_t bigint_to_buffer(BigInt bigint, Buffer *buffer)
     return buffer_constructor_buffer(buffer, bigint->buffer);
 }
 
-error_t bigint_to_string(BigInt bigint, char **str, size_t *len)
+error_t bigint_to_string(BigInt bigint, string_t *str, size_t *len)
 {
     if (bigint == NULL)
         return NO_SELF;
@@ -343,7 +343,7 @@ error_t bigint_to_string(BigInt bigint, char **str, size_t *len)
     if (str == NULL)
         return SUCCESS;
 
-    char *buffer_str = *str;
+    string_t buffer_str = *str;
     int error = asprintf(str,
                          "%s0x%s",
                          bigint->sign == NEGATIVE ? "-" : "",
