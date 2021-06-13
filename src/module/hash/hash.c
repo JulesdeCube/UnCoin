@@ -7,10 +7,10 @@ error_t hash_from_buffer(size_t *hash, Buffer *hash_buf)
         return NO_SELF;
     if (hash == NULL)
         return ERROR_VALUE;
-    u_char *key = buffer_get_data(*hash_buf);
+    u_char *key = buffer_get_data(hash_buf);
     if (key == NULL)
         return INTERNAL_ERROR;
-    size_t size = buffer_get_size(*hash_buf);
+    size_t size = buffer_get_size(hash_buf);
 
     size_t h = 0;
     for (size_t i = 0; i < size; ++i, ++key)
