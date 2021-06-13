@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/build/server",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -65,7 +65,7 @@
                 }
             ],
             "preLaunchTask": "build client",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "miDebuggerPath": "/nix/store/w27vy22hfqdypfh6l3ycc72lw1ssmnv3-gdb-10.1/bin/gdb"
         }
     ]
 }

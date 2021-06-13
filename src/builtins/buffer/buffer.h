@@ -9,6 +9,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 #include "utils/error.h"
 #include "utils/type.h"
@@ -137,6 +139,19 @@ error_t buffer_constructor_array(Buffer *new_buffer, size_t size,
 ** \see `buffer_constructor_array` for other error code
 */
 error_t buffer_constructor_str(Buffer *new_buffer, char *str, bool_t strict);
+
+/**
+** \brief `Buffer` from file constructor.
+**
+** read all the file content and put it into a buffer.
+**
+** ⚠️** you need to use the buffer destructor function after used (to free space
+** )** ⚠️
+**
+** \param new_buffer a pointer to the output buffer
+** \param       file the file to read
+*/
+error_t buffer_constructor_file(Buffer *new_buffer, file_t file);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

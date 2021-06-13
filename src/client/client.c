@@ -6,31 +6,20 @@
 #include <stdlib.h>
 #include <netdb.h>
 #include <string.h>
+#include <fcntl.h>
 
-// #include "builtins/array/array.h"
+#include "builtins/buffer/buffer.h"
+#include "builtins/array/array.h"
 
-typedef char *string_t;
-typedef int bool_t;
-typedef int color_t;
-typedef void *args_t;
-
-typedef void (*callback_t)(args_t);
-typedef bool_t (*add_validator_t)(string_t, char);
-
-struct s_choice
-{
-    color_t color;
-    string_t name;
-    callback_t callback;
-};
-
-typedef struct s_choice choice_t;
-typedef choice_t *choices_t;
+#include "utils/type.h"
+#include "utils/ui.h"
+#include "utils/print.h"
 
 struct s_transaction
 {
+    string_t from;
     string_t to;
-    float ammout;
+    unsigned long long int ammout;
     bool_t send;
 };
 
@@ -53,179 +42,6 @@ struct s_split
 };
 
 typedef struct s_split split_t;
-typedef split_t *splits_t;
-
-const bool_t true = 1;
-const bool_t false = 0;
-
-#define UP_KEY 65
-#define DOWN_KEY 66
-#define RIGHT_KEY 67
-#define LEFT_KEY 68
-
-#define J_KEY 106
-#define K_KEY 107
-#define L_KEY 108
-#define COLUM_KEY 59
-#define BACK_KEY 127
-
-#define ENTER_KEY 10
-
-bool_t is_letter(char c)
-{
-    return (c >= 'a' && c <= 'z') ||
-           (c >= 'A' && c <= 'Z');
-}
-
-bool_t ascii_char(char c)
-{
-    return c >= ' ' && c <= '~';
-}
-
-size_t string_len(string_t str, bool_t allow_esc)
-{
-    size_t len = 0;
-    for (; *str; ++str)
-    {
-        if (allow_esc && *str == '\033')
-            while (*str && !is_letter(*str))
-                str++;
-        else
-            len++;
-    }
-    return len;
-}
-
-void print_n(size_t nb, string_t str)
-{
-    while (nb--)
-        for (string_t s = str; *s; s++)
-            putchar(*s);
-}
-
-void print_choices(string_t title, choices_t choices, size_t nb, size_t c)
-{
-    size_t title_len = string_len(title, true);
-    size_t max_len = title_len;
-    size_t *lens = malloc(nb * sizeof(size_t));
-    // ╭───╮
-    // │foo│
-    // ╰───╯
-    for (size_t i = 0; i < nb; i++)
-        if ((lens[i] = string_len(choices[i].name, true)) > max_len)
-            max_len = lens[i];
-
-    printf("\033[0m╭\033[1m %s \033[0m", title);
-    print_n(max_len - title_len + 2, "─");
-    printf("╮\n");
-
-    for (size_t i = 0; i < nb; i++)
-        printf("│ \033[%i%sm %s%*s \033[0m │\n",
-               choices[i].color,
-               i == c ? ";7;1" : "",
-               choices[i].name,
-               (int)(max_len - lens[i]), "");
-
-    printf("╰");
-    print_n(max_len + 4, "─");
-    printf("╯\n");
-
-    free(lens);
-}
-
-void clean_lines(size_t nb)
-{
-    for (; nb; --nb)
-        printf("\033[K\033[1A\033[K");
-}
-
-size_t choice(string_t title, choice_t *choices, size_t nb, args_t args,
-              bool_t clear)
-{
-    char c;
-    size_t choice = 0;
-
-    while (true)
-    {
-        print_choices(title, choices, nb, choice);
-        c = getchar();
-
-        if (c == L_KEY || c == UP_KEY)
-            choice -= !!choice;
-        else if (c == K_KEY || c == DOWN_KEY)
-            choice += choice < nb - 1;
-        else if (c == ENTER_KEY || c == COLUM_KEY)
-            break;
-
-        clean_lines(nb + 2);
-    }
-
-    if (clear)
-        clean_lines(nb + 2);
-
-    if (choices[choice].callback != NULL)
-        choices[choice].callback(args);
-
-    return choice;
-}
-
-void print_string(string_t title, string_t str)
-{
-    size_t str_len = string_len(str, true);
-    size_t title_len = string_len(title, true);
-    size_t max_len = str_len > title_len + 2 ? str_len : title_len + 2;
-
-    printf("╭\033[1m %s \033[0m", title);
-    print_n(max_len - title_len, "─");
-    printf("╮\n│ %s\033[0m%*s |\n╰",
-           str,
-           (int)(max_len - str_len), "");
-    print_n(max_len + 2, "─");
-    printf("╯\n");
-}
-
-void string_input(string_t title, string_t prefix, string_t *str,
-                  add_validator_t validator, bool_t clear)
-{
-    if (*str == NULL)
-    {
-        *str = calloc(1, sizeof(char));
-        if (*str == NULL)
-            errx(2, "can't allocate memory");
-    }
-
-    char c;
-    size_t size = string_len(*str, false) + 1;
-    while (true)
-    {
-        string_t print;
-        asprintf(&print, "%s: %s", prefix, *str);
-        print_string(title, print);
-        free(print);
-
-        c = getchar();
-        if (ascii_char(c) && (validator == NULL || validator(*str, c)))
-        {
-            *str = realloc(*str, (size + 1) * sizeof(char));
-            (*str)[size - 1] = c;
-            (*str)[size] = '\0';
-            size++;
-        }
-        else if (size > 1 && c == BACK_KEY)
-        {
-            *str = realloc(*str, (size - 1) * sizeof(char));
-            (*str)[size - 2] = '\0';
-            size--;
-        }
-        else if (c == ENTER_KEY)
-            break;
-
-        clean_lines(3);
-    }
-
-    if (clear)
-        clean_lines(3);
-}
 
 void transaction_to(args_t arg)
 {
@@ -233,32 +49,21 @@ void transaction_to(args_t arg)
     string_input("Transaction > To", "To", &trans->to, NULL, true);
 }
 
-bool_t is_number(char c)
+void transaction_from(args_t arg)
 {
-    return c >= '0' && c <= '9';
-}
-
-bool_t str_contain(string_t str, char c)
-{
-    while (*str && *str != c)
-        str++;
-    return *str == c;
-}
-
-bool_t float_validator(string_t str, char c)
-{
-    return is_number(c) || (c == '.' && !str_contain(str, c));
+    transaction_t *trans = arg;
+    string_input("Transaction > From", "From", &trans->from, NULL, true);
 }
 
 void transaction_ammout(args_t arg)
 {
     transaction_t *trans = arg;
     string_t str;
-    asprintf(&str, "%f", trans->ammout);
+    asprintf(&str, "%lld", trans->ammout);
     string_input("Transaction > Ammount", "ammout",
                  &str,
-                 float_validator, true);
-    trans->ammout = strtof(str, NULL);
+                 unsigned_validator, true);
+    trans->ammout = strtod(str, NULL);
     free(str);
 }
 
@@ -272,54 +77,7 @@ bool_t validation(string_t title, string_t msg, string_t ok, string_t cancel, bo
     return true;
 }
 
-const string_t SPIN[6] = {"✶", "✸", "✹", "✺", "✹", "✷"};
-
-const string_t SPIN2[12] = {"_", "_", "_", "-", "`", "`", "'", "´", "-", "_", "_", "_"};
-const string_t SPIN3[8] = {
-    "▰▱▱▱▱▱▱",
-    "▰▰▱▱▱▱▱",
-    "▰▰▰▱▱▱▱",
-    "▰▰▰▰▱▱▱",
-    "▰▰▰▰▰▱▱",
-    "▰▰▰▰▰▰▱",
-    "▰▰▰▰▰▰▰",
-    "▰▱▱▱▱▱▱"};
 const string_t SPIN4[12] = {"🕛", "🕚", "🕙", "🕘", "🕗", "🕖", "🕕", "🕔", "🕓", "🕒", "🕑", "🕐"};
-
-void print_task(tasks_t tasks, size_t nb)
-{
-    (void)tasks;
-    (void)nb;
-}
-
-#if 0
-void print_box(string_t title, string_t str)
-{
-    string_t *lines = get_lines(str);
-
-    printf("╭\033[1m %s \033[0m", title);
-    print_n(max_len - title_len, "─");
-    printf("╮\n│ %s\033[0m%*s |\n╰",
-           str,
-           (int)(max_len - str_len), "");
-    print_n(max_len + 2, "─");
-    printf("╯\n");
-}
-#endif
-
-void print_error(string_t error, bool_t clean)
-{
-    string_t str;
-    asprintf(&str, "\033[31m%s", error);
-
-    print_string("\033[31mError", str);
-    getchar();
-
-    if (clean)
-        clean_lines(3);
-
-    free(str);
-}
 
 int rerecv(int fd, char **str, size_t *count)
 {
@@ -393,7 +151,7 @@ bool_t msg_transaction(const char *host, transaction_t *trans)
     size_t len1 = 0;
 
     // Structure message transaction
-    asprintf(&str, "%f %s\n", trans->ammout, trans->to);
+    asprintf(&str, "%s -> %s : %lld\n", trans->from, trans->to, trans->ammout);
 
     // Send transaction to server
     send(cnx, str, strlen(str), 0);
@@ -423,28 +181,34 @@ bool_t msg_transaction(const char *host, transaction_t *trans)
     return true;
 }
 
-void send_transaction(args_t arg)
+void transaction_send(args_t arg)
 {
     transaction_t *trans = arg;
 
     if (trans->ammout < .00001)
     {
-        print_error("\033[31mYou send nothing", true);
+        print_error("You send nothing", true);
         return;
     }
     if (!*trans->to)
     {
-        print_error("No address provided", true);
+        print_error("No destination address provided", true);
+        return;
+    }
+
+    if (!*trans->from)
+    {
+        print_error("No comming address provided", true);
         return;
     }
 
     string_t str;
-    asprintf(&str, "do you wan't to send %f to %s ?", trans->ammout, trans->to);
+    asprintf(&str, "do you wan't to send %llu to %s ?", trans->ammout, trans->to);
 
-    bool_t v = validation("Confirme", str, "Ok", "Cancel", true);
+    bool_t validate = validation("Confirme", str, "Ok", "Cancel", true);
     free(str);
 
-    if (!v)
+    if (!validate)
         return;
 
     printf("%s Crypting\n"
@@ -452,48 +216,76 @@ void send_transaction(args_t arg)
            "🔒", SPIN4[0]);
     //usleep(80 * 1000);
 
-    if (msg_transaction("localhost", trans) == true)
-        trans->send = true;
-
     clean_lines(2);
 
-    /*for (size_t i = 0; i < 40; i++)
+    for (size_t i = 0; i < 40; i++)
     {
         printf("%s Crypting\n"
                "%s Sending\n",
                "🔒", SPIN4[i % 12]);
         usleep(80 * 1000);
         clean_lines(2);
-    }*/
+    }
+
+    if (msg_transaction("localhost", trans) == true)
+        trans->send = true;
 }
 
 void transaction(args_t arg)
 {
     (void)arg;
-    transaction_t trans = {malloc(1 * sizeof(char)), 0, false};
+    transaction_t trans = {
+        calloc(1, sizeof(char)),
+        calloc(1, sizeof(char)),
+        0,
+        false};
     *trans.to = '\00';
 
-    choice_t transaction_choices[4] = {
+    choice_t transaction_choices[5] = {
+        {0, NULL, transaction_from},
         {0, NULL, transaction_to},
         {0, NULL, transaction_ammout},
-        {34, "ok", send_transaction},
+        {34, "ok", transaction_send},
         {31, "cancel", NULL}};
 
     size_t c;
     do
     {
-        asprintf(&transaction_choices[0].name, "to: %s", trans.to);
-        asprintf(&transaction_choices[1].name, "ammount: %f", trans.ammout);
-        c = choice("Transaction", transaction_choices, 4, &trans, true);
-        free(transaction_choices[0].name);
-        free(transaction_choices[1].name);
-    } while (c != 3 && !trans.send);
+        asprintf(&transaction_choices[0].name, "from: %s", trans.from);
+        asprintf(&transaction_choices[1].name, "to: %s", trans.to);
+        asprintf(&transaction_choices[2].name, "ammount: %llu", trans.ammout);
+
+        c = choice("Transaction", transaction_choices, 5, &trans, true);
+
+        for (size_t i = 0; i < 3; i++)
+            free(transaction_choices[i].name);
+    } while (c != 4 && !trans.send);
 
     free(trans.to);
+    free(trans.from);
+}
+
+file_t safe_open(string_t path)
+{
+    file_t file = open(path, O_CREAT);
+
+    if (file == -1)
+        err(3, "can't open \"%s\"", path);
+
+    return file;
 }
 
 int main(void)
 {
+    file_t account_f = safe_open("config/accounts/account1.key");
+
+    Buffer account_buffer;
+    TRY(buffer_constructor_file(&account_buffer, account_f));
+    close(account_f);
+
+    string_t str;
+    TRY_CATCH(buffer_to_hex(account_buffer, &str, NULL),
+              buffer_destructor_safe(&account_buffer));
 
     struct termios info;
     /* get current terminal attirbutes; 0 is the file descriptor for stdin */
@@ -509,10 +301,6 @@ int main(void)
     info.c_cc[VMIN] = 1;             /* wait until at least one keystroke available */
     info.c_cc[VTIME] = 0;            /* no timeout */
     tcsetattr(STDIN_FILENO, TCSANOW, &info);
-    choice_t home_choices[4] = {{34, "Transaction", transaction},
-                                {33, "Sold", NULL},
-                                {32, "Option", NULL},
-                                {31, "Quit", NULL}};
 
     printf("\033[2J\033[0;0f\033[93m"
            "                                           ▄▄█▀▀▀▀▀█▄▄\n"
@@ -524,6 +312,10 @@ int main(void)
            " client V1.0\033[23m                               ▀▀█▄▄▄▄▄█▀▀\n"
            "\n");
 
+    choice_t home_choices[4] = {{34, "Transaction", transaction},
+                                {33, "Sold", NULL},
+                                {32, "Option", NULL},
+                                {31, "Quit", NULL}};
     size_t c;
     do
         c = choice("Home", home_choices, 4, NULL, true);
@@ -536,5 +328,8 @@ int main(void)
     info.c_cc[VMIN] = cc_vmin;
     info.c_cc[VTIME] = cc_vtime;
     tcsetattr(STDIN_FILENO, TCSANOW, &info);
+
+    free(str);
+    buffer_destructor_safe(&account_buffer);
     return 0;
 }

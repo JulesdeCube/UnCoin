@@ -313,7 +313,7 @@ error_t _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result)
                           bigint_destructor(result));
                 TRY_CATCH(_bigint_add(*result, bigint_shift, result),
                           {
-                              bigint_destructtor(&bigint_shift);
+                              bigint_destructor(&bigint_shift);
                               bigint_destructor(result);
                           });
 

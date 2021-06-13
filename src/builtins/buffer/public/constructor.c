@@ -105,8 +105,57 @@ error_t buffer_constructor_str(Buffer *new_buffer, string_t str, bool_t strict)
         *new_buffer = NULL;
         return ERROR_VALUE;
     }
+
     // create a array buffer with the correct lenght
     return buffer_constructor_array(new_buffer,
                                     strlen(str) + (strict != false),
                                     (u_char *)str);
+}
+
+error_t buffer_constructor_file(Buffer *new_buffer, file_t file)
+{
+    u_char tmp[1024];
+    ssize_t readed;
+
+    // if there is no return pointer throw an error
+    if (new_buffer == NULL)
+        return NO_SELF;
+
+    // if there is no file
+    if (file == -1)
+    {
+        *new_buffer = NULL;
+        return ERROR_VALUE;
+    }
+
+    Buffer buffer = malloc(sizeof(struct s_buffer));
+    buffer->size = 0;
+    buffer->data = malloc(0);
+    if (buffer->data == NULL)
+        return NO_SPACE;
+
+    *new_buffer = buffer;
+
+    while ((readed = read(file, tmp, 1024)))
+    {
+        if (readed == -1)
+        {
+            buffer_destructor_safe(new_buffer);
+            return ERROR_READ;
+        }
+
+        buffer->data = realloc(buffer->data, buffer->size + readed);
+
+        if (buffer->data == NULL)
+        {
+            buffer_destructor_safe(new_buffer);
+            return NO_SPACE;
+        }
+
+        memcpy(buffer->data + buffer->size, tmp, readed);
+
+        buffer->size += readed;
+    }
+
+    return SUCCESS;
 }

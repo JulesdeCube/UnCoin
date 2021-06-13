@@ -15,6 +15,8 @@ typedef int error_t;
 #define OUT_OF_RANGE 4
 // The value is not valid
 #define ERROR_VALUE 5
+// can't read the file
+#define ERROR_READ 6
 
 /**
 * call the function and on error call the clean function and return the error

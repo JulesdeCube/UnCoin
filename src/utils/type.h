@@ -1,5 +1,5 @@
-#ifndef UNCOIN__UTILS__BOOL_H_
-#define UNCOIN__UTILS__BOOL_H_
+#ifndef UNCOIN__UTILS__TYPE_H_
+#define UNCOIN__UTILS__TYPE_H_
 
 typedef int bool_t;
 #define true 1
@@ -7,6 +7,15 @@ typedef int bool_t;
 
 typedef char *string_t;
 typedef string_t path_t;
+
 typedef int file_t;
 
-#endif // UNCOIN__UTILS__BOOL_H_
+typedef void *args_t;
+
+/**
+** \typedef any_t
+** \brief any data pointer
+*/
+typedef void *any_t;
+
+#endif // UNCOIN__UTILS__TYPE_H_
