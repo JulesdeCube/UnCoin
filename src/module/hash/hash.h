@@ -30,6 +30,6 @@
  *
  * \return the error occur
  */
-int hash(Buffer *buff_result, Buffer *buff_to_hash);
+int hash(Buffer *buff_result, Buffer buff_to_hash);
 
 #endif // UNCOIN__MODULE__HASH__HASH_H_

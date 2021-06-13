@@ -93,7 +93,7 @@ int _htab_get_corresponding_pair(Htab htab,
         return OUT_OF_RANGE;
 
     Buffer hkey;
-    int error = hash(&hkey, &key);
+    int error = hash(&hkey, key);
     if (error != SUCCESS)
         return error;
 

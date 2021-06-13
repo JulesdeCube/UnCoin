@@ -2,7 +2,7 @@
 
 int _htab_constructor_pair(_Pair *pair, Buffer key, void *value, Buffer *hkey)
 {
-    int error = hash(hkey, &key);
+    int error = hash(hkey, key);
     if (error != SUCCESS)
         return error;
 

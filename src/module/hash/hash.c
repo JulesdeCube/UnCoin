@@ -1,16 +1,16 @@
 #include "hash.h"
 
-int hash_from_buffer(size_t *hash, Buffer *hash_buf)
+int hash_from_buffer(size_t *hash, Buffer hash_buf)
 {
     // Use the Jenkins's one_at_a_time hash.
     if (hash_buf == NULL)
         return NO_SELF;
     if (hash == NULL)
         return ERROR_VALUE;
-    u_char *key = buffer_get_data(*hash_buf);
+    u_char *key = buffer_get_data(hash_buf);
     if (key == NULL)
         return INTERNAL_ERROR;
-    size_t size = buffer_get_size(*hash_buf);
+    size_t size = buffer_get_size(hash_buf);
 
     size_t h = 0;
     for (size_t i = 0; i < size; ++i, ++key)
@@ -27,7 +27,7 @@ int hash_from_buffer(size_t *hash, Buffer *hash_buf)
     return SUCCESS;
 }
 
-int hash(Buffer *buff_result, Buffer *buff_to_hash)
+int hash(Buffer *buff_result, Buffer buff_to_hash)
 {
     size_t hash;
     size_t *p_hash = &hash;
