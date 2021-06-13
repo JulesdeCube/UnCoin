@@ -5,6 +5,7 @@ void print_blockchain(Blockchain bc)
     Block b = bc->block;
     while (b != NULL)
     {
+
         char *str1 = blockchain_block_buffer_to_string(b->previousHash);
         char *str2 = blockchain_block_buffer_to_string(b->hash);
 
@@ -34,8 +35,8 @@ void print_blockchain(Blockchain bc)
 
         b = b->previousBlock;
 
-        buffer_destructor_safe(&from);
-        buffer_destructor_safe(&to);
+        //buffer_destructor_safe(&from);
+        //buffer_destructor_safe(&to);
     }
 }
 
@@ -63,7 +64,7 @@ int main()
     print_blockchain(bc);
     print_blockchain_check(bc);
 
-    database_createFile_FromBlock(bc);
+    //database_createFile_FromBlock(bc);
 
     // Free blockchain
     blockchain_destructor(bc);

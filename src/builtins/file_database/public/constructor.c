@@ -74,14 +74,15 @@ void database_findFile(Blockchain bc)
             strcmp(strrchr(dirent->d_name, '.'), ".csv") == 0) // C'est un fichier csv
         {
             // Allocate filename
-            char *filename = malloc(sizeof(char) * BUFFER_SIZE);
-            if (filename == NULL)
-                errx(EXIT_FAILURE, "Error : malloc filename");
+            //char *filename = malloc(sizeof(char) * BUFFER_SIZE);
+            //if (filename == NULL)
+                //errx(EXIT_FAILURE, "Error : malloc filename");
 
             // Path of file csv in filename
-            filename = strcat(filename, DIR_PATH);
-            filename = strcat(filename, dirent->d_name);
-
+            //filename = strcat(filename, DIR_PATH);
+            //filename = strcat(filename, dirent->d_name);
+            char *filename;
+            asprintf(&filename,"%s%s",DIR_PATH,dirent->d_name);
             // TODO: Verifier si le nom du fichier correspond au hash du block
             /*char *name = strtok(dirent->d_name, ".");
                 if (strcmp(bc->block->hash, name))
@@ -240,7 +241,8 @@ void database_createFile_FromBlock(Blockchain bc)
         //char *from = malloc(sizeof(char)*100);
         char *from = (char *)buffer_get_data(bc->block->transaction->to);
         //strcat(from,froms);
-        //strcat(from,";\n");
+
+        strcat(from,";\n");
         //char *to = database_duplicate_string((char *)buffer_get_data(bc->block->transaction->to));
         //strcat(to,";\n");
         //printf("oui\n");
@@ -283,7 +285,7 @@ void database_createFile_FromBlock(Blockchain bc)
             fclose(fic);
             errx(EXIT_FAILURE, "Error file_database_createFile write in file");
         }*/
-        //free(from);
+        free(from);
         //free(to);
         fclose(fic);
         free(filename);

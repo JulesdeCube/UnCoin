@@ -1,5 +1,6 @@
 #ifndef UNCOIN__BUILTINS_BLOCKCHAIN__BLOCKCHAIN_H_
 #define UNCOIN__BUILTINS_BLOCKCHAIN__BLOCKCHAIN_H_
+#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>

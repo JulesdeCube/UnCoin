@@ -1,6 +1,8 @@
 #ifndef UNCOIN__BUILTINS_FILE_DATABASE__FILE_DATABASE_H_
 #define UNCOIN__BUILTINS_FILE_DATABASE__FILE_DATABASE_H_
 
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
