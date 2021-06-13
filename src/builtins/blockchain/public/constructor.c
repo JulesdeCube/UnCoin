@@ -27,7 +27,8 @@ void blockchain_block_hash(Block block)
     // Length for malloc
     size_t len_index = blockchain_size(block->index);
     size_t len_nonce = blockchain_size(block->nonce);
-    size_t len = len_index + len_nonce + strlen((char *)block->data);
+
+    size_t len = len_index + len_nonce + get_transaction_size(block->transaction);
     if (block->previousHash != NULL)
         len += strlen(previousHash);
 
@@ -43,7 +44,15 @@ void blockchain_block_hash(Block block)
     // Append in data
     data = strcat(data, index);
     data = strcat(data, nonce);
-    data = strcat(data, (char *)block->data);
+
+
+    Buffer buff_transa;
+    transaction_to_buffer(block->transaction, &buff_transa);
+    char *str_transa = (char*)buffer_get_data(buff_transa);//blockchain_block_buffer_to_string(buff_transa);
+
+    data = strcat(data, str_transa);
+
+    //printf("%s\n",data);
     if (block->previousHash != NULL)
         data = strcat(data, previousHash);
 
@@ -52,11 +61,18 @@ void blockchain_block_hash(Block block)
     // Hash in buff
     create_buff_hashed(&block->hash, data, len);
 
+    //printf("%li\n",len_index);
+    //printf("%li\n",block->index);
     // Free
     free(data);
+    //printf("%s\n",index);
     free(index);
+
     free(nonce);
+
     free(previousHash);
+    buffer_destructor_safe(&buff_transa);
+
 }
 
 char *blockchain_block_buffer_to_string(Buffer buff)
@@ -73,7 +89,7 @@ char *blockchain_block_buffer_to_string(Buffer buff)
 //                                       //
 ///////////////////////////////////////////
 
-Block blockchain_block_constructor(void *data, Block lastBlock)
+Block blockchain_block_constructor(Transaction transaction, Block lastBlock)
 {
     // Allocate for block
     Block block = calloc(6, sizeof(Block));
@@ -92,11 +108,15 @@ Block blockchain_block_constructor(void *data, Block lastBlock)
     else
         block->index = 0;
 
-    // Data
-    block->data = data;
 
+    // Data
+    block->transaction = transaction;
+    /*
+    printf("%s\n",(char*)buffer_get_data(block->transaction->from));
+    printf("%s\n",(char*)buffer_get_data(block->transaction->to));*/
     // Mining (hash and nonce)
     blockchain_block_mine(block);
+
 
     return block;
 }
@@ -114,9 +134,22 @@ int blockchain_block_check(Block block)
 
 Blockchain blockchain_contructor()
 {
-    // Create genesis block (first block)
-    Block genesisBlock = blockchain_block_constructor(GENESIS_DATA, NULL);
+    Buffer from;
+    Buffer to;
+    long long unsigned int amount = 0;
+    time_t date;
+    time(&date);
 
+    buffer_constructor_str(&from, "Vincent", true);
+    buffer_constructor_str(&to, "Jeanne", true);
+
+
+    Transaction genesis_transaction;
+    transaction_constructor_client(&genesis_transaction,from, to, amount, date);
+
+    // Create genesis block (first block)
+    Block genesisBlock = blockchain_block_constructor(genesis_transaction, NULL);
+    //printf("oui\n");
     // Allocate for blockchain
     Blockchain blockchain = malloc(sizeof(Blockchain));
     if (blockchain == NULL)
@@ -128,10 +161,10 @@ Blockchain blockchain_contructor()
     return blockchain;
 }
 
-void blockchain_block_add(Blockchain blockchain, void *data)
+void blockchain_block_add(Blockchain blockchain, Transaction transaction)
 {
     // Create new block with data and add in blockchain
-    Block newBlock = blockchain_block_constructor(data, blockchain->block);
+    Block newBlock = blockchain_block_constructor(transaction , blockchain->block);
 
     // Add new block in blockchain
     blockchain->block = newBlock;
@@ -149,6 +182,7 @@ int blockchain_check(Blockchain blockchain)
         // Check block
         if (blockchain_block_check(current) != 1)
             return current->index;
+
 
         // Init string and error
         char *previousHash_Str = blockchain_block_buffer_to_string(previous->hash);
@@ -178,9 +212,10 @@ int blockchain_check(Blockchain blockchain)
 
 void blockchain_block_mine(Block block)
 {
+
     // First hash
     blockchain_block_hash(block);
-
+    //printf("oui\n");
     // Hash to "000..."
     while (blockchain_block_check(block) != 1)
     {

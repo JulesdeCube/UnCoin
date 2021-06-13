@@ -1,12 +1,12 @@
 #include "../file_database.h"
 
-Blockchain database_init(Buffer privateKey)
+Blockchain database_init()
 {
     // Init blockchain
     Blockchain bc = blockchain_contructor();
 
     // Find file and add block in blockchain
-    database_findFile(bc,privateKey);
+    database_findFile(bc);
 
     return bc;
 }
@@ -55,7 +55,7 @@ char *database_findLast_block(size_t last_block_index)
     closedir(dir);
 }*/
 
-void database_findFile(Blockchain bc, Buffer privateKey)
+void database_findFile(Blockchain bc)
 {
     // Create directory
     DIR *dir = opendir(DIR_PATH);
@@ -89,7 +89,7 @@ void database_findFile(Blockchain bc, Buffer privateKey)
                          bc->block->index, bc->block->hash, name);*/
 
             // Transfert info file in block and add in blockchain
-            database_readFile_addBlock(bc, filename,privateKey);
+            database_readFile_addBlock(bc, filename);
 
             // Free path of file
             free(filename);
@@ -117,7 +117,7 @@ char *database_duplicate_string(const char *str)
     return dup;
 }
 
-void database_readFile_addBlock(Blockchain blockchain, char *path_file, Buffer private_key)
+void database_readFile_addBlock(Blockchain blockchain, char *path_file)
 {
     // Open file (reading)
     FILE *file = fopen(path_file, "r");
@@ -131,9 +131,8 @@ void database_readFile_addBlock(Blockchain blockchain, char *path_file, Buffer p
 
     Buffer from;
     Buffer to;
-    double amount;
-    Buffer signature;
-    Buffer date;
+    long long unsigned int amount;
+    time_t date;
     int i = 1;
 
     // TODO: A changer
@@ -144,37 +143,54 @@ void database_readFile_addBlock(Blockchain blockchain, char *path_file, Buffer p
 
         if(i == 1)
         {
-            from = buffer_constructor_str(&from, buff, true);
-            i++;
+            buffer_constructor_str(&from, buff, true);
         }
         if(i == 2)
         {
-            to = buffer_constructor_str(&to, buff, true);
-            i++;
+            buffer_constructor_str(&to, buff, true);
         }
         if(i == 3)
         {
-            //amount = ??;
-            i++;
+            amount = strtoull(buff, NULL, 10);
         }
         if(i == 4)
         {
-            to = buffer_constructor_str(&signature, buff, true);
-            i++;
+            int year = 0, month = 0, day = 0, hour = 0, min = 0,sec = 0;
+            if (sscanf(buff, "%4d.%2d.%2d %2d:%2d:%2d", &year, &month, &day, &hour, &min, &sec) == 6)
+            {
+                struct tm breakdown = {0};
+                breakdown.tm_year = year - 1900; /* years since 1900 */
+                breakdown.tm_mon = month - 1;
+                breakdown.tm_mday = day;
+                breakdown.tm_hour = hour;
+                breakdown.tm_min = min;
+                breakdown.tm_sec = sec;
+                if ((date = mktime(&breakdown)) == (time_t)-1)
+                {
+                    printf("Could not convert time input to time_t\n");
+                }
+                puts(ctime(&date));
+            }
         }
-        if(i == 5)
-        {
-            to = buffer_constructor_str(&date, buff, true);
-            i++;
-        }
+        i++;
         //data = database_duplicate_string(buff);
         //printf("%s\n", data);
     }
-    Transaction *transac;
-    transaction_constructor(transac, from, to, amount, private_key);
-    
+    /*
+    char *str_from = (char*)buffer_get_data(from);
+    char *str_to = (char*)buffer_get_data(to);
+
+    printf("%s\n",str_from);
+    printf("%s\n",str_to);
+    printf("%lli\n",amount);
+    printf("%s\n",ctime(&date));*/
+
+    Transaction transac;
+    transaction_constructor_client(&transac,from,to,amount,date);
+    //transaction bien pleine
+
     // Create and add block in blockchain
-    blockchain_block_add(blockchain, data);
+    blockchain_block_add(blockchain, transac);
 }
 
 size_t size_sizet(size_t index)
@@ -201,7 +217,8 @@ void database_createFile_FromBlock(Blockchain bc)
     strcat(filename, "_");
 
     //adding the hash
-    char *hash = NULL;
+    char *hash = NULL;//database_duplicate_string((char *)buffer_get_data(bc->block->hash));;
+
     if (buffer_to_hex(bc->block->hash, &hash, NULL) != SUCCESS)
         printf("BUG\n");
 
@@ -217,20 +234,57 @@ void database_createFile_FromBlock(Blockchain bc)
     //écriture
     FILE *fic = NULL;
     fic = fopen(filedir, "w");
-    /*
-    char *transactions = NULL;
-    if(buffer_to_hex(bc->block->h, &transactions, NULL) != SUCCESS)
-        printf("BUG\n");*/
 
     if (fic != NULL)
     {
-        char transactions[10] = "reussi";
-        if (fputs(transactions, fic) == EOF)
+        //char *from = malloc(sizeof(char)*100);
+        char *from = (char *)buffer_get_data(bc->block->transaction->to);
+        //strcat(from,froms);
+        //strcat(from,";\n");
+        //char *to = database_duplicate_string((char *)buffer_get_data(bc->block->transaction->to));
+        //strcat(to,";\n");
+        //printf("oui\n");
+        printf("%s\n",from);
+        //printf("%s\n",to);
+        //long long unsigned int amount = bc->block->transaction->amount;
+        //time_t date = bc->block->transaction->date;
+        /*
+        if (fputs(from, fic) == EOF)
+        {
+            printf("oui\n");
+            free(from);
+            free(filename);
+            fclose(fic);
+            errx(EXIT_FAILURE, "Error file_database_createFile write in file");
+        }
+        printf("from append\n");
+
+        if (fputs(to, fic) == EOF)
         {
             free(filename);
             fclose(fic);
             errx(EXIT_FAILURE, "Error file_database_createFile write in file");
         }
+        printf("to append\n");*/
+        //int error = fprintf(fic, "%llu",amount);
+        //printf("%i\n",error);
+        /*
+        if ()
+        {
+            printf("oui\n");
+            free(filename);
+            fclose(fic);
+            errx(EXIT_FAILURE, "Error file_database_createFile write in file");
+        }
+        printf("oui\n");
+        if (fprintf(fic, "%s;\n",ctime(&date)) != 1)
+        {
+            free(filename);
+            fclose(fic);
+            errx(EXIT_FAILURE, "Error file_database_createFile write in file");
+        }*/
+        //free(from);
+        //free(to);
         fclose(fic);
         free(filename);
     }
