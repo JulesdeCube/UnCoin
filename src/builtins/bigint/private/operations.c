@@ -313,20 +313,9 @@ error_t _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result)
                           bigint_destructor(result));
                 TRY_CATCH(_bigint_add(*result, bigint_shift, result),
                           {
-                              bigint_destructor(&bigint_shift);
+                              bigint_destructtor(&bigint_shift);
                               bigint_destructor(result);
                           });
-                char *res_hex, *shift_hex, *tmp_hex;
-                TRY(bigint_to_string(*result, &res_hex, NULL));
-                TRY(bigint_to_string(bigint_shift, &shift_hex, NULL));
-                TRY(bigint_to_string(tmp, &tmp_hex, NULL));
-                // printf("print(hex(%s + %s));", tmp_hex, shift_hex);
-                // printf("%s\n", res_hex);
-                // printf("%s\n", shift_hex);
-                // printf("%s + %s (<< %lu) = %s\n", tmp_hex, shift_hex, bit, res_hex);
-                free(res_hex);
-                free(shift_hex);
-                free(tmp_hex);
 
                 bigint_destructor(&bigint_shift);
                 bigint_destructor(&tmp);
