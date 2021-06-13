@@ -17,6 +17,8 @@
     "files.associations": {
         "hash.h": "c",
         "test.h": "c",
-        "test_1.h": "c"
+        "test_1.h": "c",
+        "shared_queue.h": "c",
+        "stdlib.h": "c"
     },
 }

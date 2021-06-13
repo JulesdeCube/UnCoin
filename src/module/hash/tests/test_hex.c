@@ -1,8 +1,8 @@
 #include "test_hex.h"
 
-void hash_hex_test(Buffer buffer, int error, char *expected)
+void hash_hex_test(Buffer buffer, int error, string_t expected)
 {
-    char *str;
+    string_t str;
     size_t len;
     int r_error = buffer_to_hex(buffer, &str, &len);
 

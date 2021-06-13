@@ -1,6 +1,6 @@
 #include "../buffer.h"
 
-void _buffer_destructor_data(Buffer buffer, bool safe)
+void _buffer_destructor_data(Buffer buffer, bool_t safe)
 {
     // get the data
     u_char *data = buffer_get_data(buffer);
@@ -17,7 +17,7 @@ void _buffer_destructor_data(Buffer buffer, bool safe)
     free(data);
 }
 
-void _buffer_destructor_buffer(Buffer buffer, bool safe)
+void _buffer_destructor_buffer(Buffer buffer, bool_t safe)
 {
     // if already destoy do nothing
     if (buffer == NULL)
@@ -34,7 +34,7 @@ void _buffer_destructor_buffer(Buffer buffer, bool safe)
     free(buffer);
 }
 
-void _buffer_destructor(Buffer *buffer, bool safe)
+void _buffer_destructor(Buffer *buffer, bool_t safe)
 {
     // if no buffer given do noting
     if (buffer == NULL)

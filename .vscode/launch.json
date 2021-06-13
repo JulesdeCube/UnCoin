@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/build/server",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -24,6 +24,27 @@
             ],
             "preLaunchTask": "build server",
             "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "debug tests",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/tests/bigint",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/tests",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build tests",
+            "miDebuggerPath": "/run/current-system/sw/bin/gdb"
         },
         {
             "name": "debug client",
@@ -44,7 +65,7 @@
                 }
             ],
             "preLaunchTask": "build client",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "miDebuggerPath": "/nix/store/w27vy22hfqdypfh6l3ycc72lw1ssmnv3-gdb-10.1/bin/gdb"
         }
     ]
 }

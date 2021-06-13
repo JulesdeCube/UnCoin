@@ -13,7 +13,7 @@
 #include <math.h>
 
 #include "utils/error.h"
-#include "utils/bool.h"
+#include "utils/type.h"
 #include "builtins/buffer/buffer.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,6 @@
  *
  * \return the error occur
  */
-int hash(Buffer *buff_result, Buffer *buff_to_hash);
+error_t hash(Buffer *buff_result, Buffer *buff_to_hash);
 
 #endif // UNCOIN__MODULE_HASH_HASH_H_

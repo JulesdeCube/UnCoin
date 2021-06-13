@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <err.h>
-#include "utils/bool.h"
+#include "utils/type.h"
 
 /**
 ** a test
@@ -28,6 +28,8 @@ void run_tests(Test *tests, size_t size, unsigned char level);
 
 // assert
 void assert_equal_ul(char *name, size_t exepted, size_t got);
+void assert_equal_i(char *name, int exepted, int got);
+void assert_equal_b(char *name, bool_t exepted, bool_t got);
 void assert_equal_p(char *name, void *exepted, void *got);
 void assert_equal_s(char *name, char *exepted, char *got);
 

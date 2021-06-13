@@ -19,7 +19,7 @@
 ** \throw   OUT_OF_RANGE: the index is out of range
 ** \throw INTERNAL_ERROR: no data
 */
-int _buffer_get_index_pointer(Buffer buffer, size_t index, u_char **byte);
+error_t _buffer_get_index_pointer(Buffer buffer, size_t index, u_char **byte);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -27,15 +27,11 @@ int _buffer_get_index_pointer(Buffer buffer, size_t index, u_char **byte);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int buffer_get_index(Buffer buffer, size_t index, u_char *byte)
+error_t buffer_get_index(Buffer buffer, size_t index, u_char *byte)
 {
     u_char *ptr;
     // get the coresponding pointer
-    int error = _buffer_get_index_pointer(buffer, index, &ptr);
-
-    // if we can't get the pointer
-    if (error != SUCCESS)
-        return error;
+    TRY(_buffer_get_index_pointer(buffer, index, &ptr));
 
     // return the value
     *byte = *ptr;
@@ -43,14 +39,11 @@ int buffer_get_index(Buffer buffer, size_t index, u_char *byte)
     return SUCCESS;
 }
 
-int buffer_set_index(Buffer buffer, size_t index, u_char byte)
+error_t buffer_set_index(Buffer buffer, size_t index, u_char byte)
 {
     u_char *ptr;
     // get the coresponding pointer
-    int error = _buffer_get_index_pointer(buffer, index, &ptr);
-
-    if (error != SUCCESS)
-        return error;
+    TRY(_buffer_get_index_pointer(buffer, index, &ptr));
 
     // update the value
     *ptr = byte;
@@ -58,7 +51,7 @@ int buffer_set_index(Buffer buffer, size_t index, u_char byte)
     return SUCCESS;
 }
 
-int buffer_to_hex(Buffer buffer, char **str, size_t *len)
+error_t buffer_to_hex(Buffer buffer, string_t *str, size_t *len)
 {
     // set paramerer to default value
     if (str)
@@ -92,7 +85,7 @@ int buffer_to_hex(Buffer buffer, char **str, size_t *len)
 
     u_char *start = buffer_get_data(buffer);
     u_char *end = start + buff_size - 1;
-    char *c = *str;
+    string_t c = *str;
     while (start <= end)
     {
         *c++ = int_to_hex[(*end & 0xf0) >> 4];
