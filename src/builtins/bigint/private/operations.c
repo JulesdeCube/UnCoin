@@ -56,15 +56,15 @@ int _bigint_comparison(BigInt bigint1, BigInt bigint2)
 ////////////////////////////////////////////////////////////////////////////////
 
 error_t _bigint_byte_operation(BigInt bigint1, BigInt bigint2, BigInt *result,
-                           size_t new_size,
-                           u_char (*byte_operator)(u_char, u_char, bool *))
+                               size_t new_size,
+                               u_char (*byte_operator)(u_char, u_char, bool_t *))
 {
     // create result buffer
     Buffer buffer;
     TRY(buffer_constructor_const(&buffer, new_size, 0));
 
     // make the calcule
-    bool tmp = false;
+    bool_t tmp = false;
     u_char new_byte, byte1, byte2;
     for (size_t i = 0; i < new_size; i++)
     {
@@ -93,7 +93,7 @@ error_t _bigint_byte_operation(BigInt bigint1, BigInt bigint2, BigInt *result,
     return SUCCESS;
 }
 
-u_char _bigint_sub_byte(u_char byte1, u_char byte2, bool *carry)
+u_char _bigint_sub_byte(u_char byte1, u_char byte2, bool_t *carry)
 {
     u_char new_byte = 0;
 
@@ -105,7 +105,7 @@ u_char _bigint_sub_byte(u_char byte1, u_char byte2, bool *carry)
     return new_byte;
 }
 
-u_char _bigint_add_byte(u_char byte1, u_char byte2, bool *overflow)
+u_char _bigint_add_byte(u_char byte1, u_char byte2, bool_t *overflow)
 {
     u_char new_byte = 0;
 
@@ -117,7 +117,7 @@ u_char _bigint_add_byte(u_char byte1, u_char byte2, bool *overflow)
     return new_byte;
 }
 
-error_t _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow)
+error_t _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool_t *overflow)
 {
     // get exibitor and buffer size
     size_t exibitor_1 = bigint_get_exhibitor(bigint1);
@@ -170,7 +170,7 @@ error_t _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size)
 
     *size = MAX(size1, size2);
 
-    bool overflow = true;
+    bool_t overflow = true;
     // TRY(_bigint_add_buffer_overflow(bigint1, bigint2, &overflow));
 
     *size += overflow == true;
@@ -198,7 +198,7 @@ error_t _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result)
     return _bigint_byte_operation(bigint1, bigint2, result, size, _bigint_sub_byte);
 }
 
-error_t _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub)
+error_t _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool_t sub)
 {
     // if the first is null it's the second one
     if (bigint_is_null(bigint1))
@@ -222,7 +222,7 @@ error_t _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub
     // get bigint order
     int comparison = _bigint_unsigned_comparison(bigint1, bigint2);
     // check if the sign are different
-    bool oposite_sign = (bigint1->sign != bigint2->sign) ^ sub;
+    bool_t oposite_sign = (bigint1->sign != bigint2->sign) ^ sub;
 
     // if the absolute value of the number are equal (|a| = |b|)
     if (comparison == 0)

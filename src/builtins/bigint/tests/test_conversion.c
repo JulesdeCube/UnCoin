@@ -9,9 +9,9 @@ error_t error;
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-void test_to_bool(char *name, BigInt bigint, int expected_error, bool exepted_value)
+void test_to_bool(char *name, BigInt bigint, int expected_error, bool_t exepted_value)
 {
-    bool result;
+    bool_t result;
 
     int return_code = bigint_to_bool(bigint, &result);
     char *str;
@@ -51,7 +51,7 @@ void test_to_int(char *name, BigInt bigint, int expected_error, int exepted_valu
     putchar('|');
 }
 
-BigInt create_safe_bigint(bool sign, size_t size, u_char *array)
+BigInt create_safe_bigint(bool_t sign, size_t size, u_char *array)
 {
     BigInt new_bigint;
     int error = bigint_constructor_array(&new_bigint, sign, size, array);

@@ -1,6 +1,8 @@
 #ifndef UNCOIN__UTILS__ERROR_H_
 #define UNCOIN__UTILS__ERROR_H_
 
+typedef int error_t;
+
 // Task is a success
 #define SUCCESS 0
 // Error that is not normaly possible
@@ -24,7 +26,7 @@
 */
 #define TRY_CATCH(function, clear) \
     {                              \
-        int error = function;      \
+        error_t error = function;  \
         if (error != SUCCESS)      \
         {                          \
             clear;                 \

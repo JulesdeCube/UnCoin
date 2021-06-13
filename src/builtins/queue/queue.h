@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <err.h>
 
-#include "../../utils/bool.h"
+#include "utils/type.h"
 
 typedef void (*Callback)(void *);
 typedef Callback Destructor;
@@ -32,7 +32,7 @@ struct s_queue
 typedef struct s_queue *Queue;
 
 Queue queue_init();
-bool queue_is_empty(Queue queue);
+bool_t queue_is_empty(Queue queue);
 void queue_enqueue(Queue queue, void *data);
 void *queue_dequeue(Queue queue);
 

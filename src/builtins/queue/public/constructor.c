@@ -16,7 +16,7 @@ Queue queue_init()
     return queue;
 }
 
-bool queue_is_empty(Queue queue)
+bool_t queue_is_empty(Queue queue)
 {
     return queue == NULL || queue->size <= 0;
 }

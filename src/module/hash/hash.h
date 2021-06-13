@@ -13,7 +13,7 @@
 #include <math.h>
 
 #include "utils/error.h"
-#include "utils/bool.h"
+#include "utils/type.h"
 #include "builtins/buffer/buffer.h"
 
 ////////////////////////////////////////////////////////////////////////////////

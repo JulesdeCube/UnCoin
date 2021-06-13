@@ -12,7 +12,7 @@
 ** \brief destroy the data of the buffer.
 ** if safe is true all the data will be errase
 */
-void _buffer_destructor_data(Buffer buffer, bool safe);
+void _buffer_destructor_data(Buffer buffer, bool_t safe);
 
 /**
 ** \private
@@ -20,7 +20,7 @@ void _buffer_destructor_data(Buffer buffer, bool safe);
 ** \brief destroy the buffer. Unsafe
 ** if safe is true all the data will be errase
 */
-void _buffer_destructor_buffer(Buffer buffer, bool safe);
+void _buffer_destructor_buffer(Buffer buffer, bool_t safe);
 
 /**
 ** \private
@@ -28,7 +28,7 @@ void _buffer_destructor_buffer(Buffer buffer, bool safe);
 ** \brief destroy the buffer.
 ** if safe is true all the data will be errase
 */
-void _buffer_destructor(Buffer *buffer, bool safe);
+void _buffer_destructor(Buffer *buffer, bool_t safe);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

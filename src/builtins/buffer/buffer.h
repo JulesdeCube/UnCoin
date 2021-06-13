@@ -11,7 +11,7 @@
 #include <string.h>
 
 #include "utils/error.h"
-#include "utils/bool.h"
+#include "utils/type.h"
 #include "utils/hex.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +136,7 @@ error_t buffer_constructor_array(Buffer *new_buffer, size_t size,
 ** \throw ERROR_VALUE: if string is null
 ** \see `buffer_constructor_array` for other error code
 */
-error_t buffer_constructor_str(Buffer *new_buffer, char *str, bool strict);
+error_t buffer_constructor_str(Buffer *new_buffer, char *str, bool_t strict);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

@@ -22,7 +22,7 @@ void bigi_dest(BigInt bigint)
 }
 
 void bigint_constructor_test(BigInt new_bigint, int new_error, int error,
-                             size_t exhibitor, bool sign, Buffer buffer)
+                             size_t exhibitor, bool_t sign, Buffer buffer)
 {
     // check return error code
     assert_equal_i("Error code", error, new_error);

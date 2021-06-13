@@ -25,7 +25,7 @@ size_t _bigint_get_buffer_exhibitor(Buffer buffer);
 *
 * check if the sign is valid
 */
-bool _bigint_is_valid_sign(bool sign);
+bool_t _bigint_is_valid_sign(bool_t sign);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -39,7 +39,7 @@ error_t bigint_constructor_null(BigInt *new_bigint)
     return bigint_constructor_array(new_bigint, POSITIVE, 0, array);
 }
 
-error_t bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
+error_t bigint_constructor_array(BigInt *new_bigint, bool_t sign, size_t size,
                                  u_char *array)
 {
 
@@ -78,7 +78,7 @@ error_t bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
     return SUCCESS;
 }
 
-error_t bigint_constructor_buffer(BigInt *new_bigint, bool sign, Buffer buffer)
+error_t bigint_constructor_buffer(BigInt *new_bigint, bool_t sign, Buffer buffer)
 {
 
     return bigint_constructor_array(new_bigint,
@@ -104,7 +104,7 @@ error_t bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer)
     u_char *more_byte = buffer_get_data(buffer);
     // get the sign (last bit of the first buffer byte the bit in for left of
     // the memory)
-    bool sign = (*more_byte & 0x80) ? NEGATIVE : POSITIVE;
+    bool_t sign = (*more_byte & 0x80) ? NEGATIVE : POSITIVE;
 
     // set byte to 0 (for the minimal size)
     *more_byte &= 0x7f;
@@ -142,7 +142,7 @@ error_t bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint)
 
 error_t bigint_constructor_from_int(BigInt *new_bigint, int value)
 {
-    bool sign = value < 0 ? NEGATIVE : POSITIVE;
+    bool_t sign = value < 0 ? NEGATIVE : POSITIVE;
     value = abs(value);
     u_char *array = (u_char *)&value;
     return bigint_constructor_array(new_bigint, sign, sizeof(int), array);

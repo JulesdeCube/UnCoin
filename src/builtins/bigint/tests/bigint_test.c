@@ -8,7 +8,7 @@ Test tests[] = {
     {"CONVERSION", test_conversion},
     {"OPERATIONS", test_operations}};
 
-bool is_correct_hex(char c)
+bool_t is_correct_hex(char c)
 {
     return (c >= '0' && c <= '9') ||
            (c >= 'a' && c <= 'f') ||

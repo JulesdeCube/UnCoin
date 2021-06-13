@@ -93,7 +93,7 @@ error_t buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array)
     return SUCCESS;
 }
 
-error_t buffer_constructor_str(Buffer *new_buffer, char *str, bool strict)
+error_t buffer_constructor_str(Buffer *new_buffer, char *str, bool_t strict)
 {
     // if there is no return pointer throw an error
     if (new_buffer == NULL)

@@ -1,7 +1,6 @@
 #include "../bigint.h"
 #include <stdio.h>
 
-
 size_t _bigint_get_array_exhibitor(size_t size, unsigned char *array)
 {
     // get max exhibitor
@@ -30,13 +29,12 @@ size_t _bigint_get_array_exhibitor(size_t size, unsigned char *array)
     return exhibitor;
 }
 
-
 size_t _bigint_get_buffer_exhibitor(Buffer buffer)
 {
     return _bigint_get_array_exhibitor(buffer->size, buffer->data);
 }
 
-bool _bigint_is_valid_sign(bool sign)
+bool_t _bigint_is_valid_sign(bool_t sign)
 {
     return sign == NEGATIVE || sign == POSITIVE;
 }

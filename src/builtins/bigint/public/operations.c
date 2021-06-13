@@ -14,7 +14,7 @@
 //               Public               //
 ////////////////////////////////////////
 
-bool bigint_is_null(BigInt bigint)
+bool_t bigint_is_null(BigInt bigint)
 {
     return bigint_get_exhibitor(bigint) == 0;
 }
@@ -65,32 +65,32 @@ int _bigint_unsigned_comparison(BigInt bigint1, BigInt bigint2);
 //               Public               //
 ////////////////////////////////////////
 
-bool bigint_greater_than(BigInt bigint1, BigInt bigint2)
+bool_t bigint_greater_than(BigInt bigint1, BigInt bigint2)
 {
     return _bigint_comparison(bigint1, bigint2) == 1;
 }
 
-bool bigint_less_than(BigInt bigint1, BigInt bigint2)
+bool_t bigint_less_than(BigInt bigint1, BigInt bigint2)
 {
     return _bigint_comparison(bigint1, bigint2) == -1;
 }
 
-bool bigint_equal_than(BigInt bigint1, BigInt bigint2)
+bool_t bigint_equal_than(BigInt bigint1, BigInt bigint2)
 {
     return _bigint_comparison(bigint1, bigint2) == 0;
 }
 
-bool bigint_not_equal(BigInt bigint1, BigInt bigint2)
+bool_t bigint_not_equal(BigInt bigint1, BigInt bigint2)
 {
     return _bigint_comparison(bigint1, bigint2) != 0;
 }
 
-bool bigint_less_or_equal(BigInt bigint1, BigInt bigint2)
+bool_t bigint_less_or_equal(BigInt bigint1, BigInt bigint2)
 {
     return _bigint_comparison(bigint1, bigint2) != 1;
 }
 
-bool bigint_greater_or_equal(BigInt bigint1, BigInt bigint2)
+bool_t bigint_greater_or_equal(BigInt bigint1, BigInt bigint2)
 {
     return _bigint_comparison(bigint1, bigint2) != -1;
 }
@@ -118,7 +118,7 @@ bool bigint_greater_or_equal(BigInt bigint1, BigInt bigint2)
 //              Private               //
 ////////////////////////////////////////
 
-error_t _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow);
+error_t _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool_t *overflow);
 
 error_t _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size);
 
@@ -126,7 +126,7 @@ error_t _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result);
 
 error_t _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result);
 
-error_t _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub);
+error_t _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool_t sub);
 
 error_t _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result);
 
@@ -291,7 +291,7 @@ error_t bigint_multiplication(BigInt bigint1, BigInt bigint2, BigInt *result)
 //               Public               //
 ////////////////////////////////////////
 
-error_t bigint_to_bool(BigInt bigint, bool *result)
+error_t bigint_to_bool(BigInt bigint, bool_t *result)
 {
     if (bigint == NULL)
         return NO_SELF;
