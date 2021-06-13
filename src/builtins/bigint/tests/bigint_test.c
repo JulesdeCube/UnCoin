@@ -26,7 +26,7 @@ enum e_opt
 
 typedef enum e_opt Opt;
 
-int apply_opt(Opt opt, BigInt *bigint, BigInt *result)
+error_t apply_opt(Opt opt, BigInt *bigint, BigInt *result)
 {
 
     BigInt tmp;

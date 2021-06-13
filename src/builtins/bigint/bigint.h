@@ -58,13 +58,13 @@ typedef struct s_bigint *BigInt;
 
 // !TODO - need comment
 
-int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
-                             u_char *array);
-int bigint_constructor_null(BigInt *new_bigint);
-int bigint_constructor_buffer(BigInt *new_bigint, bool sign, Buffer buffer);
-int bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer);
-int bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint);
-int bigint_constructor_from_int(BigInt *new_bigint, int value);
+error_t bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
+                                 u_char *array);
+error_t bigint_constructor_null(BigInt *new_bigint);
+error_t bigint_constructor_buffer(BigInt *new_bigint, bool sign, Buffer buffer);
+error_t bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer);
+error_t bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint);
+error_t bigint_constructor_from_int(BigInt *new_bigint, int value);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -84,7 +84,7 @@ void bigint_destructor(BigInt *bigint);
 
 bool bigint_is_null(BigInt bigint);
 size_t bigint_get_exhibitor(BigInt bigint);
-int bigint_get_byte(BigInt bigint, size_t i, u_char *byte);
+error_t bigint_get_byte(BigInt bigint, size_t i, u_char *byte);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -92,22 +92,22 @@ int bigint_get_byte(BigInt bigint, size_t i, u_char *byte);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int bigint_addition(BigInt bigint1, BigInt bigint2, BigInt *result);
-int bigint_substraction(BigInt bigint1, BigInt bigint2, BigInt *result);
-int bigint_left_shift(BigInt bigint, size_t shift, BigInt *result);
-int bigint_right_shift(BigInt bigint, size_t shift, BigInt *result);
-int bigint_shift(BigInt bigint, ssize_t shift, BigInt *result);
-int bigint_multiplication(BigInt bigint1,BigInt bigint2,BigInt *result);
+error_t bigint_addition(BigInt bigint1, BigInt bigint2, BigInt *result);
+error_t bigint_substraction(BigInt bigint1, BigInt bigint2, BigInt *result);
+error_t bigint_left_shift(BigInt bigint, size_t shift, BigInt *result);
+error_t bigint_right_shift(BigInt bigint, size_t shift, BigInt *result);
+error_t bigint_shift(BigInt bigint, ssize_t shift, BigInt *result);
+error_t bigint_multiplication(BigInt bigint1, BigInt bigint2, BigInt *result);
 
 ////////////////////////////////////////////////////////////
 //                       CONVERSION                       //
 ////////////////////////////////////////////////////////////
 
-int bigint_to_bool(BigInt bigint, bool *result);
-int bigint_to_int(BigInt bigint, int *result);
-long long int bigint_to_long_long_int(BigInt bigint, long long int *result);
-int bigint_to_buffer(BigInt bigint, Buffer *buffer);
-int bigint_to_string(BigInt bigint, char **str, size_t *len);
+bool bigint_to_bool(BigInt bigint, bool *result);
+error_t bigint_to_int(BigInt bigint, int *result);
+error_t bigint_to_long_long_int(BigInt bigint, long long int *result);
+error_t bigint_to_buffer(BigInt bigint, Buffer *buffer);
+error_t bigint_to_string(BigInt bigint, char **str, size_t *len);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

@@ -3,7 +3,7 @@
 BigInt bigint1;
 BigInt bigint2;
 bool res;
-int error;
+error_t error;
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -11,9 +11,9 @@ int error;
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int _bigint_comparison(BigInt bigint1, BigInt bigint2);
-int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result);
-int _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result);
+error_t _bigint_comparison(BigInt bigint1, BigInt bigint2);
+error_t _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result);
+error_t _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

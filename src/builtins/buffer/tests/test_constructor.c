@@ -4,7 +4,7 @@
 #define size_2 0
 
 Buffer buffer;
-int error;
+error_t error;
 
 void buff_des(Buffer buffer)
 {

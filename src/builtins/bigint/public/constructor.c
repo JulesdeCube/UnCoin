@@ -27,19 +27,20 @@ size_t _bigint_get_buffer_exhibitor(Buffer buffer);
 */
 bool _bigint_is_valid_sign(bool sign);
 
-int bigint_constructor_null(BigInt *new_bigint)
-{
-    u_char array[] = {0x00};
-    return bigint_constructor_array(new_bigint, POSITIVE, 0, array);
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                   PUBLIC                                   //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
-int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
-                             u_char *array)
+
+error_t bigint_constructor_null(BigInt *new_bigint)
+{
+    u_char array[] = {0x00};
+    return bigint_constructor_array(new_bigint, POSITIVE, 0, array);
+}
+
+error_t bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
+                                 u_char *array)
 {
 
     // if there is
@@ -77,7 +78,7 @@ int bigint_constructor_array(BigInt *new_bigint, bool sign, size_t size,
     return SUCCESS;
 }
 
-int bigint_constructor_buffer(BigInt *new_bigint, bool sign, Buffer buffer)
+error_t bigint_constructor_buffer(BigInt *new_bigint, bool sign, Buffer buffer)
 {
 
     return bigint_constructor_array(new_bigint,
@@ -86,7 +87,7 @@ int bigint_constructor_buffer(BigInt *new_bigint, bool sign, Buffer buffer)
                                     buffer_get_data(buffer));
 }
 
-int bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer)
+error_t bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer)
 {
     // check if we have the big int
     if (new_bigint == NULL)
@@ -120,7 +121,7 @@ int bigint_constructor_buffer_signed(BigInt *new_bigint, Buffer buffer)
     return error;
 }
 
-int bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint)
+error_t bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint)
 {
     // if there is no bigint
     if (bigint == NULL)
@@ -139,7 +140,7 @@ int bigint_constructor_bigint(BigInt *new_bigint, BigInt bigint)
                                      bigint->buffer);
 }
 
-int bigint_constructor_from_int(BigInt *new_bigint, int value)
+error_t bigint_constructor_from_int(BigInt *new_bigint, int value)
 {
     bool sign = value < 0 ? NEGATIVE : POSITIVE;
     value = abs(value);

@@ -1,7 +1,7 @@
 #include "../buffer.h"
 //#include "utils/hex.h"
 
-int _buffer_get_index_pointer(Buffer buffer, size_t index, u_char **byte)
+error_t _buffer_get_index_pointer(Buffer buffer, size_t index, u_char **byte)
 {
     // if no buffer return an error
     if (buffer == NULL)

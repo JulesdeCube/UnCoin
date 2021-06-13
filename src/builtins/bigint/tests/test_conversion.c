@@ -1,7 +1,7 @@
 #include "test_constructor.h"
 
 BigInt bigint;
-int error;
+error_t error;
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

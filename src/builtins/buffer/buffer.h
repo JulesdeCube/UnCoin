@@ -60,7 +60,7 @@ typedef struct s_buffer *Buffer;
 ** \throw ERROR_VALUE: if buffer is null
 ** \see `buffer_constructor_array` for other error code
 */
-int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer);
+error_t buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer);
 
 /**
 ** \brief `Buffer` constuctor.
@@ -78,7 +78,7 @@ int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer);
 ** \throw NO_SPACE: not enough free space
 ** \throw NO_SELF : return pointer (`new_buffer`) is null
 */
-int buffer_constructor_size(Buffer *new_buffer, size_t size);
+error_t buffer_constructor_size(Buffer *new_buffer, size_t size);
 
 /**
 ** \brief `Buffer` constant constuctor.
@@ -96,7 +96,8 @@ int buffer_constructor_size(Buffer *new_buffer, size_t size);
 **
 ** \see `buffer_constructor_size` for other error code
 */
-int buffer_constructor_const(Buffer *new_buffer, size_t size, u_char constant);
+error_t buffer_constructor_const(Buffer *new_buffer, size_t size,
+                                 u_char constant);
 
 /**
 ** \brief `Buffer` array constuctor.
@@ -115,7 +116,8 @@ int buffer_constructor_const(Buffer *new_buffer, size_t size, u_char constant);
 ** \throw ERROR_VALUE: if array is null
 ** \see `buffer_constructor_size` for other error code
 */
-int buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array);
+error_t buffer_constructor_array(Buffer *new_buffer, size_t size,
+                                 u_char *array);
 
 /**
 ** \brief `Buffer` string constuctor.
@@ -134,7 +136,7 @@ int buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array);
 ** \throw ERROR_VALUE: if string is null
 ** \see `buffer_constructor_array` for other error code
 */
-int buffer_constructor_str(Buffer *new_buffer, char *str, bool strict);
+error_t buffer_constructor_str(Buffer *new_buffer, char *str, bool strict);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -203,10 +205,10 @@ u_char *buffer_get_data(Buffer buffer);
 ** \throw OUT_OF_RANGE  : if the index is greater than the size
 ** \throw INTERNAL_ERROR: data is null
 */
-int buffer_get_index(Buffer buffer, size_t index, u_char *byte);
+error_t buffer_get_index(Buffer buffer, size_t index, u_char *byte);
 
-int buffer_set_index(Buffer buffer, size_t index, u_char byte);
+error_t buffer_set_index(Buffer buffer, size_t index, u_char byte);
 
-int buffer_to_hex(Buffer buffer, char **str, size_t *len);
+error_t buffer_to_hex(Buffer buffer, char **str, size_t *len);
 
 #endif // UNCOIN__BUILTINS_BUFFER__BUFFER_H_

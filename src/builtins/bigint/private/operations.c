@@ -55,7 +55,7 @@ int _bigint_comparison(BigInt bigint1, BigInt bigint2)
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-int _bigint_byte_operation(BigInt bigint1, BigInt bigint2, BigInt *result,
+error_t _bigint_byte_operation(BigInt bigint1, BigInt bigint2, BigInt *result,
                            size_t new_size,
                            u_char (*byte_operator)(u_char, u_char, bool *))
 {
@@ -117,7 +117,7 @@ u_char _bigint_add_byte(u_char byte1, u_char byte2, bool *overflow)
     return new_byte;
 }
 
-int _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow)
+error_t _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow)
 {
     // get exibitor and buffer size
     size_t exibitor_1 = bigint_get_exhibitor(bigint1);
@@ -163,7 +163,7 @@ int _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow)
     return SUCCESS;
 }
 
-int _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size)
+error_t _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size)
 {
     size_t size1 = buffer_get_size(bigint1->buffer);
     size_t size2 = buffer_get_size(bigint2->buffer);
@@ -178,7 +178,7 @@ int _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size)
     return SUCCESS;
 }
 
-int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result)
+error_t _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
     // get the new number buffer size
     size_t size1 = buffer_get_size(bigint1->buffer);
@@ -188,7 +188,7 @@ int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result)
     return _bigint_byte_operation(bigint1, bigint2, result, size, _bigint_add_byte);
 }
 
-int _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result)
+error_t _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
     // get the new number buffer size
     size_t size1 = buffer_get_size(bigint1->buffer);
@@ -198,7 +198,7 @@ int _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result)
     return _bigint_byte_operation(bigint1, bigint2, result, size, _bigint_sub_byte);
 }
 
-int _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub)
+error_t _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub)
 {
     // if the first is null it's the second one
     if (bigint_is_null(bigint1))
@@ -261,7 +261,7 @@ int _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub)
     return SUCCESS;
 }
 
-int _bigint_count_bit(BigInt bigint, size_t *result)
+error_t _bigint_count_bit(BigInt bigint, size_t *result)
 {
     if (bigint == NULL)
         return NO_SELF;
@@ -284,7 +284,7 @@ int _bigint_count_bit(BigInt bigint, size_t *result)
     return SUCCESS;
 }
 
-int _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result)
+error_t _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
     BigInt tmp, bigint_shift;
     size_t nb_bit1, nb_bit2;

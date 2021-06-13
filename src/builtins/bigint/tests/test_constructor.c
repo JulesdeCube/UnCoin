@@ -3,7 +3,7 @@
 Buffer buffer;
 BigInt bigint;
 Buffer buffer_res;
-int error;
+error_t error;
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //

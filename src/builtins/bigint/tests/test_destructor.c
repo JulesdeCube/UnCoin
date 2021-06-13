@@ -3,7 +3,7 @@
 Buffer buffer;
 BigInt bigint;
 Buffer buffer_res;
-int error;
+error_t error;
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -31,10 +31,7 @@ int error;
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-Test destructor_tests[] =
-    {
-
-};
+Test destructor_tests[] = {};
 
 void test_destructor()
 {

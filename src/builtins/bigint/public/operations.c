@@ -24,21 +24,20 @@ size_t bigint_get_exhibitor(BigInt bigint)
     return (bigint != NULL) * bigint->exhibitor;
 }
 
-int bigint_get_byte(BigInt bigint, size_t i, u_char *byte)
+error_t bigint_get_byte(BigInt bigint, size_t i, u_char *byte)
 {
     if (bigint == NULL)
         return NO_SELF;
 
+    if (byte == NULL)
+        return ERROR_VALUE;
+
+    *byte = 0;
+
     Buffer buffer = bigint->buffer;
-    int error = buffer_get_index(buffer, i, byte);
+    error_t error = buffer_get_index(buffer, i, byte);
 
-    if (error == OUT_OF_RANGE)
-    {
-        *byte = 0;
-        return SUCCESS;
-    }
-
-    return error;
+    return error == OUT_OF_RANGE ? SUCCESS : error;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,47 +118,47 @@ bool bigint_greater_or_equal(BigInt bigint1, BigInt bigint2)
 //              Private               //
 ////////////////////////////////////////
 
-int _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow);
+error_t _bigint_add_buffer_overflow(BigInt bigint1, BigInt bigint2, bool *overflow);
 
-int _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size);
+error_t _bigint_add_size(BigInt bigint1, BigInt bigint2, size_t *size);
 
-int _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result);
+error_t _bigint_add(BigInt bigint1, BigInt bigint2, BigInt *result);
 
-int _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result);
+error_t _bigint_sub(BigInt bigint1, BigInt bigint2, BigInt *result);
 
-int _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub);
+error_t _bigint_add_sub(BigInt bigint1, BigInt bigint2, BigInt *result, bool sub);
 
-int _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result);
+error_t _bigint_mul(BigInt bigint1, BigInt bigint2, BigInt *result);
 
-#define BIGINT_OPERATION_GARD()                      \
-    if (result == NULL)                              \
-        return ERROR_VALUE;                          \
-                                                     \
-    if (bigint1 == NULL || bigint2 == NULL)          \
-    {                                                \
-        int error = bigint_constructor_null(result); \
-        return error == SUCCESS ? NO_SELF : error;   \
+#define BIGINT_OPERATION_GARD()                          \
+    if (result == NULL)                                  \
+        return ERROR_VALUE;                              \
+                                                         \
+    if (bigint1 == NULL || bigint2 == NULL)              \
+    {                                                    \
+        error_t error = bigint_constructor_null(result); \
+        return error == SUCCESS ? NO_SELF : error;       \
     }
 
 ////////////////////////////////////////
 //               Public               //
 ////////////////////////////////////////
 
-int bigint_addition(BigInt bigint1, BigInt bigint2, BigInt *result)
+error_t bigint_addition(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
     // check for pointer issus
     BIGINT_OPERATION_GARD();
     return _bigint_add_sub(bigint1, bigint2, result, false);
 }
 
-int bigint_substraction(BigInt bigint1, BigInt bigint2, BigInt *result)
+error_t bigint_substraction(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
     // check for pointer issus
     BIGINT_OPERATION_GARD();
     return _bigint_add_sub(bigint1, bigint2, result, true);
 }
 
-int bigint_left_shift(BigInt bigint, size_t shift, BigInt *result)
+error_t bigint_left_shift(BigInt bigint, size_t shift, BigInt *result)
 {
     // GARD();
 
@@ -184,7 +183,6 @@ int bigint_left_shift(BigInt bigint, size_t shift, BigInt *result)
 
     Buffer new_buffer;
     TRY(buffer_constructor_const(&new_buffer, new_size, 0));
-
 
     u_char last_byte = 0x00;
     u_char current_byte;
@@ -228,31 +226,27 @@ int bigint_left_shift(BigInt bigint, size_t shift, BigInt *result)
     return SUCCESS;
 }
 
-int bigint_right_shift(BigInt bigint, size_t shift, BigInt *result)
+error_t bigint_right_shift(BigInt bigint, size_t shift, BigInt *result)
 {
     if (shift == 0)
         return bigint_constructor_bigint(result, bigint);
 
     size_t exhibitor = bigint_get_exhibitor(bigint);
 
-    if (shift >= exhibitor)
-        return bigint_constructor_null(result);
-
-    return true;
+    return shift >= exhibitor ? bigint_constructor_null(result) : SUCCESS;
 }
 
-int bigint_shift(BigInt bigint, ssize_t shift, BigInt *result)
+error_t bigint_shift(BigInt bigint, ssize_t shift, BigInt *result)
 {
     return shift > 0
                ? bigint_left_shift(bigint, shift, result)
                : bigint_right_shift(bigint, -shift, result);
 }
-int bigint_multiplication(BigInt bigint1,BigInt bigint2,BigInt *result)
+error_t bigint_multiplication(BigInt bigint1, BigInt bigint2, BigInt *result)
 {
     BIGINT_OPERATION_GARD();
-    return _bigint_mul(bigint1,bigint2,result);
+    return _bigint_mul(bigint1, bigint2, result);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -297,7 +291,7 @@ int bigint_multiplication(BigInt bigint1,BigInt bigint2,BigInt *result)
 //               Public               //
 ////////////////////////////////////////
 
-int bigint_to_bool(BigInt bigint, bool *result)
+error_t bigint_to_bool(BigInt bigint, bool *result)
 {
     if (bigint == NULL)
         return NO_SELF;
@@ -310,13 +304,13 @@ int bigint_to_bool(BigInt bigint, bool *result)
     return SUCCESS;
 }
 
-int bigint_to_int(BigInt bigint, int *result)
+error_t bigint_to_int(BigInt bigint, int *result)
     BIGINT_TO(int);
 
-long long int bigint_to_long_long_int(BigInt bigint, long long int *result)
+error_t bigint_to_long_long_int(BigInt bigint, long long int *result)
     BIGINT_TO(long long int);
 
-int bigint_to_buffer(BigInt bigint, Buffer *buffer)
+error_t bigint_to_buffer(BigInt bigint, Buffer *buffer)
 {
 
     if (buffer == NULL)
@@ -333,7 +327,7 @@ int bigint_to_buffer(BigInt bigint, Buffer *buffer)
     return buffer_constructor_buffer(buffer, bigint->buffer);
 }
 
-int bigint_to_string(BigInt bigint, char **str, size_t *len)
+error_t bigint_to_string(BigInt bigint, char **str, size_t *len)
 {
     if (bigint == NULL)
         return NO_SELF;

@@ -1,6 +1,6 @@
 #include "../buffer.h"
 
-int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer)
+error_t buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer)
 {
     // if there is no return pointer throw an error
     if (new_buffer == NULL)
@@ -26,7 +26,7 @@ int buffer_constructor_buffer(Buffer *new_buffer, Buffer buffer)
                                     data);
 }
 
-int buffer_constructor_size(Buffer *new_buffer, size_t size)
+error_t buffer_constructor_size(Buffer *new_buffer, size_t size)
 {
     // if there is no return pointer throw an error
     if (new_buffer == NULL)
@@ -58,7 +58,7 @@ int buffer_constructor_size(Buffer *new_buffer, size_t size)
     return SUCCESS;
 }
 
-int buffer_constructor_const(Buffer *new_buffer, size_t size, u_char constant)
+error_t buffer_constructor_const(Buffer *new_buffer, size_t size, u_char constant)
 {
     // create a buffer of the correct size
     TRY(buffer_constructor_size(new_buffer, size));
@@ -70,7 +70,7 @@ int buffer_constructor_const(Buffer *new_buffer, size_t size, u_char constant)
     return SUCCESS;
 }
 
-int buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array)
+error_t buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array)
 {
     // if there is no return pointer throw an error
     if (new_buffer == NULL)
@@ -93,7 +93,7 @@ int buffer_constructor_array(Buffer *new_buffer, size_t size, u_char *array)
     return SUCCESS;
 }
 
-int buffer_constructor_str(Buffer *new_buffer, char *str, bool strict)
+error_t buffer_constructor_str(Buffer *new_buffer, char *str, bool strict)
 {
     // if there is no return pointer throw an error
     if (new_buffer == NULL)
