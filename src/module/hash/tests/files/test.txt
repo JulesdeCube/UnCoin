@@ -1,0 +1,114 @@
+Protocole & Informations - Projet S4-Ing1 2020-21
+lundi 15 février 2021
+Le cadre...
+Le projet est à réaliser en groupe de quatre personnes (et seulement quatre). Sa durée est d’environ
+cinq mois (de février à juin). Un cahier des charges présentera la nature du projet, les différentes parties
+qui le composent et les délais de réalisation (planning).
+Le sujet...
+Le projet que vous allez devoir réaliser, est un logiciel dans lequel l’algorithmique a une part très
+importante. Le sujet est libre, et doit être validé par Christophe Boullay. A titre d’indication, les sujets
+faisant appel à du traitement du signal, de l’imagerie ou du calcul scientifique pour ne citer que ceux-là
+ont de fortes chances d’être acceptés. En revanche, il est peu probable que le développement d’une base
+de données soit retenu, à moins que l’on ne parle du moteur de la base.
+Les restrictions...
+Ce projet sera développé sous Linux et sera codé en C
+le protocole...
+Vous devez choisir un groupe de quatre personnes, donner un nom à ce groupe, choisir un sujet de
+projet et remettre le nom du groupe, le nom des membres, le login de chaque membre, le nom du projet
+ainsi que le nom de celui que vous aurez désigné comme chef de projet (cf. date limite de choix de groupe).
+Un chef de projet est nécessaire pour servir, entre autres, d’interlocuteur aux jurys des soutenances.
+Accompagnant tout cela, vous devez en premier lieu fournir sur deux pages recto/verso un bref aperçu
+de ce que vous comptez réaliser, en décrivant l’intérêt algorithmique de ce sujet.
+Si celui-ci est accepté, vous êtes tenus de réaliser à ce moment le cahier des charges. Celui-ci doit
+commencer par une introduction rapide suivie par l’état de l’art 1 condensé correspondant
+aux technologies actuellement connues permettant de résoudre le(s) problème(s) posé(s) par
+le sujet choisi. Chacune de ces technologies doit être expliquée, vous devez montrer ses capacités ainsi
+que ses limites. Ensuite vous devez préciser la technologie que vous avez retenue et pourquoi.
+Pour terminer avec ce cahier des charges et avant une brève conclusion, vous devez fournir les éléments
+classiques, c’est à dire : Un tableau de répartitions des charges (accompagné d’un descriptif précis) entre
+les membres du groupe ainsi qu’un planning détaillé de réalisation aligné sur les dates de soutenances.
+Les dates à retenir...
+19/02/2021 : Le choix du groupe et la remise du synopsis.
+26/02/2021 : Remise du cahier des charges.
+05/03/2021 : Validation du cahier des charges.
+Viennent ensuite les dates des soutenances nous menant fièrement au mois de mai.
+1. Et évitez les tas de lard...
+1Projet
+Protocole & Informations – 2020-21
+S4-Ing1
+Epita
+Les soutenances...
+Les soutenances durent, à l’exception de la dernière, 10 minutes. Elles sont au nombre de trois. Elles
+se suivent et donc tout retard de votre part entraîne une diminution de votre temps de parole ! Il faut
+donc faire une présentation claire, nette et précise de l’état d’avancement de votre projet et répondre de
+la manière la plus claire et la plus concise possible aux questions du jury.
+Dates des soutenances...
+Première : du 29 mars au 2 avril 2021
+Deuxième : du 3 au 7 mai 2021
+Finale : du 14 au 18 juin 2021
+Le jury...
+Toutes les soutenances seront assurées par David Bouchet et Christophe Boullay, sous l’oeil exercé et
+intransigeant des ASMs qui auront envie d’y assister. Vos suivis seront assurés tout au long du projet par
+le même jury.
+Bonus...
+Bien évidemment, des ajouts et/ou modifications pourront être effectués en cours de semestre au
+cahier des charges validé.
+Règles à respecter...
+Pour que le développement de ce projet se passe le mieux possible, nous allons respecter les règles de
+codage suivantes :
+— Pour le code :
+— Votre code devra obligatoirement être correctement indenté
+— Tous les noms d’identifiants (fonctions, variables, constantes, macros, etc.) devront être en
+anglais
+— Vous devrez découper votre code en plusieurs unités et chaque fichier .c devra être accompagné
+de son en-tête (fichier .h)
+— Le code ne devra pas dépasser 80 caractères par ligne
+— Il ne doit y avoir d’espaces inutiles en fin de ligne
+— Votre code devra être compilé avec au moins les options suivantes : -Wall -Wextra
+— Vous pourrez utiliser (au choix) les compilateurs gcc ou clang
+— Votre code ne devra émettre aucun warning à la compilation
+— Pour le projet :
+— Il serait préférable d’utiliser le gestionnaire de versions git et être capable de montrer en
+soutenance (sous la forme que vous désirez) l’évolution de votre projet et les différents apports
+de chacun.
+— Pour la construction de votre projet, vous devrez fournir un Makefile permettant de compiler
+les différents fichiers et de produire les différents binaires. Votre Makefile devra également
+permettre de nettoyer le répertoire des produits de compilation (.o, exécutables, . . . )
+— Votre Makefile devra *autant que possible* utiliser les règles de production implicites, il devra
+également ne compiler que les fichiers nécessaires en respectant les dépendances.
+— Votre projet devra contenir au minimum un fichier README (au format texte simple ou éventuellement Markdown) expliquant succinctement comment compiler et lancer votre projet.
+2Projet
+Protocole & Informations – 2020-21
+S4-Ing1
+Epita
+Description des pièces à fournir...
+A chaque soutenance vous devez fournir :
+— Un plan de soutenance,
+— Un rapport de soutenance,
+— Un site Web.
+A la soutenance finale vous devez fournir :
+— Un plan de soutenance,
+— Un rapport de projet,
+— Le projet,
+— Un site Web,
+— Une aide (sous la forme de fichier texte/markdown) pour la compilation et l’installation,
+— Une visualisation au choix de votre historique de développement.
+Un plan de soutenance (à chaque soutenance)
+Il présente sur une page et sous la forme d’un plan, la façon dont va se dérouler votre soutenance. Cela
+sous-entend évidemment une préparation de celle-ci (ne serait-ce que bien gérer votre temps). Il doit être
+remis au début de chaque soutenance.
+Un rapport de soutenance (à chaque soutenance)
+Il présente sur une vingtaine de pages (minimum) ce qui a été réalisé depuis la dernière soutenance ou
+depuis la validation du cahier des charges pour la première soutenance. Sa présentation 1 peut-être calquée
+sur celle du rapport de projet présenté plus loin. Il doit être remis au début de chaque soutenance. Il doit
+faire le bilan de ce qui a été fait (avances et/ou retards sur planning), par qui et présenter ce qui doit
+être fait pour la prochaine fois.
+Un site Web (à chaque soutenance)
+Celui-ci doit contenir une page d’accueil permettant d’accéder aux différents éléments suivants :
+— Une présentation du projet (l’historique, les membres, la chronologie de réalisation, les problèmes
+rencontrés, les solutions envisagées),
+— Les liens sur les sites (des membres, des logiciels, images, sons, librairies, applets et autres éléments
+que vous auriez pu utiliser),
+— Un download du rapport, du projet et d’une version lite de celui-ci (sans toutes les choses inutiles
+à l’exécution du projet).
+1. Toute présentation, qu’elle soit écrite ou orale, doit contenir un plan ainsi qu’une introduction et une conclusion.
