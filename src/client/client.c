@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <err.h>
 #include <stdlib.h>
+#include <netdb.h>
+#include <string.h>
 
 // #include "builtins/array/array.h"
 
@@ -319,6 +321,108 @@ void print_error(string_t error, bool_t clean)
     free(str);
 }
 
+int rerecv(int fd, char **str, size_t *count)
+{
+    char buffer = '\0';
+    size_t len = 1;
+    int r = 0;
+
+    if (*str == NULL)
+    {
+        *str = calloc(1, sizeof(char));
+        if (*str == NULL)
+            errx(EXIT_FAILURE, "Can't allocate memory in worker()");
+    }
+
+    while ((r = recv(fd, &buffer, 1, 0)) != 0)
+    {
+        if (r == -1)
+            return 0;
+
+        if (buffer == '\n')
+            return 1;
+
+        *str = realloc(*str, (len + 1) * sizeof(char));
+        (*str)[len - 1] = buffer;
+        (*str)[len] = '\0';
+        len += 1;
+    }
+
+    *count = len;
+    return 1;
+}
+
+bool_t msg_transaction(const char *host, transaction_t *trans)
+{
+    char *port = "2048";
+
+    struct addrinfo hints;
+    struct addrinfo *result;
+    int addrinfo_error;
+
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+
+    addrinfo_error = getaddrinfo(host, port, &hints, &result);
+    if (addrinfo_error != 0)
+    {
+        errx(EXIT_FAILURE, "Fail getting address for %s on port %s: %s",
+             host, port, gai_strerror(addrinfo_error));
+    }
+
+    int cnx = 0;
+    struct addrinfo *rp;
+    for (rp = result; rp != NULL; rp = rp->ai_next)
+    {
+        cnx = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        if (cnx == -1)
+            continue;
+        if (connect(cnx, rp->ai_addr, rp->ai_addrlen) != -1)
+            break;
+        close(cnx);
+    }
+
+    freeaddrinfo(result);
+
+    if (rp == NULL)
+        return false;
+
+    char *str = NULL;
+    char *str1 = NULL;
+    size_t len1 = 0;
+
+    // Structure message transaction
+    asprintf(&str, "%f %s\n", trans->ammout, trans->to);
+
+    // Send transaction to server
+    send(cnx, str, strlen(str), 0);
+
+    //if (error > 0)
+    //    printf("Transaction sent to server\n");
+    //else
+    //{
+    //    printf("Transaction fail to server\n");
+    //    return false;
+    //}
+
+    // Read response from server
+    rerecv(cnx, &str1, &len1);
+    //if (error > 0)
+    //    printf("%s\n", str1);
+    //else
+    //{
+    //    printf("No message from server\n");
+    //    return false;
+    //}
+
+    free(str);
+    free(str1);
+    close(cnx);
+
+    return true;
+}
+
 void send_transaction(args_t arg)
 {
     transaction_t *trans = arg;
@@ -343,16 +447,24 @@ void send_transaction(args_t arg)
     if (!v)
         return;
 
-    for (size_t i = 0; i < 40; i++)
+    printf("%s Crypting\n"
+           "%s Sending\n",
+           "🔒", SPIN4[0]);
+    //usleep(80 * 1000);
+
+    if (msg_transaction("localhost", trans) == true)
+        trans->send = true;
+
+    clean_lines(2);
+
+    /*for (size_t i = 0; i < 40; i++)
     {
         printf("%s Crypting\n"
                "%s Sending\n",
                "🔒", SPIN4[i % 12]);
         usleep(80 * 1000);
         clean_lines(2);
-    }
-
-    trans->send = true;
+    }*/
 }
 
 void transaction(args_t arg)
