@@ -38,3 +38,43 @@
   grid-row-end: span 2;
   grid-column-end: span 2;
 }
+
+.main-box {
+  overflow: hidden;
+}
+
+.box-page1 {
+  overflow: auto;
+  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.box-page2 {
+  overflow: auto;
+  margin-top: 10px;
+  background-color: #ffa;
+  width: 88vw;
+  height: 90vh;
+  border-radius: 10px;
+}
+
+.title {
+  padding-top: 30px;
+  text-align: center;
+  font-size: 30px;
+}
+
+.text {
+  padding: 0 20px 0 20px;
+  font-size: 16px;
+  text-align: justify;
+}
+
+.user-image {
+  left: 10em;
+  height: 15em;
+  width: 15em;
+  object-fit: cover;
+  border-radius: 100em;
+}
