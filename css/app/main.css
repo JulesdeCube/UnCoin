@@ -47,13 +47,14 @@
   overflow: auto;
   margin-top: 10px;
   background-color: #fff;
+  width: 88vw;
+  height: 90vh;
   border-radius: 10px;
 }
 
 .box-page2 {
   overflow: auto;
   margin-top: 10px;
-  background-color: #ffa;
   width: 88vw;
   height: 90vh;
   border-radius: 10px;
