@@ -1,5 +1,7 @@
 #include "../blockchain.h"
 
+void _copy_buffer(u_char **data_from_buf_result, Buffer buf_to_copy);
+
 ///////////////////////////////////////////
 //                                       //
 //         TOOLS                         //
@@ -21,21 +23,25 @@ Buffer block_to_buffer(Block block)
 {
     Buffer b_transaction;
     transaction_to_buffer(block->transaction, &b_transaction);
-    size_t size = sizeof(size_t) * 3 + sizeof(long) + buffer_get_size(block->previousHash) + buffer_get_size(b_transaction);
+    size_t size = 0;
+    size += sizeof(size_t) * 3;
+    size += sizeof(long);
+    size += buffer_get_size(block->previousHash);
+    size += buffer_get_size(b_transaction);
+
     Buffer buff;
-    buffer_constructor_size(&buff,size);
+    buffer_constructor_size(&buff, size);
 
-    u_char *data = buffer_get_data(*buff);
-    _copy_buffer(&data,block->previousHash);
-    _copy_buffer(&data,b_transaction);
+    u_char *data = buffer_get_data(buff);
+    _copy_buffer(&data, block->previousHash);
+    _copy_buffer(&data, b_transaction);
 
-    size_t *tmp = data;
+    size_t *tmp = (size_t *)data;
     *tmp = block->index;
-    data+=sizeof(size_t)
+    data += sizeof(size_t);
 
-    long *nounce = data;
+    long *nounce = (long *)data;
     *nounce = block->nonce;
-    data+=sizeof(long);
 
     buffer_destructor_safe(&b_transaction);
     return buff;
@@ -45,9 +51,11 @@ void blockchain_block_hash(Block block)
 {
     if (block->hash != NULL)
         buffer_destructor(&block->hash);
+
     Buffer b_buff = block_to_buffer(block);
-    hash(block->hash,b_buff);
-    }
+    hash(&block->hash, b_buff);
+    buffer_destructor_safe(&b_buff);
+}
 
 char *blockchain_block_buffer_to_string(Buffer buff)
 {
@@ -66,7 +74,7 @@ char *blockchain_block_buffer_to_string(Buffer buff)
 Block blockchain_block_constructor(Transaction transaction, Block lastBlock)
 {
     // Allocate for block
-    Block block = calloc(1, sizeof(Block));
+    Block block = calloc(1, sizeof(struct block));
     if (block == NULL)
         errx(EXIT_FAILURE, "Error : malloc new block");
 
