@@ -5,7 +5,6 @@
 #include <string.h>
 #include <err.h>
 #include "utils/bool.h"
-#include "builtins/buffer/buffer.h"
 
 /**
 ** a test
@@ -37,9 +36,7 @@ void assert_not_equal_ul(char *name, size_t exepted, size_t got);
 void assert_not_equal_p(char *name, void *exepted, void *got);
 
 void assert_equal_arr(char *name, unsigned char *exepted_arr, unsigned char *got_arr, size_t size);
-void assert_equal_buffer(char *name, Buffer exepted_buf, Buffer got_buf);
 
 void assert_not_equal_arr(char *name, unsigned char *exepted_arr, unsigned char *got_arr, size_t size);
-void assert_not_equal_buffer(char *name, Buffer exepted_buf, Buffer got_buf);
 
 #endif // UNCOIN__TEST__TEST_H_

@@ -1,10 +1,11 @@
 #include "test_constructor.h"
+#include "builtins/buffer/tests/test.h"
 
 int error, r_error;
 
 void trans_test(Transaction t, Buffer from, Buffer to,
-  long long unsigned int amount, time_t time,
-  int error, int new_code)
+                long long unsigned int amount, time_t time,
+                int error, int new_code)
 {
     // check the error code
     assert_equal_ul("Error code", error, new_code);
@@ -12,9 +13,9 @@ void trans_test(Transaction t, Buffer from, Buffer to,
     assert_equal_buffer("From", from, t->from);
     assert_equal_buffer("To", to, t->to);
 
-    assert_equal_ul("Amount", (size_t) amount, (size_t) t->amount);
+    assert_equal_ul("Amount", (size_t)amount, (size_t)t->amount);
 
-    (void) time;
+    (void)time;
 
     // free the transaction
     transaction_destructor(t);

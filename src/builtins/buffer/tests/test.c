@@ -1,6 +1,6 @@
 #define _GNU_SOURCE
 #include "test.h"
-/*
+
 void assert_equal_buffer(char *name, Buffer exepted, Buffer got)
 {
     if (got == NULL)
@@ -25,4 +25,4 @@ void assert_equal_buffer(char *name, Buffer exepted, Buffer got)
     asprintf(&str, "%s: data", name);
     assert_equal_arr(str, exepted->data, got->data, got->size);
     free(str);
-}*/
+}
