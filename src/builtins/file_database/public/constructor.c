@@ -76,13 +76,13 @@ void database_findFile(Blockchain bc)
             // Allocate filename
             //char *filename = malloc(sizeof(char) * BUFFER_SIZE);
             //if (filename == NULL)
-                //errx(EXIT_FAILURE, "Error : malloc filename");
+            //errx(EXIT_FAILURE, "Error : malloc filename");
 
             // Path of file csv in filename
             //filename = strcat(filename, DIR_PATH);
             //filename = strcat(filename, dirent->d_name);
             char *filename;
-            asprintf(&filename,"%s%s",DIR_PATH,dirent->d_name);
+            asprintf(&filename, "%s%s", DIR_PATH, dirent->d_name);
             // TODO: Verifier si le nom du fichier correspond au hash du block
             /*char *name = strtok(dirent->d_name, ".");
                 if (strcmp(bc->block->hash, name))
@@ -127,7 +127,7 @@ void database_readFile_addBlock(Blockchain blockchain, char *path_file)
 
     // Buffer
     char line[LINE_SIZE];
-    char *buff = NULL;//, *data = NULL;
+    char *buff = NULL; //, *data = NULL;
     //size_t nonce = -1;
 
     Buffer from;
@@ -142,21 +142,15 @@ void database_readFile_addBlock(Blockchain blockchain, char *path_file)
         // Data (char *)
         buff = strtok(line, ";");
 
-        if(i == 1)
-        {
+        if (i == 1)
             buffer_constructor_str(&from, buff, true);
-        }
-        if(i == 2)
-        {
+        if (i == 2)
             buffer_constructor_str(&to, buff, true);
-        }
-        if(i == 3)
-        {
+        if (i == 3)
             amount = strtoull(buff, NULL, 10);
-        }
-        if(i == 4)
+        if (i == 4)
         {
-            int year = 0, month = 0, day = 0, hour = 0, min = 0,sec = 0;
+            int year = 0, month = 0, day = 0, hour = 0, min = 0, sec = 0;
             if (sscanf(buff, "%4d.%2d.%2d %2d:%2d:%2d", &year, &month, &day, &hour, &min, &sec) == 6)
             {
                 struct tm breakdown = {0};
@@ -187,7 +181,7 @@ void database_readFile_addBlock(Blockchain blockchain, char *path_file)
     printf("%s\n",ctime(&date));*/
 
     Transaction transac;
-    transaction_constructor_client(&transac,from,to,amount,date);
+    transaction_constructor_client(&transac, from, to, amount, date);
     //transaction bien pleine
 
     // Create and add block in blockchain
@@ -218,7 +212,7 @@ void database_createFile_FromBlock(Blockchain bc)
     strcat(filename, "_");
 
     //adding the hash
-    char *hash = NULL;//database_duplicate_string((char *)buffer_get_data(bc->block->hash));;
+    char *hash = NULL; //database_duplicate_string((char *)buffer_get_data(bc->block->hash));;
 
     if (buffer_to_hex(bc->block->hash, &hash, NULL) != SUCCESS)
         printf("BUG\n");
@@ -227,9 +221,9 @@ void database_createFile_FromBlock(Blockchain bc)
     strcat(filename, hash);
     //free(filename);
 
-    char *filedir = malloc(sizeof(char)*33);
+    char *filedir = malloc(sizeof(char) * 33);
     sprintf(filedir, "%s", "src/builtins/file_database/tests/");
-    strcat(filedir,filename);
+    strcat(filedir, filename);
     //printf("%s\n",filedir);
 
     //écriture
@@ -242,11 +236,11 @@ void database_createFile_FromBlock(Blockchain bc)
         char *from = (char *)buffer_get_data(bc->block->transaction->to);
         //strcat(from,froms);
 
-        strcat(from,";\n");
+        strcat(from, ";\n");
         //char *to = database_duplicate_string((char *)buffer_get_data(bc->block->transaction->to));
         //strcat(to,";\n");
         //printf("oui\n");
-        printf("%s\n",from);
+        printf("%s\n", from);
         //printf("%s\n",to);
         //long long unsigned int amount = bc->block->transaction->amount;
         //time_t date = bc->block->transaction->date;

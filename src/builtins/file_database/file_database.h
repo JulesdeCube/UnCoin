@@ -17,7 +17,6 @@
 #define LINE_SIZE 256
 #define BUFFER_SIZE 256
 
-
 #define DIR_PATH "src/builtins/file_database/tests/"
 
 Blockchain database_init();

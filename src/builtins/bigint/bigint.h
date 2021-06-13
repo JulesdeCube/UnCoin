@@ -93,5 +93,4 @@ long long int bigint_to_long_long_int(BigInt bigint, long long int *result);
 int bigint_to_buffer(BigInt bigint, Buffer *buffer);
 int bigint_to_string(BigInt bigint, char **str, size_t *len);
 
-
 #endif // UNCOIN__UILTINS_BIGINT__BIGINT_H_

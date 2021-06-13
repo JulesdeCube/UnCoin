@@ -82,7 +82,7 @@ int main()
         {
             printf("(Enqueue) Enter element : ");
             char *element = NULL;
-            while(1)
+            while (1)
             {
                 getchar();
                 if (scanf("%m[a-zA-Z0-9]", &element) != 1)
